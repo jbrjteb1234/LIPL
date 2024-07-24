@@ -5,12 +5,12 @@ typedef struct{
     int index;
     int length;
     char* buffer; 
-} buffer;
+} lbuffer;
 
-void check_lexeme(buffer*, char*);
+void check_lexeme(lbuffer*, char*);
 
-buffer* create_buffer();
+lbuffer* create_lbuffer();
 
-void insert_to_buffer(buffer*, char lexeme_char);
+void insert_to_lbuffer(lbuffer*, char lexeme_char);
 
 #endif
