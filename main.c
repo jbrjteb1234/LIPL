@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "lexer/lexer.h"
+#include "lexer/lexer_main.h"
 
 int main(int arg_count, char *args[]){
 

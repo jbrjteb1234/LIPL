@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "lexer.h"
+#include "lexer_main.h"
 #include "lexeme.h"
 
 token* tokenize(FILE* source_code){
@@ -10,7 +10,10 @@ token* tokenize(FILE* source_code){
     //iterate through file, splitting it up into lexemes and tokenizing each lexeme
     int c;
 
-    buffer* buf = create_buffer();
+    lbuffer* buf = create_lbuffer();
+
+    token* prev = NULL;
+    token* new = NULL;
 
     while ((c = fgetc(source_code)) != EOF) {
         printf("%c", c);
@@ -19,5 +22,4 @@ token* tokenize(FILE* source_code){
     //placeholder until tokenization is complete.
     token* a;
     return a;
-
 }

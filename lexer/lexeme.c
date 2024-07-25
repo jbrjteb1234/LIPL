@@ -20,5 +20,8 @@ void insert_to_lbuffer(lbuffer* buf, char lexeme_char){
 }
 
 void check_lexeme(lbuffer* buf, char* out){
+    char delimiters[2] = {' ', '\n'};
+
+    
 
 }

@@ -1,16 +1,16 @@
 CC=gcc
 CFLAGS=-I.
 
-run: lexer.o main.o lexeme.o
-	$(CC) $(CFLAGS) -o run lexer.o main.o lexeme.o
+run: lexer_main.o main.o lexeme.o
+	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
 
-lexer.o: lexer/lexer.c
-	$(CC) $(CFLAGS) -c lexer/lexer.c
+lexer_main.o: lexer/lexer_main.c
+	$(CC) $(CFLAGS) -c lexer/lexer_main.c
 
-lexeme.o: lexer/lexeme.o
+lexeme.o: lexer/lexeme.c
 	$(CC) $(CFLAGS) -c lexer/lexeme.c
 
 clean:
