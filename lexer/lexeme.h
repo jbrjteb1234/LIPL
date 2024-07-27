@@ -1,16 +1,17 @@
 #ifndef lexer_buffer
 #define lexer_buffer
+#include <stdbool.h>
 
 typedef struct{
     int index;
     int length;
     char* buffer; 
-} lbuffer;
+} character_buffer;
 
-void check_lexeme(lbuffer*, char*);
+character_buffer* create_character_buffer();
 
-lbuffer* create_lbuffer();
+void insert_to_character_buffer(character_buffer*, char lexeme_char);
 
-void insert_to_lbuffer(lbuffer*, char lexeme_char);
+bool produce_lexeme(character_buffer*, char**, char);
 
 #endif
