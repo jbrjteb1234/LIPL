@@ -44,9 +44,20 @@ bool produce_lexeme(character_buffer* buf, char** out, char next){
     }
 
     char last_val = buf->buffer[buf->index-1];
+    char first_val = buf->buffer[0];
+
+    //string literal - ignore all until closed
+    if (first_val == '"'){
+        if (last_val == '"' && buf->index>1){
+            copy_buffer(&buf, out);
+            empty_buffer(&buf);
+            return true;
+        }
+        //open string literal - keep filling buffer
+        return false;
 
     //space or new-line in the buffer. ignore
-    if (isspace(last_val) || last_val == '\n'){
+    }else if (isspace(last_val) || last_val == '\n'){
         empty_buffer(&buf);
         return false;
 
