@@ -5,6 +5,9 @@
 #include <stdbool.h>
 #include "lexeme.h"
 
+/** creates and initialises character buffer - characters are fed from source file here
+ *  @return character_buffer* 
+ */
 character_buffer* create_character_buffer(){
     character_buffer* new_character_buffer = malloc(sizeof(character_buffer));
     new_character_buffer->index = 0;
@@ -13,6 +16,9 @@ character_buffer* create_character_buffer(){
     return new_character_buffer;
 }
 
+/** inserts singular character into character buffer
+ *  
+ */
 void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
     if (buf->index == buf->length){
         int new_length = buf->length + 10;
@@ -22,6 +28,9 @@ void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
     ++buf->index;
 }
 
+/** copy the contents of character buffer into char*
+ * 
+ */
 void copy_buffer(character_buffer** buf, char** out_p){
     *out_p = (char*)malloc( (*buf) ->index);
     memcpy(*out_p, (*buf)->buffer, (*buf)->index);
@@ -29,6 +38,9 @@ void copy_buffer(character_buffer** buf, char** out_p){
     (*buf)->index=0;
 }
 
+/** empty contents of buffer (resets index to 0)
+ * 
+ */
 void empty_buffer(character_buffer** buf){
     (*buf)->index=0;
 }
