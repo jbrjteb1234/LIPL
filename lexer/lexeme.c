@@ -4,15 +4,16 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include "lexeme.h"
+#include "safe_memory.h"
 
 /** creates and initialises character buffer - characters are fed from source file here
  *  @return character_buffer* 
  */
 character_buffer* create_character_buffer(){
-    character_buffer* new_character_buffer = malloc(sizeof(character_buffer));
+    character_buffer* new_character_buffer = safe_malloc(sizeof(character_buffer));
     new_character_buffer->index = 0;
     new_character_buffer->length = 20;
-    new_character_buffer->buffer = malloc(new_character_buffer->length);
+    new_character_buffer->buffer = safe_malloc(new_character_buffer->length);
     return new_character_buffer;
 }
 
@@ -22,7 +23,7 @@ character_buffer* create_character_buffer(){
 void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
     if (buf->index == buf->length){
         int new_length = buf->length + 10;
-        buf->buffer = realloc(buf->buffer, new_length);
+        buf->buffer = safe_realloc(buf->buffer, new_length);
     }
     buf->buffer[buf->index] = lexeme_char;
     ++buf->index;
@@ -32,8 +33,8 @@ void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
  * 
  */
 void copy_buffer(character_buffer** buf, char** out_p){
-    *out_p = (char*)malloc( (*buf) ->index);
-    memcpy(*out_p, (*buf)->buffer, (*buf)->index);
+    *out_p = (char*)safe_malloc( (*buf) ->index);
+    safe_memcpy(*out_p, (*buf)->buffer, (*buf)->index);
     (*out_p)[(*buf)->index] = '\0';
     (*buf)->index=0;
 }

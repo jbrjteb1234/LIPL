@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "safe_memory.h"
 #include "lexer_main.h"
 #include "lexeme.h"
 
@@ -13,8 +14,8 @@ token* tokenize(FILE* source_code){
     character_buffer* buf = create_character_buffer();
     char* lexeme_buffer = NULL;
 
-    token* prev = (token*)malloc(sizeof(token));
-    token* next = (token*)malloc(sizeof(token));
+    token* prev = (token*)safe_malloc(sizeof(token));
+    token* next = (token*)safe_malloc(sizeof(token));
 
     while (!eof_flag) {
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
