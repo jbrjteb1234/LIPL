@@ -1,8 +1,6 @@
 #ifndef lexer_info
 #define lexer_info
 
-#define RO_COUNT 8
-
 //different types of operator tokens
 typedef enum{
     SUBTRACT,
@@ -48,22 +46,5 @@ typedef struct{
     token_functions token_type;
     token_values    token_value;
 } token;
-
-//populates the dictionary
-typedef struct{
-    token_values    token_value;
-    char*           lexeme;
-} tokentype_dictionary_entry;
-
-typedef struct{
-    int amount;
-    int reserved_word_count;
-    int reserved_dictionary_start;
-    tokentype_dictionary_entry* dictionary;
-} tokentype_dictionary;
-
-void declare_identifier_in_tokentype_dictionary(tokentype_dictionary*, char*);
-
-token_values token_check(char* lexeme);
 
 #endif

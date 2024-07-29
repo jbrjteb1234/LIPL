@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include "lexeme.h"
-#include "safe_memory.h"
+#include "../utility/safe_memory.h"
 
 /** creates and initialises character buffer - characters are fed from source file here
  *  @return character_buffer* 

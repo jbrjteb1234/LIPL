@@ -3,7 +3,7 @@
 
 void* safe_malloc(size_t);
 
-void* safe_realloc(size_t);
+void* safe_realloc(void*, size_t);
 
 void safe_memcpy(void* dest, const void* src, size_t count);
 
