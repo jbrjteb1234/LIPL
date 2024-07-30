@@ -44,3 +44,10 @@ void safe_memset(void* ptr, int value, size_t num) {
     }
     memset(ptr, value, num);
 }
+
+void safe_free(void **ptr) {
+    if (ptr != NULL && *ptr != NULL) {
+        free(*ptr);
+        *ptr = NULL; // Avoid dangling pointers by setting the pointer to NULL
+    }
+}
