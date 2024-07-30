@@ -36,3 +36,11 @@ void safe_memcpy(void* dest, const void* src, size_t count) {
     }
     memcpy(dest, src, count);
 }
+
+void safe_memset(void* ptr, int value, size_t num) {
+    if (ptr == NULL) {
+        fprintf(stderr, "Null pointer passed to safe_memset\n");
+        exit(EXIT_FAILURE);
+    }
+    memset(ptr, value, num);
+}
