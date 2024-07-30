@@ -47,8 +47,8 @@ void expand_dictionary(tokentype_dictionary* dictionary){
     safe_memcpy(new_free_list, dictionary->free_list, sizeof(char) * max);
     safe_memset( (char*)new_free_list + sizeof(char)*max, 0, DICTIONARY_EXPAND_AMOUNT);
 
-    safe_free(dictionary->dictionary);
-    safe_free(dictionary->free_list);
+    safe_free( (void**)dictionary->dictionary );
+    safe_free( (void**)dictionary->free_list );
 
     dictionary->dictionary = new_dictionary;
     dictionary->free_list = new_free_list;

@@ -9,6 +9,6 @@ void safe_memcpy(void* dest, const void* src, size_t count);
 
 void safe_memset(void*, int, size_t );
 
-void safe_free(void* ptr);
+void safe_free(void** ptr);
 
 #endif
