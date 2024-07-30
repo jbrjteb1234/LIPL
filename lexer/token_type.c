@@ -37,7 +37,21 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
 }
 
 void expand_dictionary(tokentype_dictionary* dictionary){
-    //TODO - create expand_dictionary function
+    int max = dictionary->maximum_amount;
+    int new_maximum_amount = max + DICTIONARY_EXPAND_AMOUNT;
+
+    tokentype_dictionary_entry** new_dictionary = (tokentype_dictionary_entry**)safe_malloc(sizeof(tokentype_dictionary_entry*)*new_maximum_amount);
+    char* new_free_list = (char*)safe_malloc(sizeof(char)*new_maximum_amount);
+
+    safe_memcpy(new_dictionary, dictionary->dictionary, sizeof(tokentype_dictionary_entry*) * max);
+    safe_memcpy(new_free_list, dictionary->free_list, sizeof(char) * max);
+    safe_memset( (char*)new_free_list + sizeof(char)*max, 0, DICTIONARY_EXPAND_AMOUNT);
+
+    safe_free(dictionary->dictionary);
+    safe_free(dictionary->free_list);
+
+    dictionary->dictionary = new_dictionary;
+    dictionary->free_list = new_free_list;
 }
 
 /** initialises new type of token
@@ -63,7 +77,7 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
         }
     }
     expand_dictionary(dictionary);
-    //create_new_tokentype(dictionary, lexeme, value, function);
+    create_new_tokentype(dictionary, lexeme, value, function);
 }
 
 tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme){
