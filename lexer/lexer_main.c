@@ -7,8 +7,6 @@
 #include "token.h"
 
 token* tokenize(FILE* source_code){
-    char delimiters[2] = {' ', '\n'};
-
     //iterate through file, feeding each character into a buffer
     int c;
     bool eof_flag = false;
@@ -23,11 +21,14 @@ token* tokenize(FILE* source_code){
     while (!eof_flag) {
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
         if (produce_lexeme(buf, &lexeme_buffer, c) == true){
-            printf("Lexeme: %s\n", lexeme_buffer);
+
+            token* temp_new_token = produce_token(current, dictionary, lexeme_buffer);
+            if (temp_new_token != NULL){
+                current = temp_new_token;
+            }
+
             free(lexeme_buffer);
             lexeme_buffer = NULL;
-
-
         }
         insert_to_character_buffer(buf, c);
     }

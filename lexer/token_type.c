@@ -33,6 +33,7 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     create_new_tokentype(dictionary, "==", (token_values){ .operator_token_value =  EQUIVALENT},        OPERATOR);
     create_new_tokentype(dictionary, "!=", (token_values){ .operator_token_value =  NOT_EQUIVALENT},    OPERATOR);
 
+    //printf("%s", dictionary->free_list);
 
 }
 
@@ -57,7 +58,7 @@ void expand_dictionary(tokentype_dictionary* dictionary){
 /** initialises new type of token
  * 
  */
-void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_values value, token_functions function){
+void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_values value, token_types function){
     if(lexeme==NULL){
         return;
     }
@@ -67,7 +68,7 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
             dictionary->free_list[i] = 1;
             tokentype_dictionary_entry* new_entry = (tokentype_dictionary_entry*)safe_malloc(sizeof(tokentype_dictionary_entry));
             new_entry->token_value = value;
-            new_entry->token_functions = function;
+            new_entry->token_types = function;
             new_entry->lexeme = (char*)safe_malloc(strlen(lexeme) + 1);
             strcpy(new_entry->lexeme, lexeme);
 
@@ -82,10 +83,14 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
 
 tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme){
     for(int i=0; i<dictionary->maximum_amount; ++i){
-        if(dictionary->free_list[i] == 1 && !strcmp(dictionary->dictionary[i]->lexeme, lexeme)){
-            return dictionary->dictionary[i];
+        if(dictionary->free_list[i] == 1){
+            //TODO - fix seg fault here
+            //if (!strcmp(dictionary->dictionary[i]->lexeme, lexeme)){
+            //    return dictionary->dictionary[i];
+            //}
         }
     }
+    return NULL;
 }
 
 token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme){
@@ -97,5 +102,15 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme
     }else{
         tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme);
         //TODO - create token based off tokentype_dictionary_entry
+        if(tokentype != NULL){
+            new_token->token_value = tokentype->token_value;
+            new_token->token_type = tokentype->token_types;
+
+            return new_token;
+        }else{
+            printf("Lexeme: %s unknown\n", lexeme);
+            safe_free( (void**)&new_token );
+            return NULL;
+        }
     }
 }

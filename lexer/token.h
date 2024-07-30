@@ -31,7 +31,7 @@ typedef enum {
     INT_VALUE,
     FLOAT_VALUE,
     IDENTIFIER
-} token_functions;
+} token_types;
 
 //The token value - could be an enum for operators or reserved words, or a variable value
 typedef union{
@@ -48,7 +48,7 @@ typedef struct{
     struct token* previous;
     struct token* next;
     
-    token_functions token_type;
+    token_types     token_type;
     token_values    token_value;
 } token;
 

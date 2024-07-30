@@ -9,7 +9,7 @@
 //populates the dictionary - links string lexeme value token_value and token_function
 typedef struct{
     token_values    token_value;
-    token_functions token_functions;
+    token_types     token_types;
     char*           lexeme;
 } tokentype_dictionary_entry;
 
@@ -25,7 +25,7 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme
 
 tokentype_dictionary* initialize_tokentype_dictionary();
 
-void create_new_tokentype(tokentype_dictionary*, char*, token_values, token_functions);
+void create_new_tokentype(tokentype_dictionary*, char*, token_values, token_types);
 
 #endif
 
