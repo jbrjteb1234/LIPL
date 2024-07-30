@@ -3,12 +3,17 @@
 
 //different types of operator tokens
 typedef enum{
-    SUBTRACT,
+    SUBTRACTION,
     ADDITION,
-    MULTIPLY,
-    EQUIVALENT,
+    MULTIPLICATION,
     ASSIGNMENT,
-    OR
+    DIVISION,
+    EQUIVALENT,
+    NOT_EQUIVALENT,
+    LESS_THAN,
+    GREATER_THAN,
+    GREATER_OR_EQUAL,
+    LESS_OR_EQUAL,
 } operator_token;
 
 //different types of reserved word tokens

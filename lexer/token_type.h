@@ -1,7 +1,8 @@
 #ifndef TOKEN_TYPE
 #define TOKEN_TYPE
 
-#define INITIAL_DICTIONARY_SIZE 30
+#define INITIAL_DICTIONARY_SIZE 50
+#define DICTIONARY_EXPAND_AMOUNT 10
 
 #include "token.h"
 
@@ -15,12 +16,12 @@ typedef struct{
 //dictionary of tokentypes
 typedef struct{
     int maximum_amount;
-    int index;
+    char* free_list;
 
     tokentype_dictionary_entry** dictionary;
 } tokentype_dictionary;
 
-token* produce_token(token* prev, char* lexeme);
+token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme);
 
 tokentype_dictionary* initialize_tokentype_dictionary();
 
