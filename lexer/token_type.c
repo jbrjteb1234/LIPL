@@ -18,7 +18,7 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     dictionary->dictionary = (tokentype_dictionary_entry**)safe_malloc(sizeof(tokentype_dictionary_entry*)*dictionary->maximum_amount);
 
     //create free list, set all indexes to 0
-    dictionary->free_list = (char*)safe_malloc(sizeof(char)*dictionary->maximum_amount);
+    dictionary->free_list = (char*)malloc(sizeof(char)*dictionary->maximum_amount);
     safe_memset(dictionary->free_list, 0, dictionary->maximum_amount);
 
     create_new_tokentype(dictionary, "=", (token_values){ .operator_token_value =   ASSIGNMENT},        OPERATOR);
@@ -33,26 +33,24 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     create_new_tokentype(dictionary, "==", (token_values){ .operator_token_value =  EQUIVALENT},        OPERATOR);
     create_new_tokentype(dictionary, "!=", (token_values){ .operator_token_value =  NOT_EQUIVALENT},    OPERATOR);
 
-    //printf("%s", dictionary->free_list);
+    create_new_tokentype(dictionary, "int", (token_values){ .reserved_word_token_value =    INT_TYPE},  RESERVED_WORD);
+    create_new_tokentype(dictionary, "if", (token_values){ .reserved_word_token_value =     IF},        RESERVED_WORD);
+    create_new_tokentype(dictionary, "else", (token_values){ .reserved_word_token_value =   ELSE},      RESERVED_WORD);
 
+
+    return dictionary;
 }
 
 void expand_dictionary(tokentype_dictionary* dictionary){
     int max = dictionary->maximum_amount;
     int new_maximum_amount = max + DICTIONARY_EXPAND_AMOUNT;
 
-    tokentype_dictionary_entry** new_dictionary = (tokentype_dictionary_entry**)safe_malloc(sizeof(tokentype_dictionary_entry*)*new_maximum_amount);
-    char* new_free_list = (char*)safe_malloc(sizeof(char)*new_maximum_amount);
+    dictionary->dictionary = safe_realloc(dictionary->dictionary, sizeof(tokentype_dictionary_entry*)*new_maximum_amount);
+    dictionary->free_list = safe_realloc(dictionary->free_list, new_maximum_amount);
 
-    safe_memcpy(new_dictionary, dictionary->dictionary, sizeof(tokentype_dictionary_entry*) * max);
-    safe_memcpy(new_free_list, dictionary->free_list, sizeof(char) * max);
-    safe_memset( (char*)new_free_list + sizeof(char)*max, 0, DICTIONARY_EXPAND_AMOUNT);
+    safe_memset( dictionary->free_list + max, 0, DICTIONARY_EXPAND_AMOUNT);
 
-    safe_free( (void**)dictionary->dictionary );
-    safe_free( (void**)dictionary->free_list );
-
-    dictionary->dictionary = new_dictionary;
-    dictionary->free_list = new_free_list;
+    dictionary->maximum_amount = new_maximum_amount;
 }
 
 /** initialises new type of token
@@ -83,11 +81,11 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
 
 tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme){
     for(int i=0; i<dictionary->maximum_amount; ++i){
-        if(dictionary->free_list[i] == 1){
-            //TODO - fix seg fault here
-            //if (!strcmp(dictionary->dictionary[i]->lexeme, lexeme)){
-            //    return dictionary->dictionary[i];
-            //}
+        //check if free_list is 1 and the actual entry is not null
+        if(dictionary->free_list[i] == 1 && dictionary->dictionary[i] != NULL){
+            if (!strcmp(dictionary->dictionary[i]->lexeme, lexeme)){
+                return dictionary->dictionary[i];
+            }
         }
     }
     return NULL;
@@ -95,13 +93,16 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
 
 token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme){
     token* new_token = (token*)safe_malloc(sizeof(token));
-    new_token->previous = (struct token*)prev; 
+    new_token->next = NULL;
+    if(prev != NULL){
+        new_token->previous = (struct token*)prev;
+        prev->next = (struct token*)new_token;
+    }
 
     if(1==2){
         //TODO - detecting if a lexeme is a literal
     }else{
         tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme);
-        //TODO - create token based off tokentype_dictionary_entry
         if(tokentype != NULL){
             new_token->token_value = tokentype->token_value;
             new_token->token_type = tokentype->token_types;
