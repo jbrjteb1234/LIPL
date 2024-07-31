@@ -6,6 +6,14 @@
 #include "token_type.h"
 #include "token.h"
 
+void print_token_stream(token* head) {
+    token* current = head;
+    while (current != NULL) {
+        printf("Token: %d\n", current->token_type);
+        current = (token*)current->previous;
+    }
+}
+
 token* tokenize(FILE* source_code){
     //iterate through file, feeding each character into a buffer
     int c;
@@ -25,6 +33,10 @@ token* tokenize(FILE* source_code){
             token* temp_new_token = produce_token(current, dictionary, lexeme_buffer);
             if (temp_new_token != NULL){
                 current = temp_new_token;
+                printf("New token created at address: %p\n", current);
+
+
+
             }
 
             free(lexeme_buffer);
@@ -32,6 +44,8 @@ token* tokenize(FILE* source_code){
         }
         insert_to_character_buffer(buf, c);
     }
+
+    print_token_stream(current);
 
     //placeholder until tokenization is complete.
     token* a;
