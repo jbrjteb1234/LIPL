@@ -13,7 +13,9 @@ void print_token_stream(token* head) {
         current = (token*)current->previous;
     }
 }
-
+/** Turns source file into a linked list of tokens
+ *  @return the head token - first command
+ */
 token* tokenize(FILE* source_code){
     int c;
     bool eof_flag = false;
@@ -24,6 +26,7 @@ token* tokenize(FILE* source_code){
     lexeme* lexeme_buffer = malloc(sizeof(lexeme));
 
     token* current = NULL;
+    token* first = NULL;
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
     
 
@@ -34,10 +37,11 @@ token* tokenize(FILE* source_code){
             token* temp_new_token = produce_token(current, dictionary, lexeme_buffer);
             if (temp_new_token != NULL){
                 current = temp_new_token;
-                printf("New token created at address: %p\n", current);
-
-
-
+                //set the head of the tokenstream
+                if(first == NULL){
+                    first = current;
+                }
+                printf("New token created at address: %p, from lexeme %s\n", current, lexeme_buffer->value);
             }
 
             
@@ -46,9 +50,10 @@ token* tokenize(FILE* source_code){
     }
 
     safe_free( (void**) &(lexeme_buffer->value) );
-    print_token_stream(current);
+    safe_free( (void**) &lexeme_buffer );
+    safe_free( (void**) &(buf->buffer));
+    safe_free( (void**) &buf);
+    //print_token_stream(current);
 
-    //placeholder until tokenization is complete.
-    token* a;
-    return a;
+    return first;
 }

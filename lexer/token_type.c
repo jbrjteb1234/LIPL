@@ -78,6 +78,9 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
     create_new_tokentype(dictionary, lexeme, value, function);
 }
 
+/** Used to acquire the TYPE of token associated with a lexeme, i.e., "+" is ADDITION token_value, with OPERATOR function.
+ * 
+ */
 tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme){
     for(int i=0; i<dictionary->maximum_amount; ++i){
         //check if free_list is 1 and the actual entry is not null
@@ -90,6 +93,9 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
     return NULL;
 }
 
+/** Produces token - either searches dictionary and acquires pre-existing token details (Like operator type from its associated lexeme, or identifier)
+ * 
+ */
 token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme){
     token* new_token = (token*)safe_malloc(sizeof(token));
     new_token->next = NULL;
@@ -98,8 +104,11 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
         prev->next = (struct token*)new_token;
     }
 
-    if(1==2){
-        //TODO - detecting if a lexeme is a literal
+    if(lexeme->type == STRING_LITERAL || lexeme->type == INT_VALUE){
+        //int or string lexeme
+        new_token->token_type = lexeme->type;
+        new_token->token_value = (token_values)lexeme->value;
+        return new_token;
     }else{
         tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme->value);
         if(tokentype != NULL){
@@ -108,9 +117,12 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
 
             return new_token;
         }else{
-            printf("Lexeme: %s unknown\n", lexeme->value);
-            safe_free( (void**)&new_token );
-            return NULL;
+            create_new_tokentype(dictionary, lexeme->value, (token_values)lexeme->value, IDENTIFIER);
+            new_token->token_value = (token_values)lexeme->value;
+            new_token->token_type = IDENTIFIER;
+
+            return new_token;
         }
     }
+    return NULL;
 }
