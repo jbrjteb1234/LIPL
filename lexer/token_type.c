@@ -33,7 +33,6 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     create_new_tokentype(dictionary, "==", (token_values){ .operator_token_value =  EQUIVALENT},        OPERATOR);
     create_new_tokentype(dictionary, "!=", (token_values){ .operator_token_value =  NOT_EQUIVALENT},    OPERATOR);
 
-    create_new_tokentype(dictionary, "int", (token_values){ .reserved_word_token_value =    INT_TYPE},  RESERVED_WORD);
     create_new_tokentype(dictionary, "if", (token_values){ .reserved_word_token_value =     IF},        RESERVED_WORD);
     create_new_tokentype(dictionary, "else", (token_values){ .reserved_word_token_value =   ELSE},      RESERVED_WORD);
 
@@ -91,7 +90,7 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
     return NULL;
 }
 
-token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme){
+token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme){
     token* new_token = (token*)safe_malloc(sizeof(token));
     new_token->next = NULL;
     if(prev != NULL){
@@ -102,14 +101,14 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme
     if(1==2){
         //TODO - detecting if a lexeme is a literal
     }else{
-        tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme);
+        tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme->value);
         if(tokentype != NULL){
             new_token->token_value = tokentype->token_value;
             new_token->token_type = tokentype->token_types;
 
             return new_token;
         }else{
-            printf("Lexeme: %s unknown\n", lexeme);
+            printf("Lexeme: %s unknown\n", lexeme->value);
             safe_free( (void**)&new_token );
             return NULL;
         }

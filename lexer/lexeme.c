@@ -32,24 +32,29 @@ void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
 /** copy the contents of character buffer into char*
  * 
  */
-void copy_buffer(character_buffer** buf, char** out_p){
-    *out_p = (char*)safe_malloc( (*buf) ->index);
-    safe_memcpy(*out_p, (*buf)->buffer, (*buf)->index);
-    (*out_p)[(*buf)->index] = '\0';
-    (*buf)->index=0;
+void copy_buffer(character_buffer* buf, char** out_p){
+    if(*out_p != NULL){
+        safe_free((void**)&(*out_p));
+    }
+    *out_p = (char*)safe_malloc( buf ->index );
+    safe_memcpy(*out_p, buf->buffer, buf->index);
+    (*out_p)[buf->index] = '\0';
+    buf->index=0;
 }
 
 /** empty contents of buffer (resets index to 0)
  * 
  */
-void empty_buffer(character_buffer** buf){
-    (*buf)->index=0;
+void empty_buffer(character_buffer* buf){
+    buf->index=0;
 }
 
 /** Produces a lexeme, given a buffer filled with character straight from the source code
  *  @return boolean - whether or not a lexeme was produced
  */
-bool produce_lexeme(character_buffer* buf, char** out, char next){
+bool produce_lexeme(character_buffer* buf, lexeme* out, char next){
+
+    
 
     //the next char is alphanum, keep filling buffer
     if (buf->index == 0){
@@ -62,8 +67,8 @@ bool produce_lexeme(character_buffer* buf, char** out, char next){
     //string literal - ignore all until closed
     if (first_val == '"'){
         if (last_val == '"' && buf->index>1){
-            copy_buffer(&buf, out);
-            empty_buffer(&buf);
+            copy_buffer(buf, &(out->value));
+            empty_buffer(buf);
             return true;
         }
         //open string literal - keep filling buffer
@@ -71,13 +76,13 @@ bool produce_lexeme(character_buffer* buf, char** out, char next){
 
     //space or new-line in the buffer. ignore
     }else if (isspace(last_val) || last_val == '\n'){
-        empty_buffer(&buf);
+        empty_buffer(buf);
         return false;
 
     //the next char is a space, newline, or EOF.
     } else if (isspace(next) || next == '\n' || next == EOF){
-        copy_buffer(&buf, out);
-        empty_buffer(&buf);
+        copy_buffer(buf, &(out->value));
+        empty_buffer(buf);
         return true;
 
     //the next char is a symbol. unless last char is symbol (could be multi-char symb like '=='), produce lexeme
@@ -85,14 +90,14 @@ bool produce_lexeme(character_buffer* buf, char** out, char next){
         if (ispunct(last_val)){
             return false;
         }
-        copy_buffer(&buf, out);
-        empty_buffer(&buf);
+        copy_buffer(buf, &(out->value));
+        empty_buffer(buf);
         return true;
 
     //the next char is alphanum, but buffer holds symbols
     }else if (isalnum(next) && ispunct(last_val)){
-        copy_buffer(&buf, out);
-        empty_buffer(&buf);
+        copy_buffer(buf, &(out->value));
+        empty_buffer(buf);
         return true;
     }
 }

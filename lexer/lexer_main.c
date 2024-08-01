@@ -15,12 +15,13 @@ void print_token_stream(token* head) {
 }
 
 token* tokenize(FILE* source_code){
-    //iterate through file, feeding each character into a buffer
     int c;
     bool eof_flag = false;
 
+    //character buffer - feeds characters from source file one by one into buffer 
     character_buffer* buf = create_character_buffer();
-    char* lexeme_buffer = NULL;
+    //lexeme_buffer - holds complete lexeme to be turned into token
+    lexeme* lexeme_buffer = malloc(sizeof(lexeme));
 
     token* current = NULL;
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
@@ -28,7 +29,7 @@ token* tokenize(FILE* source_code){
 
     while (!eof_flag) {
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
-        if (produce_lexeme(buf, &lexeme_buffer, c) == true){
+        if (produce_lexeme(buf, lexeme_buffer, c) == true){
 
             token* temp_new_token = produce_token(current, dictionary, lexeme_buffer);
             if (temp_new_token != NULL){
@@ -39,12 +40,12 @@ token* tokenize(FILE* source_code){
 
             }
 
-            free(lexeme_buffer);
-            lexeme_buffer = NULL;
+            
         }
         insert_to_character_buffer(buf, c);
     }
 
+    safe_free( (void**) &(lexeme_buffer->value) );
     print_token_stream(current);
 
     //placeholder until tokenization is complete.

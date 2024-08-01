@@ -5,6 +5,7 @@
 #define DICTIONARY_EXPAND_AMOUNT 10
 
 #include "token.h"
+#include "lexeme.h"
 
 //populates the dictionary - links string lexeme value token_value and token_function
 typedef struct{
@@ -21,7 +22,7 @@ typedef struct{
     tokentype_dictionary_entry** dictionary;
 } tokentype_dictionary;
 
-token* produce_token(token* prev, tokentype_dictionary* dictionary, char* lexeme);
+token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme);
 
 tokentype_dictionary* initialize_tokentype_dictionary();
 

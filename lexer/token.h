@@ -18,7 +18,6 @@ typedef enum{
 
 //different types of reserved word tokens
 typedef enum{
-    INT_TYPE,
     IF,
     ELSE
 } reserved_word_token;
