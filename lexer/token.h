@@ -1,36 +1,6 @@
 #ifndef lexer_info
 #define lexer_info
-
-//different types of operator tokens
-typedef enum{
-    SUBTRACTION,
-    ADDITION,
-    MULTIPLICATION,
-    ASSIGNMENT,
-    DIVISION,
-    EQUIVALENT,
-    NOT_EQUIVALENT,
-    LESS_THAN,
-    GREATER_THAN,
-    GREATER_OR_EQUAL,
-    LESS_OR_EQUAL,
-} operator_token;
-
-//different types of reserved word tokens
-typedef enum{
-    IF,
-    ELSE
-} reserved_word_token;
-
-//describes the type of token
-typedef enum {
-    RESERVED_WORD,
-    OPERATOR,
-    STRING_LITERAL,
-    INT_VALUE,
-    FLOAT_VALUE,
-    IDENTIFIER
-} token_types;
+#include "../grammar/grammar.h"
 
 //The token value - could be an enum for operators or reserved words, or a variable value
 typedef union{

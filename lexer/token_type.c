@@ -5,6 +5,7 @@
 #include "token_type.h"
 #include "token.h"
 #include "../utility/safe_memory.h"
+#include "../grammar/grammar.h"
 
 /** functionality for managing the relation between lexemes and different types of tokens
  *  allows for declaring identifier tokens
@@ -21,20 +22,9 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     dictionary->free_list = (char*)malloc(sizeof(char)*dictionary->maximum_amount);
     safe_memset(dictionary->free_list, 0, dictionary->maximum_amount);
 
-    create_new_tokentype(dictionary, "=", (token_values){ .operator_token_value =   ASSIGNMENT},        OPERATOR);
-    create_new_tokentype(dictionary, "+", (token_values){ .operator_token_value =   ADDITION},          OPERATOR);
-    create_new_tokentype(dictionary, "-", (token_values){ .operator_token_value =   SUBTRACTION},       OPERATOR);
-    create_new_tokentype(dictionary, "*", (token_values){ .operator_token_value =   ASSIGNMENT},        OPERATOR);
-    create_new_tokentype(dictionary, "/", (token_values){ .operator_token_value =   DIVISION},          OPERATOR);
-    create_new_tokentype(dictionary, "<", (token_values){ .operator_token_value =   LESS_THAN},         OPERATOR);
-    create_new_tokentype(dictionary, ">", (token_values){ .operator_token_value =   GREATER_THAN},      OPERATOR);
-    create_new_tokentype(dictionary, "=<", (token_values){ .operator_token_value =  LESS_OR_EQUAL},     OPERATOR);
-    create_new_tokentype(dictionary, ">=", (token_values){ .operator_token_value =  GREATER_OR_EQUAL},  OPERATOR);
-    create_new_tokentype(dictionary, "==", (token_values){ .operator_token_value =  EQUIVALENT},        OPERATOR);
-    create_new_tokentype(dictionary, "!=", (token_values){ .operator_token_value =  NOT_EQUIVALENT},    OPERATOR);
-
-    create_new_tokentype(dictionary, "if", (token_values){ .reserved_word_token_value =     IF},        RESERVED_WORD);
-    create_new_tokentype(dictionary, "else", (token_values){ .reserved_word_token_value =   ELSE},      RESERVED_WORD);
+    #define X(LEXEME, VALUE, FUNCTION) create_new_tokentype(dictionary, LEXEME, (token_values){ .operator_token_value = VALUE }, FUNCTION);
+    DEFINE_TOKENS
+    #undef X
 
 
     return dictionary;
