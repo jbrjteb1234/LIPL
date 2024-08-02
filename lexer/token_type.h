@@ -11,6 +11,9 @@
 typedef struct{
     token_values    token_value;
     token_types     token_types;
+
+    unsigned char precedence;
+
     char*           lexeme;
 } tokentype_dictionary_entry;
 
@@ -26,7 +29,7 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
 
 tokentype_dictionary* initialize_tokentype_dictionary();
 
-void create_new_tokentype(tokentype_dictionary*, char*, token_values, token_types);
+void create_new_tokentype(tokentype_dictionary*, char*, token_values, token_types, unsigned char);
 
 #endif
 

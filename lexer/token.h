@@ -17,6 +17,8 @@ typedef struct{
     struct token* previous;
     struct token* next;
     
+    unsigned char precedence;
+    
     token_types     token_type;
     token_values    token_value;
 } token;

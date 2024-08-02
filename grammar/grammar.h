@@ -23,7 +23,9 @@ typedef enum{
 //different types of reserved word commands
 typedef enum{
     IF,
-    ELSE
+    ELSE,
+    WHILE,
+    RETURN
 } reserved_word_token;
 
 //describes the type of commands
@@ -36,25 +38,28 @@ typedef enum {
     IDENTIFIER
 } token_types;
 
+#define IDENTIFIER_PRECEDENCE   254
+#define LITERAL_PRECEDENCE      255
+
 //  LEXEME      TOKEN VALUE         TOKEN TYPE      PRECEDENCE 
 #define DEFINE_TOKENS \
-    X("=",      ASSIGNMENT,         OPERATOR) \
-    X("+",      ADDITION,           OPERATOR) \
-    X("-",      SUBTRACTION,        OPERATOR) \
-    X("*",      MULTIPLICATION,     OPERATOR) \
-    X("/",      DIVISION,           OPERATOR) \
-    X("<",      LESS_THAN,          OPERATOR) \
-    X(">",      GREATER_THAN,       OPERATOR) \
-    X("=<",     LESS_OR_EQUAL,      OPERATOR) \
-    X(">=",     GREATER_OR_EQUAL,   OPERATOR) \
-    X("==",     EQUIVALENT,         OPERATOR) \
-    X("{",      OPEN_CBRACKET,      OPERATOR) \
-    X("}",      CLOSE_CBRACKET,     OPERATOR) \
-    X("(",      OPEN_BRACKET,       OPERATOR) \
-    X(")",      CLOSE_BRACKET,      OPERATOR) \
-    X("if",     IF,                 RESERVED_WORD) \
-    X("else",   ELSE,               RESERVED_WORD) \
-    X("while",  ELSE,               RESERVED_WORD) \
-    X("return", ELSE,               RESERVED_WORD) \
+    X("=",      ASSIGNMENT,         OPERATOR,       10) \
+    X("+",      ADDITION,           OPERATOR,       6)  \
+    X("-",      SUBTRACTION,        OPERATOR,       6)  \
+    X("*",      MULTIPLICATION,     OPERATOR,       5)  \
+    X("/",      DIVISION,           OPERATOR,       5)  \
+    X("<",      LESS_THAN,          OPERATOR,       8)  \
+    X(">",      GREATER_THAN,       OPERATOR,       8)  \
+    X("=<",     LESS_OR_EQUAL,      OPERATOR,       8)  \
+    X(">=",     GREATER_OR_EQUAL,   OPERATOR,       8)  \
+    X("==",     EQUIVALENT,         OPERATOR,       9)  \
+    X("{",      OPEN_CBRACKET,      OPERATOR,       1)  \
+    X("}",      CLOSE_CBRACKET,     OPERATOR,       1)  \
+    X("(",      OPEN_BRACKET,       OPERATOR,       1)  \
+    X(")",      CLOSE_BRACKET,      OPERATOR,       1)  \
+    X("if",     IF,                 RESERVED_WORD,  0)  \
+    X("else",   ELSE,               RESERVED_WORD,  0)  \
+    X("while",  WHILE,              RESERVED_WORD,  0)  \
+    X("return", RETURN,             RESERVED_WORD,  0)
 
 #endif
