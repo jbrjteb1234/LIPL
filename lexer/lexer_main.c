@@ -41,7 +41,7 @@ token* tokenize(FILE* source_code){
                 if(first == NULL){
                     first = current;
                 }
-                printf("New token created at address: %p, from lexeme %s\n", current, lexeme_buffer->value);
+                //printf("New token created at address: %p, from lexeme %s\n", current, lexeme_buffer->value);
             }
 
             

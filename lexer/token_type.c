@@ -91,9 +91,12 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
 token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme){
     token* new_token = (token*)safe_malloc(sizeof(token));
     new_token->next = NULL;
+    new_token->ASTNode = NULL;
     if(prev != NULL){
         new_token->previous = (struct token*)prev;
         prev->next = (struct token*)new_token;
+    }else{
+        new_token->previous = NULL;
     }
 
     if(lexeme->type == STRING_LITERAL || lexeme->type == INT_VALUE){

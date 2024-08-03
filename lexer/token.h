@@ -2,22 +2,15 @@
 #define lexer_info
 #include "../grammar/grammar.h"
 
-//The token value - could be an enum for operators or reserved words, or a variable value
-typedef union{
-    operator_token          operator_token_value;
-    reserved_word_token     reserved_word_token_value;
-    int*                    number_token_value;
-    float*                  float_token_value;
-    char *                  string_literal_token_value;
-    int                     identifier_token_value;                 
-} token_values;
-
 //token structure - one command
-typedef struct{
+typedef struct token{
     struct token* previous;
     struct token* next;
     
     unsigned char precedence;
+
+    //Used later by the AST to link the token to the ASTNode, and thus link AST nodes to each other
+    void*           ASTNode;
     
     token_types     token_type;
     token_values    token_value;

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "lexer/lexer_main.h"
+#include "AST/ast.h"
 
 int main(int arg_count, char *args[]){
 
@@ -19,6 +20,8 @@ int main(int arg_count, char *args[]){
     }
 
     token* first_token = tokenize(source_code);
+    statement_list ast_roots = parse(first_token);
+
 
     return 0;
 }
