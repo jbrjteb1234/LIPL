@@ -3,6 +3,7 @@
 
 typedef struct{
     int top;
+    int max;
     void** data;
 }stack;
 
