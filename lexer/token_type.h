@@ -22,6 +22,8 @@ typedef struct{
     int maximum_amount;
     char* free_list;
 
+    int identifier_count;
+
     tokentype_dictionary_entry** dictionary;
 } tokentype_dictionary;
 

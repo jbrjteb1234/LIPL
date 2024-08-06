@@ -102,7 +102,7 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
     if(lexeme->type == STRING_LITERAL || lexeme->type == INT_VALUE){
         //int or string lexeme
         new_token->token_type = lexeme->type;
-        new_token->token_value = (token_values)lexeme->value;
+        new_token->token_value.variable_value = (void*)lexeme->value;
         new_token->precedence = LITERAL_PRECEDENCE;
         return new_token;
     }else{
@@ -115,10 +115,13 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
             return new_token;
         }else{
             //tokentype does not exist - create a new tokentype
-            create_new_tokentype(dictionary, lexeme->value, (token_values)lexeme->value, IDENTIFIER, IDENTIFIER_PRECEDENCE);
-            new_token->token_value = (token_values)lexeme->value;
+            token_values identifier_value;
+            identifier_value.identifier_token_value = dictionary->identifier_count;
+            create_new_tokentype(dictionary, lexeme->value, identifier_value, IDENTIFIER, IDENTIFIER_PRECEDENCE);
+            new_token->token_value.variable_value = (void*)lexeme->value;
             new_token->token_type = IDENTIFIER;
-
+            new_token->precedence = IDENTIFIER_PRECEDENCE;
+            dictionary->identifier_count++;
             return new_token;
         }
     }

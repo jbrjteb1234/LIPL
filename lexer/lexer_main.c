@@ -28,7 +28,6 @@ token* tokenize(FILE* source_code){
     token* current = NULL;
     token* first = NULL;
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
-    
 
     while (!eof_flag) {
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
@@ -41,7 +40,7 @@ token* tokenize(FILE* source_code){
                 if(first == NULL){
                     first = current;
                 }
-                //printf("New token created at address: %p, from lexeme %s\n", current, lexeme_buffer->value);
+                printf("New token created at address: %p, from lexeme %s\n", current, lexeme_buffer->value);
             }
 
             
