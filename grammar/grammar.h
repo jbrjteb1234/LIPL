@@ -37,9 +37,8 @@ typedef union{
     operator_token          operator_token_value;
     reserved_word_token     reserved_word_token_value;
     delimiter_token         delimiter_token_value;
-    int*                    number_token_value;
-    char *                  string_literal_token_value;
-    int                     identifier_token_value;                 
+    int                     identifier_token_value;
+    void*                   variable_value;               
 } token_values;
 
 //describes the type of commands

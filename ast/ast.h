@@ -12,7 +12,6 @@ typedef struct simplified_token{
 typedef struct ASTNode{
     
     token* token;
-    simplified_token simplified_token;
 
     union {
         struct {
@@ -25,9 +24,9 @@ typedef struct ASTNode{
         } unary_op_node;
 
         struct {
-            struct ASTNode** statements;
+            statement_list statements;
             int statement_count;
-        } block_node;
+        } statement_list_node;
 
         struct {
             struct ASTNode* condition;
@@ -42,12 +41,20 @@ typedef struct ASTNode{
         // other node-specific data
     } data;
 
+    struct ASTNode* parent;
+    char statement_list_node;
 
 } ASTNode;
 
 #define STATEMENT_LIST_INITIAL_SIZE 10
+#define SUB_STATEMENT_LIST_INITIAL_SIZE 5
 
-typedef ASTNode** statement_list;
+//statement list - where root nodes get added to for execution
+typedef struct {
+    ASTNode** list;
+    struct statement_list* parent;
+    int index;
+} statement_list;
 
 ASTNode** parse(token* token);
 
