@@ -55,6 +55,8 @@ statement_list* parse(token* scan_token){
 
     stack* node_stack = create_stack(sizeof(ASTNode*));
 
+    table_iterator* iterator = initialize_table_iterator();
+
     bool end = false;
 
     //LL(1) parsing method
@@ -62,8 +64,10 @@ statement_list* parse(token* scan_token){
         if(scan_token->next==NULL){
             end = true;
         }
-
         
+        if(iterator->type == NULL){
+            initiate_table(iterator, scan_token);
+        }
 
     }
 

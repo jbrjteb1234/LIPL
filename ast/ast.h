@@ -4,12 +4,15 @@
 #include "../grammar/grammar.h"
 #include "../lexer/token.h"
 
+typedef struct ASTNode ASTNode;
+typedef struct statement_list statement_list;
+
 typedef struct simplified_token{
     token_types token_type;
     token_values token_value;
 } simplified_token;
 
-typedef struct ASTNode{
+struct ASTNode{
     
     token* token;
 
@@ -22,11 +25,6 @@ typedef struct ASTNode{
         struct {
             struct ASTNode* node_a;
         } unary_op_node;
-
-        struct {
-            statement_list statements;
-            int statement_count;
-        } statement_list_node;
 
         struct {
             struct ASTNode* condition;
@@ -44,18 +42,18 @@ typedef struct ASTNode{
     struct ASTNode* parent;
     char statement_list_node;
 
-} ASTNode;
+};
 
 #define STATEMENT_LIST_INITIAL_SIZE 10
 #define SUB_STATEMENT_LIST_INITIAL_SIZE 5
 
 //statement list - where root nodes get added to for execution
-typedef struct {
+struct statement_list{
     ASTNode** list;
-    struct statement_list* parent;
+    statement_list* parent;
     int index;
-} statement_list;
+};
 
-ASTNode** parse(token* token);
+statement_list* parse(token* token);
 
 #endif
