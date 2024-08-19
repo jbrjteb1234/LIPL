@@ -6,6 +6,7 @@
 #include "../lexer/token.h"
 #include "../grammar/grammar.h"
 #include "../utility/stack.h"
+#include "ast.h"
 
 //      R(0) = reduce binary operator (like 1+1 or 2*1)
 //      0 num   1 +-    3 */    4 del      
@@ -34,28 +35,51 @@ const int decl_table[][6] = {
         {N,     N,      N,      N,      N,      N}          //STATE 7: ID = ID (op)
 };
 
-void reduce(stack* node_stack, int reduction){
-
-}
-
 int convert_token_to_index(table_iterator* iterator, token* current_token){
     switch (iterator->type){
         case NUMBERS_TABLE:
 
+            
 
             break;
     
         case DECL_TABLE:
 
+
+
             break;
 
         default:
+
+
+
             break;
     }
 }
 
-void shift(table_iterator* iterator, stack* token_stack, token* current_token){
+void shift(table_iterator* iterator, token* current_token){
     
+    ASTNode* new_ast_node = safe_malloc(sizeof(ASTNode));
+    new_ast_node->token = current_token;
+
+    int new_index = convert_token_to_index(iterator, current_token);
+    int new_state;
+    if(new_index != NULL){
+        new_state = iterator->table[iterator->state][new_index];
+    }else{
+        //error - unrecognised symbol
+        return;
+    }
+
+    if(new_state <= 0){
+        iterator->state = new_state;
+    }else if (new_state == A){
+        //completed
+    }else if (new_state == N){
+        //error
+    }else{
+        //reduce
+    }
 }
 
 void clear_table_iterator(table_iterator* iterator){
@@ -100,6 +124,7 @@ void initiate_table(table_iterator* iterator, token* initiating_token){
 
 table_iterator* initialize_table_iterator(){
     table_iterator* new_iterator = safe_malloc(sizeof(new_iterator));
+    stack* node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->state = 0;
     new_iterator->table = NULL;
     new_iterator->type = NULL;
