@@ -53,8 +53,6 @@ statement_list* parse(token* scan_token){
     current_working_list->list = (ASTNode**)safe_malloc(sizeof(ASTNode*)*STATEMENT_LIST_INITIAL_SIZE);
     current_working_list->index=0;
 
-    stack* node_stack = create_stack(sizeof(ASTNode*));
-
     table_iterator* iterator = initialize_table_iterator();
 
     bool end = false;

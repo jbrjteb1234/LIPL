@@ -7,11 +7,6 @@
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
 
-typedef struct simplified_token{
-    token_types token_type;
-    token_values token_value;
-} simplified_token;
-
 struct ASTNode{
     
     token* token;
@@ -53,7 +48,5 @@ struct statement_list{
     statement_list* parent;
     int index;
 };
-
-statement_list* parse(token* token);
 
 #endif
