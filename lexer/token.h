@@ -1,6 +1,7 @@
 #ifndef lexer_info
 #define lexer_info
 #include "../grammar/grammar.h"
+#include <stdbool.h>
 
 //token structure - one command
 typedef struct token{
@@ -9,8 +10,8 @@ typedef struct token{
     
     unsigned char precedence;
 
-    //Used later by the AST to link the token to the ASTNode, and thus link AST nodes to each other
-    void*           ASTNode;
+    //Used later by the AST
+    bool leaf;
     
     token_types     token_type;
     token_values    token_value;

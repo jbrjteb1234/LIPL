@@ -91,7 +91,7 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
 token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme){
     token* new_token = (token*)safe_malloc(sizeof(token));
     new_token->next = NULL;
-    new_token->ASTNode = NULL;
+    new_token->leaf = false;
     if(prev != NULL){
         new_token->previous = (struct token*)prev;
         prev->next = (struct token*)new_token;
@@ -104,6 +104,7 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
         new_token->token_type = lexeme->type;
         new_token->token_value.variable_value = (void*)lexeme->value;
         new_token->precedence = LITERAL_PRECEDENCE;
+        new_token->leaf = true;
         return new_token;
     }else{
         tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme->value);
@@ -122,6 +123,7 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
             new_token->token_type = IDENTIFIER;
             new_token->precedence = IDENTIFIER_PRECEDENCE;
             dictionary->identifier_count++;
+            new_token->leaf = true;
             return new_token;
         }
     }
