@@ -1,8 +1,13 @@
 #ifndef REDUCER
 #define REDUCER
 
-#include "../utility/stack.h"
+#define N -1
+#define A -2
+#define R(A) (-(A)-3)
 
-void reduce(stack* ast_stack, int reduction);
+#include "../utility/stack.h"
+#include "ast.h"
+
+int reduce(stack* ast_stack, int reduction);
 
 #endif
