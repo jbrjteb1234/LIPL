@@ -4,30 +4,25 @@
 #include "../lexer/token.h"
 #include "../utility/stack.h"
 
-#define N -1
-#define A -2
-#define R(A) (-(A)-3)
-
-extern const int numbers_table[][4];
-
-extern const int decl_table[][6];
+#define WIDTH 10
 
 typedef enum {
-    NUMBERS_TABLE,
-    DECL_TABLE
+    NUMBERS_TABLE = 0,
+    DECL_TABLE = 1
 } table_type;
 
-
+// Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
-    int** table;
     int state;
     table_type type;
-    stack* token_stack;
+    stack* node_stack;
+    int (*table)[WIDTH];
 } table_iterator;
 
-void advance_state(table_iterator*);
+void shift(table_iterator* iterator, token* current_token);
 
 void initiate_table(table_iterator*, token*);
+
 
 table_iterator* initialize_table_iterator();
 

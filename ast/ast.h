@@ -13,8 +13,9 @@ struct ASTNode{
 
     union {
         struct {
-            struct ASTNode* node_a;
-            struct ASTNode* node_b;
+            struct ASTNode* lhs;
+            struct ASTNode* rhs;
+            operator_token  type;
         } binary_op_node;
 
         struct {
@@ -28,7 +29,8 @@ struct ASTNode{
         } condition_else_node;
 
         union{
-            void* value;
+            void*   value;
+            int     identifier;
         } value_node;
 
         // other node-specific data
@@ -36,6 +38,7 @@ struct ASTNode{
 
     struct ASTNode* parent;
     char statement_list_node;
+    bool leaf_node;
 
 };
 
@@ -46,6 +49,7 @@ struct ASTNode{
 struct statement_list{
     ASTNode** list;
     statement_list* parent;
+    int size;
     int index;
 };
 

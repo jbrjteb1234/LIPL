@@ -18,15 +18,6 @@ void advance_token(token** scan_token){
     }
 }
 
-/** Creates new AST_node
- *  Could be list of statements, an expression, a term, etc.
- */
-ASTNode* new_ast_node(){
-    ASTNode* new = safe_malloc(sizeof(ASTNode));
-    new->statement_list_node = 0;
-    return new;
-}
-
 /** Drops the working list to a sub-working list - like dropping to a block of statements in an if
  *  
  */
@@ -54,19 +45,13 @@ statement_list* parse(token* scan_token){
     current_working_list->index=0;
 
     table_iterator* iterator = initialize_table_iterator();
+    initiate_table(iterator, scan_token);
 
-    bool end = false;
-
-    //LL(1) parsing method
-    while(!end){
-        if(scan_token->next==NULL){
-            end = true;
-        }
+    while(scan_token->next!=NULL){
         
-        if(iterator->type == NULL){
-            initiate_table(iterator, scan_token);
-        }
+        advance_token(&scan_token);
 
+        shift(iterator, scan_token);
     }
 
     //placeholder until AST is done
