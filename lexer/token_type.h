@@ -10,7 +10,7 @@
 //populates the dictionary - links string lexeme value token_value and token_function
 typedef struct{
     token_values    token_value;
-    token_types     token_types;
+    token_types     token_type;
 
     unsigned char precedence;
 

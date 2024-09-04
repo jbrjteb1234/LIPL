@@ -22,7 +22,8 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     dictionary->free_list = (char*)malloc(sizeof(char)*dictionary->maximum_amount);
     safe_memset(dictionary->free_list, 0, dictionary->maximum_amount);
 
-    #define X(LEXEME, VALUE, FUNCTION, PRECEDENCE) create_new_tokentype(dictionary, LEXEME, (token_values){ .operator_token_value = VALUE }, FUNCTION, (unsigned char)PRECEDENCE);
+    #define X(LEXEME, VALUE, VALUE_TYPE, FUNCTION, PRECEDENCE) \
+    create_new_tokentype(dictionary, LEXEME, (token_values){ .VALUE_TYPE = VALUE }, FUNCTION, (unsigned char)PRECEDENCE);
     DEFINE_TOKENS
     #undef X
 
@@ -55,7 +56,7 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
             dictionary->free_list[i] = 1;
             tokentype_dictionary_entry* new_entry = (tokentype_dictionary_entry*)safe_malloc(sizeof(tokentype_dictionary_entry));
             new_entry->token_value = value;
-            new_entry->token_types = function;
+            new_entry->token_type = function;
             new_entry->lexeme = (char*)safe_malloc(strlen(lexeme) + 1);
             new_entry->precedence = precedence;
             strcpy(new_entry->lexeme, lexeme);
@@ -111,7 +112,7 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
         if(tokentype != NULL){
             //tokentype already exists, use existing tokentype data
             new_token->token_value = tokentype->token_value;
-            new_token->token_type = tokentype->token_types;
+            new_token->token_type = tokentype->token_type;
             new_token->precedence = tokentype->precedence;
             return new_token;
         }else{

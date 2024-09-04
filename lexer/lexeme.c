@@ -51,6 +51,8 @@ void copy_buffer(character_buffer* buf, lexeme* lexeme){
         //numbers, no alpha (int)
         lexeme->type = INT_VALUE;
         return;
+    }else{
+        lexeme->type = -1;
     }
 }
 
