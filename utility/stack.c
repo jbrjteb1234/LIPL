@@ -10,6 +10,7 @@ stack* create_stack(int element_size){
     new_stack->top = -1;
     new_stack->max = INITIAL_STACK_SIZE;
     new_stack->data = (void**)safe_malloc(element_size * INITIAL_STACK_SIZE);
+    return new_stack;
 }
 
 void* pop(stack* stack){
