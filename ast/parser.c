@@ -37,6 +37,9 @@ void climb_working_list(statement_list** current_working_list){
     (*current_working_list) = (*current_working_list)->parent;
 }
 
+/** parses the token stream (entry point for the parser)
+ *  returns statement list of all global nodes
+ */
 statement_list* parse(token* scan_token){
 
     //working list - current parent ast node where statements are being added

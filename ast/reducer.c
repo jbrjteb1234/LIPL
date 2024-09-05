@@ -18,8 +18,6 @@ int reduce(stack* node_stack, int reduction){
 
             push(node_stack, operator);
 
-            printf("Reudction 0 complete\n");
-
             return 0;
 
         case R(1):

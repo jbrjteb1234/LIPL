@@ -114,7 +114,7 @@ void push_token_into_ast_node(table_iterator* iterator, token* current_token){
     printf("Token pushed\n");
 
     if (current_token != NULL){
-        
+
     }
 
     ASTNode* new_ast_node = safe_malloc(sizeof(ASTNode));
@@ -195,6 +195,9 @@ void close_iterator(table_iterator* iterator, statement_list* current_working_li
 
 }
 
+/** initiates iterator with a new type of table
+ * 
+ */
 void initiate_table(table_iterator* iterator, token* initiating_token){
     //initial state for all tables
     iterator->state = 0;
@@ -217,6 +220,9 @@ void initiate_table(table_iterator* iterator, token* initiating_token){
     }
 }
 
+/** creates a new table in memory and allocates memory for the stack 
+ * 
+ */
 table_iterator* initialize_table_iterator(){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
