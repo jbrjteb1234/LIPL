@@ -80,11 +80,11 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_token){
             break;
         case(OPERATOR):
 
-            return operator_index_lookup[iterator->type][current_token->token_value.operator_token_value];
+            return operator_index_lookup[iterator->current->type][current_token->token_value.operator_token_value];
 
             break;
         case(DELIMITER):
-            return delimiter_index_lookup[iterator->type][current_token->token_value.delimiter_token_value];
+            return delimiter_index_lookup[iterator->current->type][current_token->token_value.delimiter_token_value];
 
             break;
         case(STRING_LITERAL):
@@ -94,12 +94,12 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_token){
             break;
         case(INT_VALUE):
 
-            return int_index_lookup[iterator->type];
+            return int_index_lookup[iterator->current->type];
         
             break;
         case(IDENTIFIER):
 
-            return identifier_index_lookup[iterator->type];
+            return identifier_index_lookup[iterator->current->type];
 
             break;
         default:
@@ -139,7 +139,7 @@ void push_token_into_ast_node(table_iterator* iterator, token* current_token){
  */
 void shift(table_iterator* iterator, token* current_token){
 
-    if (iterator->table == NULL){
+    if (iterator->current->table == NULL){
         //error
         return;
     }
@@ -151,13 +151,13 @@ void shift(table_iterator* iterator, token* current_token){
     //if new_index is N, then an unrecognised symbol has appeared
     if(new_index != N){
         //acquire the new state (could be reduction, error, completion or another state)
-        new_state = iterator->table[iterator->state][new_index];
+        new_state = iterator->current->table[iterator->current->state][new_index];
     }else{
         //error - unrecognised symbol
         return;
     }
 
-    printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->state);
+    printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->current->state);
 
     //finished parsing statement, passed to the iterator above
     if (new_state == A){
@@ -173,15 +173,15 @@ void shift(table_iterator* iterator, token* current_token){
         new_state = reduce(iterator->node_stack, new_state);
         //the reduction rule gives a new state to return to, then call again to push the lookahead
         if (new_state != N){
-            iterator->state = new_state;
+            iterator->current->state = new_state;
             shift(iterator, current_token);
         }
     }else if ( (jump_mask & new_state) == jump_mask){
-        //a different state table is required for this part of the 
+        //Jump! its time to create a new table progession 
 
     }else{
         //new state - keep pushing new ast nodes to stack
-        iterator->state = new_state;
+        iterator->current->state = new_state;
         push_token_into_ast_node(iterator, current_token);
     }
 
@@ -199,7 +199,7 @@ void close_iterator(table_iterator* iterator, statement_list* current_working_li
  */
 void initiate_table(table_iterator* iterator, token* initiating_token){
     //initial state for all tables
-    iterator->state = 0;
+    iterator->current->state = 0;
     push_token_into_ast_node(iterator, initiating_token);
     switch(initiating_token->token_type){
         case(RESERVED_WORD):
@@ -211,8 +211,8 @@ void initiate_table(table_iterator* iterator, token* initiating_token){
         case(STRING_LITERAL):
             break;
         case(INT_VALUE):
-            iterator->type = NUMBERS_TABLE;
-            iterator->table = numbers_table;
+            iterator->current->type = NUMBERS_TABLE;
+            iterator->current->table = numbers_table;
             break;
         case(IDENTIFIER):
             break;
@@ -225,7 +225,7 @@ void initiate_table(table_iterator* iterator, token* initiating_token){
 table_iterator* initialize_table_iterator(){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
-    new_iterator->state = 0;
-    new_iterator->table = NULL;
-    new_iterator->type = N;
+    new_iterator->current->state = 0;
+    new_iterator->current->table = NULL;
+    new_iterator->current->type = N;
 }

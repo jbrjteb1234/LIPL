@@ -17,12 +17,17 @@ typedef enum {
     DECL_TABLE = 1
 } table_type;
 
+typedef struct {
+    table_type  type;
+    uint32_t    state;
+    uint32_t    (*table)[WIDTH];
+} table_progression;
+
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
-    uint32_t state;
-    table_type type;
     stack* node_stack;
-    uint32_t (*table)[WIDTH];
+    stack* progression_stack;
+    table_progression* current;
 } table_iterator;
 
 void shift(table_iterator* iterator, token* current_token);
