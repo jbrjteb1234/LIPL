@@ -1,10 +1,16 @@
 #ifndef STATES
 #define STATES
 
+#include <stdint.h>
+
 #include "../lexer/token.h"
 #include "../utility/stack.h"
 
 #define WIDTH 10
+
+//converts int (jump rule)
+#define jump_mask 0x10000000
+#define J(x) (jump_mask | x)
 
 typedef enum {
     NUMBERS_TABLE = 0,
@@ -13,10 +19,10 @@ typedef enum {
 
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
-    int state;
+    uint32_t state;
     table_type type;
     stack* node_stack;
-    int (*table)[WIDTH];
+    uint32_t (*table)[WIDTH];
 } table_iterator;
 
 void shift(table_iterator* iterator, token* current_token);
