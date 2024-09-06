@@ -3,7 +3,7 @@
 #include "stack.h"
 #include "safe_memory.h"
 
-#define INITIAL_STACK_SIZE 50
+#define INITIAL_STACK_SIZE 20
 
 stack* create_stack(int element_size){
     stack* new_stack = (stack*)safe_malloc(sizeof(stack));
