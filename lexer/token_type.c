@@ -19,7 +19,7 @@ tokentype_dictionary* initialize_tokentype_dictionary(){
     dictionary->dictionary = (tokentype_dictionary_entry**)safe_malloc(sizeof(tokentype_dictionary_entry*)*dictionary->maximum_amount);
 
     //create free list, set all indexes to 0
-    dictionary->free_list = (char*)malloc(sizeof(char)*dictionary->maximum_amount);
+    dictionary->free_list = (char*)safe_malloc(sizeof(char)*dictionary->maximum_amount);
     safe_memset(dictionary->free_list, 0, dictionary->maximum_amount);
 
     #define X(LEXEME, VALUE, VALUE_TYPE, FUNCTION, PRECEDENCE) \
