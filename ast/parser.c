@@ -48,13 +48,21 @@ statement_list* parse(token* scan_token){
     current_working_list->index=0;
 
     table_iterator* iterator = initialize_table_iterator();
-    initiate_table(iterator, scan_token);
 
-    while(scan_token->next!=NULL){
+    bool end = false;
+
+    while(end == false){
+        if(scan_token->next == NULL){
+            end = true;
+        }
         
-        advance_token(&scan_token);
+        if(iterator->initiated == 0){
+            initiate_table(iterator, scan_token);
+        }else{
+            shift(iterator, scan_token);
+        }
 
-        shift(iterator, scan_token);
+        advance_token(&scan_token);
     }
 
     shutdown_data_pool(iterator->progression_pool);

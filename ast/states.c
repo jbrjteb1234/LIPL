@@ -187,6 +187,7 @@ void shift(table_iterator* iterator, token* current_lookahead){
         }
 
     }else if ( (jump_mask & new_state) == jump_mask){
+        printf("Jumping to new table\n");
         //Jump! its time to create a new table progession
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM
         if(current_lookahead->next->token_type == DELIMITER){
@@ -206,13 +207,19 @@ void shift(table_iterator* iterator, token* current_lookahead){
  * 
  */
 void close_iterator(table_iterator* iterator, statement_list* current_working_list){
-
+    reset_pool(iterator->progression_pool);
 }
 
 /** initiates iterator with a new type of table
  * 
  */
 void initiate_table(table_iterator* iterator, token* initiating_token){
+
+    iterator->current = (table_progression*)acquire_from_pool(iterator->progression_pool);
+    iterator->current->state = 0;
+    iterator->current->table = NULL;
+    iterator->current->type = N;
+
     //initial state for all tables
     iterator->current->state = 0;
     push_token_into_ast_node(iterator, initiating_token);
@@ -234,6 +241,7 @@ void initiate_table(table_iterator* iterator, token* initiating_token){
         case(IDENTIFIER):
             break;
     }
+    iterator->initiated = 1;
 }
 
 /** creates a new table in memory and allocates memory for the stack 
@@ -244,9 +252,6 @@ table_iterator* initialize_table_iterator(){
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->progression_stack = create_stack(sizeof(table_progression));
     new_iterator->progression_pool = init_data_pool(sizeof(table_progression));
-    new_iterator->current = (table_progression*)acquire_from_pool(new_iterator->progression_pool);
-    new_iterator->current->state = 0;
-    new_iterator->current->table = NULL;
-    new_iterator->current->type = N;
+    new_iterator->initiated = 0;
     return new_iterator;
 }

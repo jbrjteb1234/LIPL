@@ -8,7 +8,7 @@ int reduce(stack* node_stack, int reduction){
 
     uint32_t rule = reduction & 0x000fffff;
     uint32_t return_state = (reduction & 0x0ff00000) >> reduction_return_state_shift_count;
-
+    
     switch(rule){
         //basic binary operation, like 1+1 or 2*3
         //numbers table reduction

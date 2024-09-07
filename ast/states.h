@@ -26,6 +26,7 @@ typedef struct {
 
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
+    uint8_t initiated;
     stack* node_stack;
     stack* progression_stack;
     data_pool* progression_pool;
