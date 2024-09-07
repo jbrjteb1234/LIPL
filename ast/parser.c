@@ -57,6 +57,8 @@ statement_list* parse(token* scan_token){
         shift(iterator, scan_token);
     }
 
+    shutdown_data_pool(iterator->progression_pool);
+
     //placeholder until AST is done
     return current_working_list;
 }

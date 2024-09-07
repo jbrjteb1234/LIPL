@@ -27,6 +27,12 @@ int reduce(stack* node_stack, int reduction){
             return return_state;
 
         case 1:
+            ASTNode* value = pop(node_stack);
+            ASTNode* assigner = pop(node_stack);
+            ASTNode* identifier = pop(node_stack);
+
+            assigner->data.decl_node.identifier = identifier;
+            assigner->data.decl_node.value = value;
 
             break;
 

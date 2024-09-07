@@ -5,6 +5,7 @@
 
 #include "../lexer/token.h"
 #include "../utility/stack.h"
+#include "../utility/data_pool.h"
 
 #define WIDTH 10
 
@@ -27,6 +28,7 @@ typedef struct {
 typedef struct{
     stack* node_stack;
     stack* progression_stack;
+    data_pool* progression_pool;
     table_progression* current;
 } table_iterator;
 

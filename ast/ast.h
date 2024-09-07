@@ -19,6 +19,12 @@ struct ASTNode{
         } binary_op_node;
 
         struct {
+            struct ASTNode* identifier;
+            struct ASTNode* value;
+            
+        } decl_node;
+
+        struct {
             struct ASTNode* node_a;
         } unary_op_node;
 
