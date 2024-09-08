@@ -5,19 +5,17 @@
 #include "safe_memory.h"
 #include "data_pool.h"
 
-#define INITIAL_POOL_SIZE 20
-
 /** init new data pool
  *  pre-mallocs a block of contiguous data
  */
-data_pool* init_data_pool(int element_size){
+data_pool* init_data_pool(int element_size, int initial_size){
     data_pool* new_pool = safe_malloc(sizeof(data_pool));
     new_pool->free_list = create_stack(sizeof(void*));
     new_pool->element_size = element_size;
-    new_pool->max = INITIAL_POOL_SIZE;
-    new_pool->remaining = INITIAL_POOL_SIZE;
-    new_pool->data = safe_malloc(element_size * INITIAL_POOL_SIZE);
-    for(int i=0; i<INITIAL_POOL_SIZE; i++){
+    new_pool->max = initial_size;
+    new_pool->remaining = initial_size;
+    new_pool->data = safe_malloc(element_size * initial_size);
+    for(int i=0; i<initial_size; i++){
         push(new_pool->free_list, new_pool->data + i * element_size);
     }
     return new_pool;
