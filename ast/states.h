@@ -12,7 +12,8 @@
 
 //converts int (jump rule)
 #define jump_mask 0x10000000
-#define J(x) (jump_mask | x)
+#define state_if_delimiter_shift_count 20
+#define J(table_to_jump, state_if_delimiter) ((jump_mask | table_to_jump) | (state_if_delimiter << state_if_delimiter_shift_count))
 
 typedef enum {
     NUMBERS_TABLE = 0,

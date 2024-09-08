@@ -34,6 +34,10 @@ int reduce(stack* node_stack, int reduction){
             assigner->data.decl_node.identifier = identifier;
             assigner->data.decl_node.value = value;
 
+            printf("Reduction 1, returning to state %u\n", return_state);
+
+            return return_state;
+
             break;
 
     }

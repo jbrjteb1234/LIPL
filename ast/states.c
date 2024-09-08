@@ -40,17 +40,16 @@ numbers_table_type numbers_table = {
 
 //      0 ID    1 =     2 num   3 str   4 op    5 del       
 decl_table_type decl_table = {
-        {N,     2,      N,      N,      N,      N},         //STATE 0: ID
-        {N,     N,      J(0),   N,      N,      N},         //STATE 1: ID =
-        {N,     N,      N,      N,      N,      R(1,8)},    //STATE 2: ID = num
-        {N,     N,      N,      N,      N,      R(1,8)},    //STATE 3: ID = str
-        {N,     N,      N,      N,      N,      R(1,8)},    //STATE 4: ID = ID
+        {N,     1,      N,      N,      N,      A},         //STATE 0: ID
+        {N,     N,      J(0,2), N,      N,      N},         //STATE 1: ID =
+        {N,     N,      N,      N,      N,      R(1,0)},    //STATE 2: ID = num
+        {N,     N,      N,      N,      N,      R(1,0)},    //STATE 3: ID = str
+        {N,     N,      N,      N,      N,      R(1,0)},    //STATE 4: ID = ID
         
         {N,     N,      N,      N,      N,      N},         //STATE 5: spare
         {N,     N,      N,      N,      N,      N},         //STATE 6: spare
         {N,     N,      N,      N,      N,      N},         //STATE 7: spare
-
-        {N,     N,      N,      N,      N,      N},         //STATE 8: DECLARATION
+        {N,     N,      N,      N,      N,      N},         //STATE 8: spare
 };
 
 /** these tables allow us to find the index of the selected table
@@ -59,7 +58,7 @@ decl_table_type decl_table = {
  */
 const uint32_t operator_index_lookup[][6] = {
     {1, 1,  2,  2},         //numbers table
-    {N, N,  N,  N,  N,  1}  //decl table
+    {N, N,  N,  N,  1,  N}  //decl table
 };
 
 const uint32_t delimiter_index_lookup[][5] = {
@@ -171,6 +170,7 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
 
     //finished parsing statement, passed to the iterator above
     if (new_state == A){
+        //TODO: implement to work with table jumping and the prgoression pool
         printf("Complete\n");
         return COMPLETED;
         //completed
@@ -190,13 +190,18 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
         }
 
     }else if ( (jump_mask & new_state) == jump_mask){
-        printf("Jumping to new table\n");
-        //Jump! its time to create a new table progession
+
+        //Firsly push current token into the stack
+        push_token_into_ast_node(iterator, current_lookahead);
+
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM
         if(current_lookahead->next->token_type == DELIMITER){
-            push_token_into_ast_node(iterator, current_lookahead);
+            new_state = ( (new_state & 0x0ff00000) >> state_if_delimiter_shift_count);
+            iterator->current->state = new_state;
             return SHIFTED;
         }
+        printf("Jumping to new table\n");
+        //TODO: TABLE JUMPING
 
     }else{
         //new state - keep pushing new ast nodes to stack
@@ -222,6 +227,8 @@ ASTNode* close_iterator(table_iterator* iterator, statement_list* current_workin
  */
 void initiate_table(table_iterator* iterator, token* initiating_token){
 
+    //TODO: rewrite this to work better with table jumping (if the table is known)
+
     iterator->current = (table_progression*)acquire_from_pool(iterator->progression_pool);
     iterator->current->state = 0;
     iterator->current->table = NULL;
@@ -246,6 +253,9 @@ void initiate_table(table_iterator* iterator, token* initiating_token){
             iterator->current->table = numbers_table;
             break;
         case(IDENTIFIER):
+            printf("Initialising declaration table\n");
+            iterator->current->type = DECL_TABLE;
+            iterator->current->table = decl_table;
             break;
     }
     iterator->initiated = 1;
