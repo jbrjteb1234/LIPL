@@ -18,23 +18,9 @@ void advance_token(token** scan_token){
     }
 }
 
-/** Drops the working list to a sub-working list - like dropping to a block of statements in an if
- *  
- */
-void drop_working_list(statement_list** current_working_list){
-    statement_list* new_working_list = (statement_list*)safe_malloc(sizeof(statement_list));
-    new_working_list->list = (ASTNode**)safe_malloc(sizeof(ASTNode*) * SUB_STATEMENT_LIST_INITIAL_SIZE);
-    new_working_list->index=0;
-    if(current_working_list != NULL){
-        new_working_list->parent = (*current_working_list);
-    }
-}
-
-/** returns the current working list to the working list's parent
- *  Essentially return statement, or exiting out of a block
- */
-void climb_working_list(statement_list** current_working_list){
-    (*current_working_list) = (*current_working_list)->parent;
+void append_to_working_list(statement_list* current_list, ASTNode* new_statement){
+    current_list->list[current_list->index] = new_statement;
+    ++current_list->index;
 }
 
 /** parses the token stream (entry point for the parser)
@@ -59,7 +45,11 @@ statement_list* parse(token* scan_token){
         if(iterator->initiated == 0){
             initiate_table(iterator, scan_token);
         }else{
-            shift(iterator, scan_token);
+            if(shift(iterator, scan_token)){
+                //shift complete
+                ASTNode* new_statement = close_iterator(iterator, current_working_list);
+                append_to_working_list(current_working_list, new_statement);
+            }
         }
 
         advance_token(&scan_token);

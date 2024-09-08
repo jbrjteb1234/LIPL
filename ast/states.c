@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "states.h"
 #include "../utility/safe_memory.h"
 #include "../lexer/token.h"
@@ -145,12 +146,12 @@ void push_token_into_ast_node(table_iterator* iterator, token* current_lookahead
 /** interprets next token in the stream - 
  *  iterates state
  */
-void shift(table_iterator* iterator, token* current_lookahead){
+bool shift(table_iterator* iterator, token* current_lookahead){
     
     if (iterator->current->table == NULL){
         //error
         perror("Table not initiated\n");
-        return;
+        return false;
     }
 
     //finds the index in the table that the token points to
@@ -163,7 +164,7 @@ void shift(table_iterator* iterator, token* current_lookahead){
         new_state = iterator->current->table[iterator->current->state][new_index];
     }else{
         //error - unrecognised symbol
-        return;
+        return false;
     }
 
     printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->current->state);
@@ -171,6 +172,7 @@ void shift(table_iterator* iterator, token* current_lookahead){
     //finished parsing statement, passed to the iterator above
     if (new_state == A){
         printf("Complete\n");
+        return true;
         //completed
     
     }else if (new_state == N){
@@ -192,13 +194,14 @@ void shift(table_iterator* iterator, token* current_lookahead){
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM
         if(current_lookahead->next->token_type == DELIMITER){
             push_token_into_ast_node(iterator, current_lookahead);
-            return;
+            return false;
         }
 
     }else{
         //new state - keep pushing new ast nodes to stack
         iterator->current->state = new_state;
         push_token_into_ast_node(iterator, current_lookahead);
+        return false;
     }
 
 }
@@ -206,8 +209,11 @@ void shift(table_iterator* iterator, token* current_lookahead){
 /** When an iterate has fully reduced and parsed a stream of tokens, it can be closed
  * 
  */
-void close_iterator(table_iterator* iterator, statement_list* current_working_list){
+ASTNode* close_iterator(table_iterator* iterator, statement_list* current_working_list){
+
     reset_pool(iterator->progression_pool);
+    return (ASTNode*)pop(iterator->node_stack);
+    
 }
 
 /** initiates iterator with a new type of table

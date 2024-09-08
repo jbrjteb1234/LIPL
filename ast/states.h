@@ -6,6 +6,7 @@
 #include "../lexer/token.h"
 #include "../utility/stack.h"
 #include "../utility/data_pool.h"
+#include "ast.h"
 
 #define WIDTH 10
 
@@ -33,7 +34,9 @@ typedef struct{
     table_progression* current;
 } table_iterator;
 
-void shift(table_iterator* iterator, token* current_token);
+bool shift(table_iterator* iterator, token* current_token);
+
+ASTNode* close_iterator(table_iterator* iterator, statement_list* working_list);
 
 void initiate_table(table_iterator*, token*);
 
