@@ -1,8 +1,8 @@
 #ifndef AST
 #define AST
 
-#include "../grammar/grammar.h"
-#include "../lexer/token.h"
+#include "../../grammar/grammar.h"
+#include "../../lexer/token.h"
 
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
@@ -48,15 +48,19 @@ struct ASTNode{
 
 };
 
-#define STATEMENT_LIST_INITIAL_SIZE 10
-#define SUB_STATEMENT_LIST_INITIAL_SIZE 5
-
-//statement list - where root nodes get added to for execution
 struct statement_list{
-    ASTNode** list;
-    statement_list* parent;
     int size;
     int index;
+    ASTNode* list;
 };
+
+//TODO: IMPLEMENT STATEMENT_LIST
+
+statement_list* create_new_slist();
+
+void append_to_slist(statement_list*, ASTNode*);
+
+#define STATEMENT_LIST_INITIAL_SIZE 10
+#define SUB_STATEMENT_LIST_INITIAL_SIZE 5
 
 #endif

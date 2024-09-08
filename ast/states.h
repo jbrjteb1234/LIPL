@@ -6,7 +6,7 @@
 #include "../lexer/token.h"
 #include "../utility/stack.h"
 #include "../utility/data_pool.h"
-#include "ast.h"
+#include "ast_utility/ast.h"
 
 #define WIDTH 10
 

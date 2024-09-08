@@ -7,7 +7,7 @@
 #include "../lexer/token.h"
 #include "../grammar/grammar.h"
 #include "../utility/stack.h"
-#include "ast.h"
+#include "ast_utility/ast.h"
 #include "reducer.h"
 
 #define NUM_TABLE_HEIGHT 7

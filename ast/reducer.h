@@ -9,7 +9,7 @@
 #define R(reduction_rule,return_state) ((reduction_mask | reduction_rule) | return_state<<reduction_return_state_shift_count)
 
 #include "../utility/stack.h"
-#include "ast.h"
+#include "ast_utility/ast.h"
 
 int reduce(stack* ast_stack, int reduction);
 

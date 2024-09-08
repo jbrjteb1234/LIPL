@@ -1,7 +1,7 @@
 #ifndef PARSER
 #define PARSER
 
-#include "ast.h"
+#include "ast_utility/ast.h"
 
 statement_list* parse(token* token);
 
