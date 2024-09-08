@@ -19,6 +19,14 @@ typedef enum {
     DECL_TABLE = 1
 } table_type;
 
+typedef enum {
+    ERROR,
+    SHIFTED,
+    REDUCED,
+    COMPLETED,
+    JUMP
+} shift_results;
+
 typedef struct {
     table_type  type;
     uint32_t    state;
@@ -34,7 +42,7 @@ typedef struct{
     table_progression* current;
 } table_iterator;
 
-bool shift(table_iterator* iterator, token* current_token);
+shift_results shift(table_iterator* iterator, token* current_token);
 
 ASTNode* close_iterator(table_iterator* iterator, statement_list* working_list);
 

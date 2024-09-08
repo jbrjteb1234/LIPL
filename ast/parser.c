@@ -30,6 +30,7 @@ statement_list* parse(token* scan_token){
     statement_list* global_slist = create_new_slist();
 
     bool end = false;
+    shift_results result;
 
     while(end == false){
         if(scan_token->next == NULL){
@@ -39,7 +40,10 @@ statement_list* parse(token* scan_token){
         if(iterator->initiated == 0){
             initiate_table(iterator, scan_token);
         }else{
-            if(shift(iterator, scan_token)){
+            result = shift(iterator, scan_token);
+            if(result == COMPLETED){
+                //statement complete - can be added to statement list
+
                 //shift complete
                 //ASTNode* new_statement = close_iterator(iterator, current_working_list);
                 //append_to_working_list(current_working_list, new_statement);

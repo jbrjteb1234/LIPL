@@ -146,12 +146,12 @@ void push_token_into_ast_node(table_iterator* iterator, token* current_lookahead
 /** interprets next token in the stream - 
  *  iterates state
  */
-bool shift(table_iterator* iterator, token* current_lookahead){
+shift_results shift(table_iterator* iterator, token* current_lookahead){
     
     if (iterator->current->table == NULL){
         //error
         perror("Table not initiated\n");
-        return false;
+        return ERROR;
     }
 
     //finds the index in the table that the token points to
@@ -164,7 +164,7 @@ bool shift(table_iterator* iterator, token* current_lookahead){
         new_state = iterator->current->table[iterator->current->state][new_index];
     }else{
         //error - unrecognised symbol
-        return false;
+        return ERROR;
     }
 
     printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->current->state);
@@ -172,11 +172,12 @@ bool shift(table_iterator* iterator, token* current_lookahead){
     //finished parsing statement, passed to the iterator above
     if (new_state == A){
         printf("Complete\n");
-        return true;
+        return COMPLETED;
         //completed
     
     }else if (new_state == N){
         perror("Unexpected symbol\n");
+        return ERROR;
         //error
 
     }else if ( (reduction_mask & new_state) == reduction_mask ){
@@ -194,14 +195,14 @@ bool shift(table_iterator* iterator, token* current_lookahead){
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM
         if(current_lookahead->next->token_type == DELIMITER){
             push_token_into_ast_node(iterator, current_lookahead);
-            return false;
+            return SHIFTED;
         }
 
     }else{
         //new state - keep pushing new ast nodes to stack
         iterator->current->state = new_state;
         push_token_into_ast_node(iterator, current_lookahead);
-        return false;
+        return SHIFTED;
     }
 
 }
