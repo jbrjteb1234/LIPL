@@ -125,7 +125,7 @@ void push_token_into_ast_node(table_iterator* iterator, token* current_lookahead
         return;
     }
 
-    ASTNode* new_ast_node = safe_malloc(sizeof(ASTNode));
+    ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
     new_ast_node->token = current_lookahead;
 
     //if it is a leaf node  then we can transfer data from token to node immedietly
@@ -258,7 +258,10 @@ table_iterator* initialize_table_iterator(){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->progression_stack = create_stack(sizeof(table_progression));
-    new_iterator->progression_pool = init_data_pool(sizeof(table_progression));
+    new_iterator->progression_pool = init_data_pool(sizeof(table_progression), 10);
+
+    new_iterator->node_pool = init_data_pool(sizeof(ASTNode), 20);
+
     new_iterator->initiated = 0;
     return new_iterator;
 }

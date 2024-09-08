@@ -39,6 +39,7 @@ typedef struct{
     stack* node_stack;
     stack* progression_stack;
     data_pool* progression_pool;
+    data_pool* node_pool;
     table_progression* current;
 } table_iterator;
 
