@@ -41,12 +41,27 @@ statement_list* parse(token* scan_token){
             initiate_table(iterator, scan_token, NONE);
         }else{
             result = shift(iterator, scan_token);
-            if(result == COMPLETED){
+            switch(result){
+            case SHIFTED:
                 //statement complete - can be added to statement list
 
                 //shift complete
                 //ASTNode* new_statement = close_iterator(iterator, current_working_list);
                 //append_to_working_list(current_working_list, new_statement);
+                break;
+            case JUMP:
+                //jumped
+                break;
+            case REDUCED:
+                //reduce
+                break;
+            case ERROR:
+                //error
+                perror("Error in parsing");
+                return NULL;
+            case COMPLETED:
+                //completed
+                break;
             }
         }
 
