@@ -10,12 +10,8 @@
 #include "ast_utility/ast.h"
 #include "reducer.h"
 
-#define NUM_TABLE_HEIGHT 7
-#define DECL_TABLE_HEIGHT 9
-
-typedef uint32_t numbers_table_type[NUM_TABLE_HEIGHT][WIDTH];
-typedef uint32_t decl_table_type[DECL_TABLE_HEIGHT][WIDTH];
-
+typedef uint32_t state_table[HEIGHT][WIDTH];
+void drop_table(table_iterator* iterator);
 
 //      R(0) = reduce binary operator (like 1+1 or 2*1)
 //      0 num/id    1 +-    2 */    3 eos/eb
@@ -26,7 +22,7 @@ typedef uint32_t decl_table_type[DECL_TABLE_HEIGHT][WIDTH];
  *      half-byte 4-8 = data    
  */
 
-numbers_table_type numbers_table = {
+state_table numbers_table = {
         {N,         1,      2,      A},             //STATE 0: num
         {3,         N,      N,      N},             //STATE 1: num +-
         {4,         N,      N,      N},             //STATE 2: num */
@@ -39,7 +35,7 @@ numbers_table_type numbers_table = {
 };
 
 //      0 ID    1 =     2 num   3 str   4 op    5 del       
-decl_table_type decl_table = {
+state_table decl_table = {
         {N,     1,      N,      N,      N,      A},         //STATE 0: ID
         {N,     N,      J(0,2), N,      N,      N},         //STATE 1: ID =
         {N,     N,      N,      N,      N,      R(1,0)},    //STATE 2: ID = num
@@ -50,6 +46,29 @@ decl_table_type decl_table = {
         {N,     N,      N,      N,      N,      N},         //STATE 6: spare
         {N,     N,      N,      N,      N,      N},         //STATE 7: spare
         {N,     N,      N,      N,      N,      N},         //STATE 8: spare
+};
+
+/** These tables allow us to find the table given:
+ *  - the table type
+ *  - the token type
+ * 
+ *  It includes:
+ *  - table lookup with table type
+ *  - table type lookup with token type
+ */
+
+state_table *table_type_table_lookup[2] = {
+    &numbers_table, //NUM TABLE TYPE
+    &decl_table     //DECL TABLE TYPE
+};
+
+int token_type_table_type_lookup[6] = {
+    N,
+    N,
+    N,
+    N,
+    NUMBERS_TABLE,
+    DECL_TABLE,
 };
 
 /** these tables allow us to find the index of the selected table
@@ -171,9 +190,15 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
     //finished parsing statement, passed to the iterator above
     if (new_state == A){
         //TODO: implement to work with table jumping and the prgoression pool
-        printf("Complete\n");
-        return COMPLETED;
-        //completed
+
+        if(iterator->progression_stack->top == -1){
+            printf("Completed parsing\n");
+            return COMPLETED;
+        }else{
+            printf("Returning to previous table\n");
+            drop_table(iterator);
+            shift(iterator, current_lookahead);
+        }
     
     }else if (new_state == N){
         perror("Unexpected symbol\n");
@@ -193,15 +218,19 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
 
         //Firsly push current token into the stack
         push_token_into_ast_node(iterator, current_lookahead);
+        int new_table = new_state & 0x000fffff;
+        new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
+        iterator->current->state = new_state;
 
-        //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM
-        if(current_lookahead->next->token_type == DELIMITER){
-            new_state = ( (new_state & 0x0ff00000) >> state_if_delimiter_shift_count);
-            iterator->current->state = new_state;
+        //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
+        if(current_lookahead->next != NULL && current_lookahead->next->token_type == DELIMITER){
             return SHIFTED;
         }
         printf("Jumping to new table\n");
-        //TODO: TABLE JUMPING
+        
+        //jump to new table - initiate new table
+        initiate_table(iterator, current_lookahead, new_table);
+        return JUMP;
 
     }else{
         //new state - keep pushing new ast nodes to stack
@@ -225,40 +254,33 @@ ASTNode* close_iterator(table_iterator* iterator, statement_list* current_workin
 /** initiates iterator with a new type of table
  * 
  */
-void initiate_table(table_iterator* iterator, token* initiating_token){
+void initiate_table(table_iterator* iterator, token* initiating_token, table_type type){
 
-    //TODO: rewrite this to work better with table jumping (if the table is known)
+    if(iterator->current != NULL){
+        //push current state onto the stack
+        push(iterator->progression_stack, iterator->current);
+    }
 
     iterator->current = (table_progression*)acquire_from_pool(iterator->progression_pool);
     iterator->current->state = 0;
     iterator->current->table = NULL;
     iterator->current->type = N;
 
+
     //initial state for all tables
     iterator->current->state = 0;
     push_token_into_ast_node(iterator, initiating_token);
-    printf("Token type: %d\n", initiating_token->token_type);
-    switch(initiating_token->token_type){
-        case(RESERVED_WORD):
-            break;
-        case(OPERATOR):
-            break;
-        case(DELIMITER):
-            break;
-        case(STRING_LITERAL):
-            break;
-        case(INT_VALUE):
-            printf("Initialising numbers table\n");
-            iterator->current->type = NUMBERS_TABLE;
-            iterator->current->table = numbers_table;
-            break;
-        case(IDENTIFIER):
-            printf("Initialising declaration table\n");
-            iterator->current->type = DECL_TABLE;
-            iterator->current->table = decl_table;
-            break;
+    if(type == NONE){
+        type = token_type_table_type_lookup[initiating_token->token_type];
     }
+    iterator->current->table = *table_type_table_lookup[type];
+    iterator->current->type = type;
     iterator->initiated = 1;
+}
+
+void drop_table(table_iterator* iterator){
+    return_to_pool(iterator->progression_pool, iterator->current);
+    iterator->current = (table_progression*)pop(iterator->progression_stack);
 }
 
 /** creates a new table in memory and allocates memory for the stack 
@@ -269,6 +291,8 @@ table_iterator* initialize_table_iterator(){
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->progression_stack = create_stack(sizeof(table_progression));
     new_iterator->progression_pool = init_data_pool(sizeof(table_progression), 10);
+
+    new_iterator->current = NULL;
 
     new_iterator->node_pool = init_data_pool(sizeof(ASTNode), 20);
 

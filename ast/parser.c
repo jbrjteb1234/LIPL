@@ -38,7 +38,7 @@ statement_list* parse(token* scan_token){
         }
         
         if(iterator->initiated == 0){
-            initiate_table(iterator, scan_token);
+            initiate_table(iterator, scan_token, NONE);
         }else{
             result = shift(iterator, scan_token);
             if(result == COMPLETED){
