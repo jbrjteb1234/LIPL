@@ -46,8 +46,8 @@ void expand_dictionary(tokentype_dictionary* dictionary){
 /** initialises new type of token
  * 
  */
-void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_values value, token_types function, unsigned char precedence){
-    if(lexeme==NULL){
+void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme, token_values value, token_types function, unsigned char precedence){
+    if(target_lexeme==NULL){
         return;
     }
     for(int i=0; i<dictionary->maximum_amount; ++i){
@@ -57,9 +57,9 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
             tokentype_dictionary_entry* new_entry = (tokentype_dictionary_entry*)safe_malloc((size_t)sizeof(tokentype_dictionary_entry));
             new_entry->token_value = value;
             new_entry->token_type = function;
-            new_entry->lexeme = (char*)safe_malloc((size_t)strlen(lexeme) + 1);
+            new_entry->lexeme = (char*)safe_malloc((size_t)strlen(target_lexeme) + 1);
             new_entry->precedence = precedence;
-            strcpy(new_entry->lexeme, lexeme);
+            strcpy(new_entry->lexeme, target_lexeme);
 
             dictionary->dictionary[i] = new_entry;
 
@@ -68,17 +68,17 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
     }
     //dictionary full - expand and attempt creation again
     expand_dictionary(dictionary);
-    create_new_tokentype(dictionary, lexeme, value, function, precedence);
+    create_new_tokentype(dictionary, target_lexeme, value, function, precedence);
 }
 
 /** Used to acquire the TYPE of token associated with a lexeme, i.e., "+" is ADDITION token_value, with OPERATOR function.
  * 
  */
-tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme){
+tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* target_lexeme){
     for(int i=0; i<dictionary->maximum_amount; ++i){
         //check if free_list is 1 and the actual entry is not null
         if(dictionary->free_list[i] == 1 && dictionary->dictionary[i] != NULL){
-            if (!strcmp(dictionary->dictionary[i]->lexeme, lexeme)){
+            if (!strcmp(dictionary->dictionary[i]->lexeme, target_lexeme)){
                 return dictionary->dictionary[i];
             }
         }
@@ -89,7 +89,7 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
 /** Produces token - either searches dictionary and acquires pre-existing token details (Like operator type from its associated lexeme, or identifier)
  * 
  */
-token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme){
+token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* target_lexeme){
     token* new_token = (token*)safe_malloc((size_t)sizeof(token));
     new_token->next = NULL;
     new_token->leaf = false;
@@ -100,15 +100,15 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
         new_token->previous = NULL;
     }
 
-    if(lexeme->type == STRING_LITERAL || lexeme->type == INT_VALUE){
+    if(target_lexeme->type == STRING_LITERAL || target_lexeme->type == INT_VALUE){
         //int or string lexeme
-        new_token->token_type = lexeme->type;
-        new_token->token_value.variable_value = (void*)lexeme->value;
+        new_token->token_type = target_lexeme->type;
+        new_token->token_value.variable_value = (void*)target_lexeme->value;
         new_token->precedence = LITERAL_PRECEDENCE;
         new_token->leaf = true;
         return new_token;
     }else{
-        tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, lexeme->value);
+        tokentype_dictionary_entry* tokentype = tokentype_lookup(dictionary, target_lexeme->value);
         if(tokentype != NULL){
             //tokentype already exists, use existing tokentype data
             new_token->token_value = tokentype->token_value;
@@ -119,8 +119,8 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexe
             //tokentype does not exist - create a new tokentype
             token_values identifier_value;
             identifier_value.identifier_token_value = dictionary->identifier_count;
-            create_new_tokentype(dictionary, lexeme->value, identifier_value, IDENTIFIER, IDENTIFIER_PRECEDENCE);
-            new_token->token_value.variable_value = (void*)lexeme->value;
+            create_new_tokentype(dictionary, target_lexeme->value, identifier_value, IDENTIFIER, IDENTIFIER_PRECEDENCE);
+            new_token->token_value.variable_value = (void*)target_lexeme->value;
             new_token->token_type = IDENTIFIER;
             new_token->precedence = IDENTIFIER_PRECEDENCE;
             dictionary->identifier_count++;

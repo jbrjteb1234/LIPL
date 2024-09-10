@@ -29,12 +29,12 @@ void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
     ++buf->index;
 }
 
-/** copy the contents of character buffer into lexer
+/** copy the contents of character buffer into lexeme
  * 
  */
-void copy_buffer(character_buffer* buf, lexeme* lexeme){
+void copy_buffer(character_buffer* buf, lexeme* target_lexeme){
 
-    char** out_p = &(lexeme->value);
+    char** out_p = &(target_lexeme->value);
 
     if(*out_p != NULL){
         safe_free((void**)&(*out_p));
@@ -45,14 +45,14 @@ void copy_buffer(character_buffer* buf, lexeme* lexeme){
 
     if(buf->al_flag){
         //alpha, identifier
-        lexeme->type = IDENTIFIER;
+        target_lexeme->type = IDENTIFIER;
         return;
     }else if (buf->num_flag){
         //numbers, no alpha (int)
-        lexeme->type = INT_VALUE;
+        target_lexeme->type = INT_VALUE;
         return;
     }else{
-        lexeme->type = -1;
+        target_lexeme->type = -1;
     }
 }
 

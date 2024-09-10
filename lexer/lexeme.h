@@ -26,7 +26,7 @@ character_buffer* create_character_buffer(void);
 
 void insert_to_character_buffer(character_buffer*, char lexeme_char);
 
-void copy_buffer(character_buffer* buf, lexeme* lexeme);
+void copy_buffer(character_buffer* buf, lexeme* target_lexeme);
 
 void empty_buffer(character_buffer* buf);
 
