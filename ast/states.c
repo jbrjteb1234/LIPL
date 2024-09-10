@@ -250,7 +250,7 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
 /** When an iterate has fully reduced and parsed a stream of tokens, it can be closed
  * 
  */
-ASTNode* close_iterator(table_iterator* iterator, statement_list* current_working_list){
+ASTNode* close_iterator(table_iterator* iterator){
 
     reset_pool(iterator->progression_pool);
 

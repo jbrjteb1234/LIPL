@@ -48,7 +48,7 @@ typedef struct{
 
 shift_results shift(table_iterator* iterator, token* current_token);
 
-ASTNode* close_iterator(table_iterator* iterator, statement_list* working_list);
+ASTNode* close_iterator(table_iterator* iterator);
 
 void initiate_table(table_iterator*, token*, table_type);
 
