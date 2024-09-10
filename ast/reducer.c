@@ -12,7 +12,7 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
     switch(rule){
         //basic binary operation, like 1+1 or 2*3
         //numbers table reduction
-        case 0:
+        case 0: {
             ASTNode* rhs = pop(node_stack);
             ASTNode* operator = pop(node_stack);
             ASTNode* lhs = pop(node_stack);
@@ -25,8 +25,9 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
             printf("Reduction 0, returning to state %u\n", return_state);
 
             return return_state;
+        }
 
-        case 1:
+        case 1: {
             ASTNode* value = pop(node_stack);
             ASTNode* assigner = pop(node_stack);
             ASTNode* identifier = pop(node_stack);
@@ -39,7 +40,7 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
             return return_state;
 
             break;
-
+        }
     }
 
     //invalid rule providede
