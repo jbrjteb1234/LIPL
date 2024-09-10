@@ -5,14 +5,14 @@
 #include <stdint.h>
 
 typedef struct{
-    int element_size;
+    uint32_t element_size;
     uint32_t max;
     uint32_t remaining;
     stack* free_list;
     void* data;
 } data_pool;
 
-data_pool* init_data_pool(int element_size, int initial_size);
+data_pool* init_data_pool(uint32_t element_size, uint32_t initial_size);
 
 /** returns pointer to the data pool and pushes to free list
  *  checks if the data pointer is actually in the pool
