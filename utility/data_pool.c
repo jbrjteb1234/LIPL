@@ -32,7 +32,7 @@ void return_to_pool(data_pool* pool, void* data){
 }
 
 void reset_pool(data_pool* pool){
-    for(int i=0; i<(pool->max - pool->remaining); ++i){
+    for(uint32_t i=0; i<(pool->max - pool->remaining); ++i){
         void* data = pop(pool->free_list);
     }
     pool->remaining = pool->max;
@@ -42,7 +42,7 @@ void expand_data_pool(data_pool* pool){
     pool->max *= 2;
     pool->data = safe_realloc(pool->data, pool->max * pool->element_size);
     pool->remaining = pool->max/2;
-    for(int i=0; i<pool->max; i++){
+    for(uint32_t i=0; i<pool->max; i++){
         push(pool->free_list, pool->data + i * pool->element_size);
     }
 }
