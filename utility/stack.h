@@ -1,13 +1,15 @@
 #ifndef STACK
 #define STACK
 
+#include <stdint.h>
+
 typedef struct{
-    int top;
-    int max;
+    int32_t top;
+    uint32_t max;
     void** data;
 }stack;
 
-stack* create_stack(int element_size);
+stack* create_stack(size_t element_size);
 
 void* pop(stack* stack);
 
