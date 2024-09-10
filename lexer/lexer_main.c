@@ -30,6 +30,7 @@ token* tokenize(FILE* source_code){
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
 
     while (!eof_flag) {
+        //prevents EOF (int) getting inserted to char buffer
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
         if (produce_lexeme(buf, lexeme_buffer, c) == true){
 
@@ -41,11 +42,9 @@ token* tokenize(FILE* source_code){
                     first = current;
                 }
                 printf("New token created at address: %p, from lexeme %s\n", (void*)current, lexeme_buffer->value);
-            }
-
-            
+            }    
         }
-        insert_to_character_buffer(buf, c);
+        insert_to_character_buffer(buf, (char)c);
     }
 
     safe_free( (void**) &(lexeme_buffer->value) );

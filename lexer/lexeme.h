@@ -3,10 +3,11 @@
 
 #include <stdbool.h>
 #include "token.h"
+#include <stdint.h>
 
 typedef struct{
-    int index;
-    int length;
+    uint32_t index;
+    uint32_t length;
 
     char al_flag;
     char num_flag;
@@ -23,7 +24,7 @@ typedef struct{
 
 character_buffer* create_character_buffer(void);
 
-void insert_to_character_buffer(character_buffer*, int lexeme_char);
+void insert_to_character_buffer(character_buffer*, char lexeme_char);
 
 void copy_buffer(character_buffer* buf, lexeme* lexeme);
 

@@ -13,17 +13,17 @@ character_buffer* create_character_buffer(void){
     character_buffer* new_character_buffer = safe_malloc(sizeof(character_buffer));
     new_character_buffer->index = 0;
     new_character_buffer->length = 20;
-    new_character_buffer->buffer = safe_malloc(new_character_buffer->length);
+    new_character_buffer->buffer = safe_malloc((size_t)new_character_buffer->length);
     return new_character_buffer;
 }
 
 /** inserts singular character into character buffer
  *  
  */
-void insert_to_character_buffer(character_buffer* buf, int lexeme_char){
+void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
     if (buf->index == buf->length){
-        int new_length = buf->length + 10;
-        buf->buffer = safe_realloc(buf->buffer, new_length);
+        uint32_t new_length = buf->length + 10;
+        buf->buffer = safe_realloc(buf->buffer, (size_t)new_length);
     }
     buf->buffer[buf->index] = lexeme_char;
     ++buf->index;
@@ -39,7 +39,7 @@ void copy_buffer(character_buffer* buf, lexeme* lexeme){
     if(*out_p != NULL){
         safe_free((void**)&(*out_p));
     }
-    *out_p = (char*)safe_malloc( buf ->index );
+    *out_p = (char*)safe_malloc( (size_t) buf ->index );
     safe_memcpy(*out_p, buf->buffer, buf->index);
     (*out_p)[buf->index] = '\0';
 
@@ -69,9 +69,15 @@ void empty_buffer(character_buffer* buf){
 /** Produces a lexeme, given a buffer filled with character straight from the source code
  *  @return boolean - whether or not a lexeme was produced
  */
-bool produce_lexeme(character_buffer* buf, lexeme* out, int next){
+bool produce_lexeme(character_buffer* buf, lexeme* out, int next_int){
 
-    
+    char next;
+    if(next_int==EOF){
+        copy_buffer(buf, out);
+        empty_buffer(buf);
+        return true;
+    }
+    next = (char)next_int;
 
     //the next char is alphanum, keep filling buffer
     if (buf->index == 0){
@@ -106,7 +112,7 @@ bool produce_lexeme(character_buffer* buf, lexeme* out, int next){
         return false;
 
     //the next char is a space, newline, or EOF.
-    } else if (isspace(next) || next == '\n' || next == EOF){
+    } else if (isspace(next) || next == '\n'){
         copy_buffer(buf, out);
         empty_buffer(buf);
         return true;
