@@ -247,6 +247,11 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
 ASTNode* close_iterator(table_iterator* iterator, statement_list* current_working_list){
 
     reset_pool(iterator->progression_pool);
+
+    if(iterator->node_stack->top != 0){
+        perror("Tried to close iterator without proper reduction\n");
+    }
+
     return (ASTNode*)pop(iterator->node_stack);
     
 }
