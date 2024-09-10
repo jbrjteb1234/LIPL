@@ -54,10 +54,10 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* lexeme, token_
         if(dictionary->free_list[i] == 0){
 
             dictionary->free_list[i] = 1;
-            tokentype_dictionary_entry* new_entry = (tokentype_dictionary_entry*)safe_malloc(sizeof(tokentype_dictionary_entry));
+            tokentype_dictionary_entry* new_entry = (tokentype_dictionary_entry*)safe_malloc((size_t)sizeof(tokentype_dictionary_entry));
             new_entry->token_value = value;
             new_entry->token_type = function;
-            new_entry->lexeme = (char*)safe_malloc(strlen(lexeme) + 1);
+            new_entry->lexeme = (char*)safe_malloc((size_t)strlen(lexeme) + 1);
             new_entry->precedence = precedence;
             strcpy(new_entry->lexeme, lexeme);
 
@@ -90,7 +90,7 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
  * 
  */
 token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme){
-    token* new_token = (token*)safe_malloc(sizeof(token));
+    token* new_token = (token*)safe_malloc((size_t)sizeof(token));
     new_token->next = NULL;
     new_token->leaf = false;
     if(prev != NULL){

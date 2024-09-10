@@ -10,7 +10,7 @@
  *  @return character_buffer* 
  */
 character_buffer* create_character_buffer(void){
-    character_buffer* new_character_buffer = safe_malloc(sizeof(character_buffer));
+    character_buffer* new_character_buffer = safe_malloc((size_t)sizeof(character_buffer));
     new_character_buffer->index = 0;
     new_character_buffer->length = 20;
     new_character_buffer->buffer = safe_malloc((size_t)new_character_buffer->length);
@@ -40,7 +40,7 @@ void copy_buffer(character_buffer* buf, lexeme* lexeme){
         safe_free((void**)&(*out_p));
     }
     *out_p = (char*)safe_malloc( (size_t) buf ->index );
-    safe_memcpy(*out_p, buf->buffer, buf->index);
+    safe_memcpy(*out_p, buf->buffer, (size_t) buf->index);
     (*out_p)[buf->index] = '\0';
 
     if(buf->al_flag){

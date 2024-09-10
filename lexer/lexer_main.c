@@ -23,7 +23,7 @@ token* tokenize(FILE* source_code){
     //character buffer - feeds characters from source file one by one into buffer 
     character_buffer* buf = create_character_buffer();
     //lexeme_buffer - holds complete lexeme to be turned into token
-    lexeme* lexeme_buffer = safe_malloc(sizeof(lexeme));
+    lexeme* lexeme_buffer = safe_malloc((size_t)sizeof(lexeme));
 
     token* current = NULL;
     token* first = NULL;
