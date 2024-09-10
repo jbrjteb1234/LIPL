@@ -20,7 +20,7 @@ character_buffer* create_character_buffer(){
 /** inserts singular character into character buffer
  *  
  */
-void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
+void insert_to_character_buffer(character_buffer* buf, int lexeme_char){
     if (buf->index == buf->length){
         int new_length = buf->length + 10;
         buf->buffer = safe_realloc(buf->buffer, new_length);
@@ -69,7 +69,7 @@ void empty_buffer(character_buffer* buf){
 /** Produces a lexeme, given a buffer filled with character straight from the source code
  *  @return boolean - whether or not a lexeme was produced
  */
-bool produce_lexeme(character_buffer* buf, lexeme* out, char next){
+bool produce_lexeme(character_buffer* buf, lexeme* out, int next){
 
     
 

@@ -23,8 +23,8 @@ typedef struct{
     token_types type;
 } lexeme;
 
-void insert_to_character_buffer(character_buffer*, char lexeme_char);
+void insert_to_character_buffer(character_buffer*, int lexeme_char);
 
-bool produce_lexeme(character_buffer*, lexeme*, char);
+bool produce_lexeme(character_buffer*, lexeme*, int);
 
 #endif
