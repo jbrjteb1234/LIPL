@@ -21,6 +21,7 @@ int main(int arg_count, char *args[]){
 
     token* first_token = tokenize(source_code);
     statement_list* ast_roots = parse(first_token);
+    printf("AST: %p", (void*)ast_roots);
 
     return 0;
 }
