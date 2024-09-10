@@ -5,6 +5,7 @@
 #include "../utility/safe_memory.h"
 #include "states.h"
 #include "../utility/stack.h"
+#include "ast_utility/slist_functions.h"
 /** Statement list - list of AST root nodes. One ast root node might hold lots of statement lists (Like a block in an if statement)
  *  The final output is a statement list - the main routine of the program
  */
@@ -28,6 +29,7 @@ statement_list* parse(token* scan_token){
 
     table_iterator* iterator = initialize_table_iterator();
     statement_list* global_slist = create_new_slist();
+    statement_list *current_working_list = global_slist;
 
     bool end = false;
     shift_results result;
@@ -43,11 +45,7 @@ statement_list* parse(token* scan_token){
             result = shift(iterator, scan_token);
             switch(result){
             case SHIFTED:
-                //statement complete - can be added to statement list
-
-                //shift complete
-                //ASTNode* new_statement = close_iterator(iterator, current_working_list);
-                //append_to_working_list(current_working_list, new_statement);
+                
                 break;
             case JUMP:
                 //jumped
@@ -60,6 +58,9 @@ statement_list* parse(token* scan_token){
                 perror("Error in parsing");
                 return NULL;
             case COMPLETED:
+                ASTNode* new_statement = close_iterator(iterator, current_working_list);
+                append_to_slist(current_working_list, new_statement);
+                advance_token(&scan_token);
                 //completed
                 break;
             }

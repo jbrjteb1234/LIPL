@@ -49,18 +49,9 @@ struct ASTNode{
 };
 
 struct statement_list{
-    int size;
+    int max;
     int index;
-    ASTNode* list;
+    ASTNode** list;
 };
-
-//TODO: IMPLEMENT STATEMENT_LIST
-
-statement_list* create_new_slist();
-
-void append_to_slist(statement_list*, ASTNode*);
-
-#define STATEMENT_LIST_INITIAL_SIZE 10
-#define SUB_STATEMENT_LIST_INITIAL_SIZE 5
 
 #endif
