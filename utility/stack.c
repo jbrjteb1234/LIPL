@@ -13,21 +13,21 @@ stack* create_stack(size_t element_size){
     return new_stack;
 }
 
-void* pop(stack* stack){
-    if(stack->top == -1){
+void* pop(stack* popped_stack){
+    if(popped_stack->top == -1){
         return NULL;
     }
-    return stack->data[stack->top--];
+    return popped_stack->data[popped_stack->top--];
 }
 
-void push(stack* stack, void* data){
-    if(stack->top == stack->max){
-        stack->max *= 2;
-        stack->data = (void**)safe_realloc(stack->data, (size_t) stack->max);
+void push(stack* pushed_stack, void* data){
+    if(pushed_stack->top + 1 == pushed_stack->max){
+        pushed_stack->max *= 2;
+        pushed_stack->data = (void**)safe_realloc(pushed_stack->data, (size_t) pushed_stack->max);
     }
-    stack->data[++stack->top] = data;
+    pushed_stack->data[++pushed_stack->top] = data;
 }
 
-void* peek(stack* stack){
-    return stack->data[stack->top];
+void* peek(stack* peeked_stack){
+    return peeked_stack->data[peeked_stack->top];
 }
