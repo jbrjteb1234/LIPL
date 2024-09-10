@@ -16,14 +16,18 @@ typedef struct{
     char* buffer; 
 } character_buffer;
 
-character_buffer* create_character_buffer();
-
 typedef struct{
     char* value;
     token_types type;
 } lexeme;
 
+character_buffer* create_character_buffer(void);
+
 void insert_to_character_buffer(character_buffer*, int lexeme_char);
+
+void copy_buffer(character_buffer* buf, lexeme* lexeme);
+
+void empty_buffer(character_buffer* buf);
 
 bool produce_lexeme(character_buffer*, lexeme*, int);
 

@@ -11,7 +11,7 @@
  *  allows for declaring identifier tokens
  */
 
-tokentype_dictionary* initialize_tokentype_dictionary(){
+tokentype_dictionary* initialize_tokentype_dictionary(void){
     tokentype_dictionary* dictionary = safe_malloc(sizeof(tokentype_dictionary));
     dictionary->maximum_amount = INITIAL_DICTIONARY_SIZE;
 

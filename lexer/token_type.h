@@ -29,7 +29,11 @@ typedef struct{
 
 token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme);
 
-tokentype_dictionary* initialize_tokentype_dictionary();
+void expand_dictionary(tokentype_dictionary* dictionary);
+
+tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme);
+
+tokentype_dictionary* initialize_tokentype_dictionary(void);
 
 void create_new_tokentype(tokentype_dictionary*, char*, token_values, token_types, unsigned char);
 

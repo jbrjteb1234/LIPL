@@ -9,7 +9,7 @@
 /** creates and initialises character buffer - characters are fed from source file here
  *  @return character_buffer* 
  */
-character_buffer* create_character_buffer(){
+character_buffer* create_character_buffer(void){
     character_buffer* new_character_buffer = safe_malloc(sizeof(character_buffer));
     new_character_buffer->index = 0;
     new_character_buffer->length = 20;

@@ -6,4 +6,6 @@
 
 token* tokenize(FILE*);
 
+void print_token_stream(token* head);
+
 #endif
