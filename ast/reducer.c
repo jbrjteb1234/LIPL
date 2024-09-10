@@ -4,7 +4,7 @@
 #include "reducer.h"
 #include "ast_utility/ast.h"
 
-int reduce(stack* node_stack, int reduction){
+uint32_t reduce(stack* node_stack, uint32_t reduction){
 
     uint32_t rule = reduction & 0x000fffff;
     uint32_t return_state = (reduction & 0x0ff00000) >> reduction_return_state_shift_count;
