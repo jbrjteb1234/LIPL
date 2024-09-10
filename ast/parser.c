@@ -57,10 +57,11 @@ statement_list* parse(token* scan_token){
                 //error
                 perror("Error in parsing");
                 return NULL;
-            case COMPLETED:
+            case COMPLETED: {
                 ASTNode* new_statement = close_iterator(iterator, current_working_list);
                 append_to_slist(current_working_list, new_statement);
                 advance_token(&scan_token);
+            }
                 //completed
                 break;
             }
