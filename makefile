@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS = -std=c17 -I.
 
-run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o
-	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o
+run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o
+	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -30,6 +30,10 @@ stack.o: utility/stack.c
 
 ast.o: ast/ast_utility/ast.c
 	$(CC) $(CFLAGS) -c ast/ast_utility/ast.c
+
+slist_functions.o: ast/ast_utility/slist_functions.c
+	$(CC) $(CFLAGS) -c ast/ast_utility/slist_functions.c
+
 
 data_pool.o: utility/data_pool.c
 	$(CC) $(CFLAGS) -c utility/data_pool.c
