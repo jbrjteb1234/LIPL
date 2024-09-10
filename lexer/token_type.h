@@ -7,6 +7,8 @@
 #include "token.h"
 #include "lexeme.h"
 
+#include <stdint.h>
+
 //populates the dictionary - links string lexeme value token_value and token_function
 typedef struct{
     token_values    token_value;
@@ -19,7 +21,7 @@ typedef struct{
 
 //dictionary of tokentypes
 typedef struct{
-    int maximum_amount;
+    uint32_t maximum_amount;
     char* free_list;
 
     int identifier_count;

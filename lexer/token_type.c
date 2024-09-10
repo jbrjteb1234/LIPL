@@ -12,15 +12,15 @@
  */
 
 tokentype_dictionary* initialize_tokentype_dictionary(void){
-    tokentype_dictionary* dictionary = safe_malloc(sizeof(tokentype_dictionary));
+    tokentype_dictionary* dictionary = safe_malloc((size_t) sizeof(tokentype_dictionary));
     dictionary->maximum_amount = INITIAL_DICTIONARY_SIZE;
 
     //create dictionary (array of tokentype_dictionary_entry pointers)
-    dictionary->dictionary = (tokentype_dictionary_entry**)safe_malloc(sizeof(tokentype_dictionary_entry*)*dictionary->maximum_amount);
+    dictionary->dictionary = (tokentype_dictionary_entry**)safe_malloc( (size_t) (sizeof(tokentype_dictionary_entry*)*dictionary->maximum_amount) );
 
     //create free list, set all indexes to 0
-    dictionary->free_list = (char*)safe_malloc(sizeof(char)*dictionary->maximum_amount);
-    safe_memset(dictionary->free_list, 0, dictionary->maximum_amount);
+    dictionary->free_list = (char*)safe_malloc( (size_t) (sizeof(char)*dictionary->maximum_amount) );
+    safe_memset(dictionary->free_list, 0, (size_t)dictionary->maximum_amount);
 
     #define X(LEXEME, VALUE, VALUE_TYPE, FUNCTION, PRECEDENCE) \
     create_new_tokentype(dictionary, LEXEME, (token_values){ .VALUE_TYPE = VALUE }, FUNCTION, (unsigned char)PRECEDENCE);
@@ -32,13 +32,13 @@ tokentype_dictionary* initialize_tokentype_dictionary(void){
 }
 
 void expand_dictionary(tokentype_dictionary* dictionary){
-    int max = dictionary->maximum_amount;
-    int new_maximum_amount = max + DICTIONARY_EXPAND_AMOUNT;
+    uint32_t max = dictionary->maximum_amount;
+    uint32_t new_maximum_amount = max + DICTIONARY_EXPAND_AMOUNT;
 
-    dictionary->dictionary = safe_realloc(dictionary->dictionary, sizeof(tokentype_dictionary_entry*)*new_maximum_amount);
-    dictionary->free_list = safe_realloc(dictionary->free_list, new_maximum_amount);
+    dictionary->dictionary = safe_realloc(dictionary->dictionary, (size_t) (sizeof(tokentype_dictionary_entry*)*new_maximum_amount));
+    dictionary->free_list = safe_realloc(dictionary->free_list, (size_t) new_maximum_amount);
 
-    safe_memset( dictionary->free_list + max, 0, DICTIONARY_EXPAND_AMOUNT);
+    safe_memset( dictionary->free_list + max, 0, (size_t) DICTIONARY_EXPAND_AMOUNT);
 
     dictionary->maximum_amount = new_maximum_amount;
 }
