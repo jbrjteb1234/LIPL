@@ -1,5 +1,8 @@
 CC=gcc
-CFLAGS = -std=c17 -I.
+CFLAGS = -std=c17 -I. -Wall -Wextra -pedantic -Wshadow -Wformat -Wconversion \
+    -Wsign-compare -Wpointer-arith -Wcast-align -Wunused -Wfloat-equal \
+    -Wnull-dereference -Wstrict-prototypes -Wmissing-prototypes -fsanitize=undefined \
+    -fsanitize=address
 
 run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o
 	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o
