@@ -132,6 +132,9 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
         default:
             break;
     }
+    //unrecognised symbol (erronoeus token-type)
+    perror("Unrecognised token-type\n");
+    return N;
 }
 
 /** converts token directly from tokenstream into an AST node
@@ -239,6 +242,9 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
         return SHIFTED;
     }
 
+    //no valid state found
+    perror("No valid state found\n");
+    return ERROR;
 }
 
 /** When an iterate has fully reduced and parsed a stream of tokens, it can be closed

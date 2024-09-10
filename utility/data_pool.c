@@ -33,7 +33,7 @@ void return_to_pool(data_pool* pool, void* data){
 
 void reset_pool(data_pool* pool){
     for(uint32_t i=0; i<(pool->max - pool->remaining); ++i){
-        void* data = pop(pool->free_list);
+        pop(pool->free_list);
     }
     pool->remaining = pool->max;
 }

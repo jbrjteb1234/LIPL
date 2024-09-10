@@ -41,4 +41,8 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
             break;
 
     }
+
+    //invalid rule providede
+    perror("Invalid reduction rule provided\n");
+    return N;
 }

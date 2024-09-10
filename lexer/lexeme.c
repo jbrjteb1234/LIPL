@@ -132,4 +132,8 @@ bool produce_lexeme(character_buffer* buf, lexeme* out, int next_int){
         empty_buffer(buf);
         return true;
     }
+
+    //undefined case
+    perror("Undefined case in produce_lexeme");
+    return false;
 }
