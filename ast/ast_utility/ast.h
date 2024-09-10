@@ -4,6 +4,8 @@
 #include "../../grammar/grammar.h"
 #include "../../lexer/token.h"
 
+#include <stdint.h>
+
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
 
@@ -49,8 +51,8 @@ struct ASTNode{
 };
 
 struct statement_list{
-    int max;
-    int index;
+    uint32_t max;
+    uint32_t index;
     ASTNode** list;
 };
 

@@ -6,8 +6,8 @@
 #define INITIAL_SLIST_SIZE 20
 
 statement_list* create_new_slist(){
-    statement_list* new_slist = (statement_list*)safe_malloc(sizeof(statement_list));
-    new_slist->list = (ASTNode**)safe_malloc(sizeof(ASTNode*)*INITIAL_SLIST_SIZE);
+    statement_list* new_slist = (statement_list*)safe_malloc( (size_t) sizeof(statement_list));
+    new_slist->list = (ASTNode**)safe_malloc( (size_t) sizeof(ASTNode*)*INITIAL_SLIST_SIZE);
     new_slist->index = 0;
     new_slist->max = INITIAL_SLIST_SIZE;
     return new_slist;
@@ -15,7 +15,7 @@ statement_list* create_new_slist(){
 
 void expand_slist(statement_list* slist){
     slist->max*=2;
-    slist->list = (ASTNode**)safe_realloc(slist->list, sizeof(ASTNode*)*slist->max);
+    slist->list = (ASTNode**)safe_realloc(slist->list, (size_t) sizeof(ASTNode*)*slist->max);
 }
 
 void append_to_slist(statement_list* slist, ASTNode* new_node){
