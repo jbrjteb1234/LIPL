@@ -50,7 +50,7 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme,
     if(target_lexeme==NULL){
         return;
     }
-    for(int i=0; i<dictionary->maximum_amount; ++i){
+    for(uint32_t i=0; i<dictionary->maximum_amount; ++i){
         if(dictionary->free_list[i] == 0){
 
             dictionary->free_list[i] = 1;
@@ -75,7 +75,7 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme,
  * 
  */
 tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* target_lexeme){
-    for(int i=0; i<dictionary->maximum_amount; ++i){
+    for(uint32_t i=0; i<dictionary->maximum_amount; ++i){
         //check if free_list is 1 and the actual entry is not null
         if(dictionary->free_list[i] == 1 && dictionary->dictionary[i] != NULL){
             if (!strcmp(dictionary->dictionary[i]->lexeme, target_lexeme)){

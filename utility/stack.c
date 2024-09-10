@@ -21,7 +21,7 @@ void* pop(stack* popped_stack){
 }
 
 void push(stack* pushed_stack, void* data){
-    if(pushed_stack->top + 1 == pushed_stack->max){
+    if(pushed_stack->top + (uint32_t)1 == pushed_stack->max){
         pushed_stack->max *= 2;
         pushed_stack->data = (void**)safe_realloc(pushed_stack->data, (size_t) pushed_stack->max);
     }
