@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "safe_memory.h"
+
 #define MAX_RETRIES 3
 
 void* safe_malloc(size_t size) {

@@ -23,6 +23,8 @@ void* acquire_from_pool(data_pool* pool);
 
 void reset_pool(data_pool* pool);
 
+void expand_data_pool(data_pool* pool);
+
 void shutdown_data_pool(data_pool* pool);
 
 #endif

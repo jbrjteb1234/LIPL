@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "parser.h"
 #include "ast_utility/ast.h"
 #include "../utility/safe_memory.h"
 #include "states.h"
