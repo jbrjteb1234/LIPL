@@ -297,7 +297,7 @@ void drop_table(table_iterator* iterator){
 /** creates a new table in memory and allocates memory for the stack 
  * 
  */
-table_iterator* initialize_table_iterator(){
+table_iterator* initialize_table_iterator(void){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->progression_stack = create_stack(sizeof(table_progression));

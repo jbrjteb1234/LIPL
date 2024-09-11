@@ -5,7 +5,7 @@
 
 #define INITIAL_SLIST_SIZE 20
 
-statement_list* create_new_slist(){
+statement_list* create_new_slist(void){
     statement_list* new_slist = (statement_list*)safe_malloc( (size_t) sizeof(statement_list));
     new_slist->list = (ASTNode**)safe_malloc( (size_t) sizeof(ASTNode*)*INITIAL_SLIST_SIZE);
     new_slist->index = 0;

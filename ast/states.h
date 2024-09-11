@@ -58,6 +58,6 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
 
 void initiate_table(table_iterator*, token*, table_type);
 
-table_iterator* initialize_table_iterator();
+table_iterator* initialize_table_iterator(void);
 
 #endif

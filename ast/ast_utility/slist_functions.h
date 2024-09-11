@@ -3,7 +3,7 @@
 
 #include "ast.h"
 
-statement_list* create_new_slist();
+statement_list* create_new_slist(void);
 
 void expand_slist(statement_list* slist);
 
