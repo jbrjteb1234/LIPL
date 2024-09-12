@@ -22,8 +22,8 @@ tokentype_dictionary* initialize_tokentype_dictionary(void){
     dictionary->free_list = (char*)safe_malloc( (size_t) (sizeof(char)*dictionary->maximum_amount) );
     safe_memset(dictionary->free_list, 0, (size_t)dictionary->maximum_amount);
 
-    #define X(LEXEME, VALUE, VALUE_TYPE, FUNCTION, PRECEDENCE) \
-    create_new_tokentype(dictionary, LEXEME, (token_values){ .VALUE_TYPE = VALUE }, FUNCTION, (unsigned char)PRECEDENCE);
+    #define X(LEXEME, VALUE, VALUE_TYPE, FUNCTION) \
+    create_new_tokentype(dictionary, LEXEME, (token_values){ .VALUE_TYPE = VALUE }, FUNCTION);
     DEFINE_TOKENS
     #undef X
 
@@ -46,7 +46,7 @@ void expand_dictionary(tokentype_dictionary* dictionary){
 /** initialises new type of token
  * 
  */
-void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme, token_values value, token_types function, unsigned char precedence){
+void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme, token_values value, token_types function){
     if(target_lexeme==NULL){
         return;
     }
@@ -58,7 +58,6 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme,
             new_entry->token_value = value;
             new_entry->token_type = function;
             new_entry->lexeme = (char*)safe_malloc((size_t)strlen(target_lexeme) + 1);
-            new_entry->precedence = precedence;
             strcpy(new_entry->lexeme, target_lexeme);
 
             dictionary->dictionary[i] = new_entry;
@@ -68,7 +67,7 @@ void create_new_tokentype(tokentype_dictionary* dictionary, char* target_lexeme,
     }
     //dictionary full - expand and attempt creation again
     expand_dictionary(dictionary);
-    create_new_tokentype(dictionary, target_lexeme, value, function, precedence);
+    create_new_tokentype(dictionary, target_lexeme, value, function);
 }
 
 /** Used to acquire the TYPE of token associated with a lexeme, i.e., "+" is ADDITION token_value, with OPERATOR function.
@@ -104,7 +103,6 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* targ
         //int or string lexeme
         new_token->token_type = target_lexeme->type;
         new_token->token_value.variable_value = (void*)target_lexeme->value;
-        new_token->precedence = LITERAL_PRECEDENCE;
         new_token->leaf = true;
         return new_token;
     }else{
@@ -113,16 +111,14 @@ token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* targ
             //tokentype already exists, use existing tokentype data
             new_token->token_value = tokentype->token_value;
             new_token->token_type = tokentype->token_type;
-            new_token->precedence = tokentype->precedence;
             return new_token;
         }else{
             //tokentype does not exist - create a new tokentype
             token_values identifier_value;
             identifier_value.identifier_token_value = dictionary->identifier_count;
-            create_new_tokentype(dictionary, target_lexeme->value, identifier_value, IDENTIFIER, IDENTIFIER_PRECEDENCE);
+            create_new_tokentype(dictionary, target_lexeme->value, identifier_value, IDENTIFIER);
             new_token->token_value.variable_value = (void*)target_lexeme->value;
             new_token->token_type = IDENTIFIER;
-            new_token->precedence = IDENTIFIER_PRECEDENCE;
             dictionary->identifier_count++;
             new_token->leaf = true;
             return new_token;

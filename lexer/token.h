@@ -7,8 +7,6 @@
 typedef struct token{
     struct token* previous;
     struct token* next;
-    
-    unsigned char precedence;
 
     //Used later by the AST
     bool leaf;

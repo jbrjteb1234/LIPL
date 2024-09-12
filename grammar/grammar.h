@@ -51,31 +51,28 @@ typedef enum {
     IDENTIFIER
 } token_types;
 
-#define IDENTIFIER_PRECEDENCE   254
-#define LITERAL_PRECEDENCE      255
-
 #define DELIMITER_SYMBOL ";"
 
-//  LEXEME              TOKEN VALUE         TOKEN TYPE      PRECEDENCE 
+//  LEXEME              TOKEN VALUE         TOKEN TYPE 
 #define DEFINE_TOKENS \
-    X("=",              ASSIGNMENT,         operator_token_value, OPERATOR,       10) \
-    X("==",             EQUIVALENT,         operator_token_value, OPERATOR,       9)  \
-    X("<",              LESS_THAN,          operator_token_value, OPERATOR,       8)  \
-    X(">",              GREATER_THAN,       operator_token_value, OPERATOR,       8)  \
-    X("=<",             LESS_OR_EQUAL,      operator_token_value, OPERATOR,       8)  \
-    X(">=",             GREATER_OR_EQUAL,   operator_token_value, OPERATOR,       8)  \
-    X("+",              ADDITION,           operator_token_value, OPERATOR,       6)  \
-    X("-",              SUBTRACTION,        operator_token_value, OPERATOR,       6)  \
-    X("*",              MULTIPLICATION,     operator_token_value, OPERATOR,       5)  \
-    X("/",              DIVISION,           operator_token_value, OPERATOR,       5)  \
-    X("{",              OPEN_CBRACKET,      delimiter_token_value, DELIMITER,      0)  \
-    X("}",              CLOSE_CBRACKET,     delimiter_token_value, DELIMITER,      0)  \
-    X("(",              OPEN_BRACKET,       delimiter_token_value, DELIMITER,      0)  \
-    X(")",              CLOSE_BRACKET,      delimiter_token_value, DELIMITER,      0)  \
-    X(DELIMITER_SYMBOL, EOS,                delimiter_token_value, DELIMITER,      0)  \
-    X("if",             IF,                 reserved_word_token_value, RESERVED_WORD, 0)  \
-    X("else",           ELSE,               reserved_word_token_value, RESERVED_WORD, 0)  \
-    X("while",          WHILE,              reserved_word_token_value, RESERVED_WORD, 0)  \
-    X("return",         RETURN,             reserved_word_token_value, RESERVED_WORD, 0)
+    X("=",              ASSIGNMENT,         operator_token_value, OPERATOR) \
+    X("==",             EQUIVALENT,         operator_token_value, OPERATOR)  \
+    X("<",              LESS_THAN,          operator_token_value, OPERATOR)  \
+    X(">",              GREATER_THAN,       operator_token_value, OPERATOR)  \
+    X("=<",             LESS_OR_EQUAL,      operator_token_value, OPERATOR)  \
+    X(">=",             GREATER_OR_EQUAL,   operator_token_value, OPERATOR)  \
+    X("+",              ADDITION,           operator_token_value, OPERATOR)  \
+    X("-",              SUBTRACTION,        operator_token_value, OPERATOR)  \
+    X("*",              MULTIPLICATION,     operator_token_value, OPERATOR)  \
+    X("/",              DIVISION,           operator_token_value, OPERATOR)  \
+    X("{",              OPEN_CBRACKET,      delimiter_token_value, DELIMITER)  \
+    X("}",              CLOSE_CBRACKET,     delimiter_token_value, DELIMITER)  \
+    X("(",              OPEN_BRACKET,       delimiter_token_value, DELIMITER)  \
+    X(")",              CLOSE_BRACKET,      delimiter_token_value, DELIMITER)  \
+    X(DELIMITER_SYMBOL, EOS,                delimiter_token_value, DELIMITER)  \
+    X("if",             IF,                 reserved_word_token_value, RESERVED_WORD)  \
+    X("else",           ELSE,               reserved_word_token_value, RESERVED_WORD)  \
+    X("while",          WHILE,              reserved_word_token_value, RESERVED_WORD)  \
+    X("return",         RETURN,             reserved_word_token_value, RESERVED_WORD)
 
 #endif
