@@ -18,10 +18,12 @@ typedef enum{
 
 //different types of reserved word commands
 typedef enum{
-    IF,
-    ELSE,
-    WHILE,
-    RETURN
+    VAR = 0,
+    FUNC = 1,
+    IF = 2,
+    ELSE = 3,
+    WHILE = 4,
+    RETURN = 5
 } reserved_word_token;
 
 typedef enum{
@@ -70,9 +72,11 @@ typedef enum {
     X("(",              OPEN_BRACKET,       delimiter_token_value, DELIMITER)  \
     X(")",              CLOSE_BRACKET,      delimiter_token_value, DELIMITER)  \
     X(DELIMITER_SYMBOL, EOS,                delimiter_token_value, DELIMITER)  \
-    X("if",             IF,                 reserved_word_token_value, RESERVED_WORD)  \
-    X("else",           ELSE,               reserved_word_token_value, RESERVED_WORD)  \
-    X("while",          WHILE,              reserved_word_token_value, RESERVED_WORD)  \
-    X("return",         RETURN,             reserved_word_token_value, RESERVED_WORD)
+    X("if",             IF,                 reserved_word_token_value, RESERVED_WORD)   \
+    X("else",           ELSE,               reserved_word_token_value, RESERVED_WORD)   \
+    X("while",          WHILE,              reserved_word_token_value, RESERVED_WORD)   \
+    X("return",         RETURN,             reserved_word_token_value, RESERVED_WORD)   \
+    X("func",           FUNC,               reserved_word_token_value, RESERVED_WORD)   \
+    x("var",            VAR,                reserved_word_token_value, RESERVED_WORD)     
 
 #endif
