@@ -77,6 +77,6 @@ typedef enum {
     X("while",          WHILE,              reserved_word_token_value, RESERVED_WORD)   \
     X("return",         RETURN,             reserved_word_token_value, RESERVED_WORD)   \
     X("func",           FUNC,               reserved_word_token_value, RESERVED_WORD)   \
-    x("var",            VAR,                reserved_word_token_value, RESERVED_WORD)     
+    X("var",            VAR,                reserved_word_token_value, RESERVED_WORD)   
 
 #endif
