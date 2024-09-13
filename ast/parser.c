@@ -17,6 +17,8 @@
 void advance_token(token** scan_token){
     if((*scan_token)->next != NULL){
         (*scan_token) = (*scan_token)->next;
+    }else{
+        perror("Tried to advance past end of tokenstream\n");
     }
 }
 
@@ -62,9 +64,9 @@ statement_list* parse(token* scan_token){
                 ASTNode* new_statement = close_iterator(iterator);
                 append_to_slist(current_working_list, new_statement);
                 advance_token(&scan_token);
-            }
-                //completed
+                //TODO: FIX ERROR WHERE TRIES TO ADVANCE TWICE AFTER FINISHING PARSING WHOLE FILE
                 break;
+            }
             }
         }
 

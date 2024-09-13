@@ -10,44 +10,7 @@
 #include "ast_utility/ast.h"
 #include "reducer.h"
 
-typedef uint32_t state_table[HEIGHT][WIDTH];
 void drop_table(table_iterator* iterator);
-
-//      R(0) = reduce binary operator (like 1+1 or 2*1)
-//      0 num/id    1 +-    2 */    3 eos/eb
-
-/** STRUCTURE OF A TABLE ENTRY
- *      half-byte 1 = call mask (type of call it is (reduction, normal state, etc))
- *      half-byte 2/3 = return state (where to return to after reduction)
- *      half-byte 4-8 = data    
- */
-
-state_table numbers_table = {
-        {N,         1,      2,      A},             //STATE 0: num
-        {3,         N,      N,      N},             //STATE 1: num +-
-        {4,         N,      N,      N},             //STATE 2: num */
-
-        {N,         R(0,0), 5,      R(0,0)},        //STATE 3: num +- num
-        {N,         R(0,0), R(0,0), R(0,0)},        //STATE 4: num */ num
-
-        {6,         N,      N,      N},             //STATE 5: num +- num *
-        {N,         R(0,3), R(0,3), R(0,3)}         //STATE 6: num +- num * num
-};
-
-//      0 ID    1 =     2 num   3 str   4 op    5 del       
-state_table decl_table = {
-        {N,     1,      N,      N,      N,      A},         //STATE 0: ID
-        {N,     N,      J(0,2), N,      N,      N},         //STATE 1: ID =
-        {N,     N,      N,      N,      N,      R(1,0)},    //STATE 2: ID = num
-        {N,     N,      N,      N,      N,      R(1,0)},    //STATE 3: ID = str
-        {N,     N,      N,      N,      N,      R(1,0)},    //STATE 4: ID = ID
-        
-        {N,     N,      N,      N,      N,      N},         //STATE 5: spare
-        {N,     N,      N,      N,      N,      N},         //STATE 6: spare
-        {N,     N,      N,      N,      N,      N},         //STATE 7: spare
-        {N,     N,      N,      N,      N,      N},         //STATE 8: spare
-};
-
 /** These tables allow us to find the table given:
  *  - the table type
  *  - the token type
@@ -56,11 +19,6 @@ state_table decl_table = {
  *  - table lookup with table type
  *  - table type lookup with token type
  */
-
-state_table *table_type_table_lookup[2] = {
-    &numbers_table, //NUM TABLE TYPE
-    &decl_table     //DECL TABLE TYPE
-};
 
 int token_type_table_type_lookup[6] = {
     N,
@@ -102,7 +60,9 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
     switch(current_lookahead->token_type){
         case(RESERVED_WORD):
 
-            
+            //TODO: PARSE RESERVED WORDS
+
+            //since reserved words differ in how they are parsed, we need seperate tables for each reserved word(s)
 
             break;
         case(OPERATOR):
@@ -192,15 +152,13 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
 
     //finished parsing statement, passed to the iterator above
     if (new_state == A){
-        //TODO: implement to work with table jumping and the prgoression pool
-
         if(iterator->progression_stack->top == -1){
             printf("Completed parsing\n");
             return COMPLETED;
         }else{
             printf("Returning to previous table\n");
             drop_table(iterator);
-            shift(iterator, current_lookahead);
+            return shift(iterator, current_lookahead);
         }
     
     }else if (new_state == N){
@@ -214,8 +172,10 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
         //the reduction rule gives a new state to return to, then call again to push the lookahead
         if (new_state != N){
             iterator->current->state = new_state;
-            shift(iterator, current_lookahead);
+            return shift(iterator, current_lookahead);
         }
+        perror("Invalid reduction\n");
+        return ERROR;
 
     }else if ( (jump_mask & new_state) == jump_mask){
 
@@ -262,6 +222,19 @@ ASTNode* close_iterator(table_iterator* iterator){
     
 }
 
+state_table* acquire_table_from_table_type(table_type type){
+    switch(type){
+        case NUMBERS_TABLE:
+            return get_numbers_table();
+        case DECL_TABLE:
+            return get_decl_table();
+        case NONE:
+            break;
+    }
+    perror("Invalid table type\n");
+    return NULL;
+}
+
 /** initiates iterator with a new type of table
  * 
  */
@@ -284,7 +257,7 @@ void initiate_table(table_iterator* iterator, token* initiating_token, table_typ
     if(type == NONE){
         type = token_type_table_type_lookup[initiating_token->token_type];
     }
-    iterator->current->table = *table_type_table_lookup[type];
+    iterator->current->table = *acquire_table_from_table_type(type);
     iterator->current->type = type;
     iterator->initiated = 1;
 }
