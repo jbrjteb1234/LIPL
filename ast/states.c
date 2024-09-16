@@ -9,6 +9,7 @@
 #include "../utility/stack.h"
 #include "ast_utility/ast.h"
 #include "reducer.h"
+#include "table_initiator.h"
 
 void drop_table(table_iterator* iterator);
 /** These tables allow us to find the table given:
@@ -233,27 +234,6 @@ state_table* acquire_table_from_table_type(table_type type){
     return NULL;
 }
 
-table_type find_tabletype_from_token(token* initiating_token){
-    switch(initiating_token->token_type){
-        case RESERVED_WORD:
-            break;
-        case OPERATOR:
-            break;
-        case DELIMITER:
-            break;
-        case STRING_LITERAL:
-            break;
-        case INT_VALUE:
-            return NUMBERS_TABLE;
-            break;
-        case IDENTIFIER:
-            return DECL_TABLE;
-            break;
-    }
-    perror("Invalid token type");
-    return NONE;
-}
-
 /** initiates iterator with a new type of table
  * 
  */
@@ -271,6 +251,7 @@ void initiate_table(table_iterator* iterator, token* initiating_token, table_typ
     iterator->current->type = NONE;
 
     push_token_into_ast_node(iterator, initiating_token);
+
     if(type == NONE){
         if((type = find_tabletype_from_token(initiating_token)) == NONE){
             return;

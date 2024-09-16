@@ -11,12 +11,6 @@
 #include "tables/tables.h"
 
 typedef enum {
-    NONE = -1,
-    NUMBERS_TABLE = 0,
-    DECL_TABLE = 1
-} table_type;
-
-typedef enum {
     ERROR,
     SHIFTED,
     REDUCED,
@@ -43,6 +37,8 @@ typedef struct{
 shift_results shift(table_iterator* iterator, token* current_token);
 
 ASTNode* close_iterator(table_iterator* iterator);
+
+state_table* acquire_table_from_table_type(table_type type);
 
 void drop_table(table_iterator* iterator);
 

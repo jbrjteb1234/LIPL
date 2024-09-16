@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+typedef enum {
+    NONE = -1,
+    NUMBERS_TABLE = 0,
+    DECL_TABLE = 1
+} table_type;
+
 #define WIDTH 10
 #define HEIGHT 10
 
