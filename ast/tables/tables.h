@@ -6,12 +6,6 @@
 #define WIDTH 10
 #define HEIGHT 10
 
-typedef enum {
-    NONE = -1,
-    NUMBERS_TABLE = 0,
-    DECL_TABLE = 1
-} table_type;
-
 //converts int (jump rule)
 #define jump_mask 0x10000000
 #define new_state_shift_count 20

@@ -10,7 +10,11 @@
 
 #include "tables/tables.h"
 
-state_table* acquire_table_from_table_type(table_type type);
+typedef enum {
+    NONE = -1,
+    NUMBERS_TABLE = 0,
+    DECL_TABLE = 1
+} table_type;
 
 typedef enum {
     ERROR,

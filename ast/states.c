@@ -20,14 +20,6 @@ void drop_table(table_iterator* iterator);
  *  - table type lookup with token type
  */
 
-int token_type_table_type_lookup[6] = {
-    N,
-    N,
-    N,
-    N,
-    NUMBERS_TABLE,
-    DECL_TABLE,
-};
 
 /** these tables allow us to find the index of the selected table
  *  for exmaple, in numbers table, operator enum 1 (subtraction) leads us to index 1
@@ -184,9 +176,12 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
         int new_table = new_state & 0x000fffff;
         new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
         iterator->current->state = new_state;
+        //sets the current table to the state after parsing the table jumped to
 
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
         if(current_lookahead->next != NULL && current_lookahead->next->token_type == DELIMITER){
+            push_token_into_ast_node(iterator, current_lookahead);
+            printf("No jump required!\n");
             return SHIFTED;
         }
         printf("Jumping to new table\n");
@@ -207,7 +202,7 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
     return ERROR;
 }
 
-/** When an iterate has fully reduced and parsed a stream of tokens, it can be closed
+/** When an iterate has fully reduced and parsed a statement, it can be closed
  * 
  */
 ASTNode* close_iterator(table_iterator* iterator){
@@ -215,8 +210,11 @@ ASTNode* close_iterator(table_iterator* iterator){
     reset_pool(iterator->progression_pool);
 
     if(iterator->node_stack->top != 0){
-        perror("Tried to close iterator without proper reduction\n");
+        perror("Tried to close iterator (produce statement) without proper reduction\n");
     }
+
+    iterator->initiated=0;
+    iterator->current=NULL;
 
     return (ASTNode*)pop(iterator->node_stack);
     
@@ -235,27 +233,48 @@ state_table* acquire_table_from_table_type(table_type type){
     return NULL;
 }
 
+table_type find_tabletype_from_token(token* initiating_token){
+    switch(initiating_token->token_type){
+        case RESERVED_WORD:
+            break;
+        case OPERATOR:
+            break;
+        case DELIMITER:
+            break;
+        case STRING_LITERAL:
+            break;
+        case INT_VALUE:
+            return NUMBERS_TABLE;
+            break;
+        case IDENTIFIER:
+            return DECL_TABLE;
+            break;
+    }
+    perror("Invalid token type");
+    return NONE;
+}
+
 /** initiates iterator with a new type of table
  * 
  */
 void initiate_table(table_iterator* iterator, token* initiating_token, table_type type){
-
+    printf("Initiating\n");
     if(iterator->current != NULL){
         //push current state onto the stack
         push(iterator->progression_stack, iterator->current);
     }
 
+    //create a brand new table progression
     iterator->current = (table_progression*)acquire_from_pool(iterator->progression_pool);
     iterator->current->state = 0;
     iterator->current->table = NULL;
-    iterator->current->type = N;
+    iterator->current->type = NONE;
 
-
-    //initial state for all tables
-    iterator->current->state = 0;
     push_token_into_ast_node(iterator, initiating_token);
     if(type == NONE){
-        type = token_type_table_type_lookup[initiating_token->token_type];
+        if((type = find_tabletype_from_token(initiating_token)) == NONE){
+            return;
+        }
     }
     iterator->current->table = *acquire_table_from_table_type(type);
     iterator->current->type = type;

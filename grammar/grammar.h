@@ -45,12 +45,12 @@ typedef union{
 
 //describes the type of commands
 typedef enum {
-    RESERVED_WORD,
-    OPERATOR,
-    DELIMITER,
-    STRING_LITERAL,
-    INT_VALUE,
-    IDENTIFIER
+    RESERVED_WORD = 0,
+    OPERATOR = 1,
+    DELIMITER = 2,
+    STRING_LITERAL = 3,
+    INT_VALUE = 4,
+    IDENTIFIER = 5
 } token_types;
 
 #define DELIMITER_SYMBOL ";"
