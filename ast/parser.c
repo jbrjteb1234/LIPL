@@ -34,13 +34,9 @@ statement_list* parse(token* scan_token){
     statement_list* global_slist = create_new_slist();
     statement_list *current_working_list = global_slist;
 
-    bool end = false;
     shift_results result;
 
-    while(end == false){
-        if(scan_token->next == NULL){
-            end = true;
-        }
+    while(true){
         
         if(iterator->initiated == 0){
             initiate_table(iterator, scan_token, NONE);
@@ -63,13 +59,13 @@ statement_list* parse(token* scan_token){
             case COMPLETED: {
                 ASTNode* new_statement = close_iterator(iterator);
                 append_to_slist(current_working_list, new_statement);
-                advance_token(&scan_token);
-                //TODO: FIX ERROR WHERE TRIES TO ADVANCE TWICE AFTER FINISHING PARSING WHOLE FILE
                 break;
             }
             }
         }
-
+        if(scan_token->next == NULL){
+            break;
+        }
         advance_token(&scan_token);
     }
 
