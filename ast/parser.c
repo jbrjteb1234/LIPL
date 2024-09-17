@@ -11,21 +11,10 @@
  *  The final output is a statement list - the main routine of the program
  */
 
-/** Move to next token in tokenstream
- * 
- */
-void advance_token(token** scan_token){
-    if((*scan_token)->next != NULL){
-        (*scan_token) = (*scan_token)->next;
-    }else{
-        perror("Tried to advance past end of tokenstream\n");
-    }
-}
-
 /** parses the token stream (entry point for the parser)
  *  returns statement list of all global nodes
  */
-statement_list* parse(token* scan_token){
+statement_list* parse(token** scan_token){
 
     //working list - current parent ast node where statements are being added
     
@@ -63,10 +52,9 @@ statement_list* parse(token* scan_token){
             }
             }
         }
-        if(scan_token->next == NULL){
+        if((*scan_token)->next == NULL){
             break;
         }
-        advance_token(&scan_token);
     }
 
     shutdown_data_pool(iterator->progression_pool);

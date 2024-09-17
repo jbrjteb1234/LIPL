@@ -10,6 +10,7 @@
 #include "ast_utility/ast.h"
 #include "reducer.h"
 #include "table_initiator.h"
+#include "ast_utility/token_scanner.h"
 
 void drop_table(table_iterator* iterator);
 /** These tables allow us to find the table given:
@@ -93,35 +94,36 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
 /** converts token directly from tokenstream into an AST node
  *  adds AST node to the stack for reduction
  */
-void push_token_into_ast_node(table_iterator* iterator, token* current_lookahead){
+void push_token_into_ast_node(table_iterator* iterator, token** current_lookahead){
 
     if (current_lookahead == NULL){
         return;
     }
 
     ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
-    new_ast_node->token = current_lookahead;
+    new_ast_node->token = *current_lookahead;
 
     //if it is a leaf node  then we can transfer data from token to node immedietly
-    if(current_lookahead->leaf == 1){
+    if((*current_lookahead)->leaf == 1){
         new_ast_node->leaf_node=1;
-        if(current_lookahead->token_type == IDENTIFIER){
-            new_ast_node->data.value_node.identifier = current_lookahead->token_value.identifier_token_value;
+        if((*current_lookahead)->token_type == IDENTIFIER){
+            new_ast_node->data.value_node.identifier = (*current_lookahead)->token_value.identifier_token_value;
         }else{
-            new_ast_node->data.value_node.value = current_lookahead->token_value.variable_value;
+            new_ast_node->data.value_node.value = (*current_lookahead)->token_value.variable_value;
         }
     }else{
         new_ast_node->leaf_node = 0;
     }
 
     push(iterator->node_stack, new_ast_node);
+
 }
 
 /** interprets next token in the stream - 
  *  iterates state
  */
-shift_results shift(table_iterator* iterator, token* current_lookahead){
-    
+shift_results shift(table_iterator* iterator, token** current_lookahead){
+    advance_token(current_lookahead);
     if (iterator->current->table == NULL){
         //error
         perror("Table not initiated\n");
@@ -129,7 +131,7 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
     }
 
     //finds the index in the table that the token points to
-    uint32_t new_index = convert_token_to_index(iterator, current_lookahead);
+    uint32_t new_index = convert_token_to_index(iterator, *current_lookahead);
     uint32_t new_state;
 
     //if new_index is N, then an unrecognised symbol has appeared
@@ -180,7 +182,7 @@ shift_results shift(table_iterator* iterator, token* current_lookahead){
         //sets the current table to the state after parsing the table jumped to
 
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
-        if(current_lookahead->next != NULL && current_lookahead->next->token_type == DELIMITER){
+        if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
             push_token_into_ast_node(iterator, current_lookahead);
             printf("No jump required!\n");
             return SHIFTED;
@@ -237,7 +239,7 @@ state_table* acquire_table_from_table_type(table_type type){
 /** initiates iterator with a new type of table
  * 
  */
-void initiate_table(table_iterator* iterator, token* initiating_token, table_type type){
+void initiate_table(table_iterator* iterator, token** initiating_token, table_type type){
     printf("Initiating\n");
     if(iterator->current != NULL){
         //push current state onto the stack
@@ -250,16 +252,16 @@ void initiate_table(table_iterator* iterator, token* initiating_token, table_typ
     iterator->current->table = NULL;
     iterator->current->type = NONE;
 
-    push_token_into_ast_node(iterator, initiating_token);
-
     if(type == NONE){
-        if((type = find_tabletype_from_token(initiating_token)) == NONE){
+        if((type = find_tabletype_from_token(*initiating_token)) == NONE){
             return;
         }
     }
     iterator->current->table = *acquire_table_from_table_type(type);
     iterator->current->type = type;
     iterator->initiated = 1;
+
+    push_token_into_ast_node(iterator, initiating_token);
 }
 
 void drop_table(table_iterator* iterator){
