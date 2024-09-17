@@ -6,7 +6,7 @@
 typedef enum {
     NONE = -1,
     NUMBERS_TABLE = 0,
-    DECL_TABLE = 1
+    ASSIGNMENT_TABLE = 1
 } table_type;
 
 #define WIDTH 10
@@ -28,6 +28,6 @@ typedef uint32_t state_table[HEIGHT][WIDTH];
 
 state_table* get_numbers_table(void);
 
-state_table* get_decl_table(void);
+state_table* get_assignment_table(void);
 
 #endif

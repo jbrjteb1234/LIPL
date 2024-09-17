@@ -24,7 +24,7 @@ struct ASTNode{
             struct ASTNode* identifier;
             struct ASTNode* value;
             
-        } decl_node;
+        } assignment_node;
 
         struct {
             struct ASTNode* node_a;

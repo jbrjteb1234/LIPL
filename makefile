@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS = -std=c17 -I. -Wall -Wextra -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition 
 
-run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o decl_table.o numbers_table.o table_initiator.o token_scanner.o
-	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o decl_table.o numbers_table.o table_initiator.o token_scanner.o
+run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o assignment_table.o numbers_table.o table_initiator.o token_scanner.o
+	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o assignment_table.o numbers_table.o table_initiator.o token_scanner.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -44,8 +44,8 @@ reducer.o: ast/reducer.c
 numbers_table.o: ast/tables/numbers_table.c
 	$(CC) $(CFLAGS) -c ast/tables/numbers_table.c
 
-decl_table.o: ast/tables/decl_table.c
-	$(CC) $(CFLAGS) -c ast/tables/decl_table.c
+assignment_table.o: ast/tables/assignment_table.c
+	$(CC) $(CFLAGS) -c ast/tables/assignment_table.c
 
 table_initiator.o: ast/table_initiator.c
 	$(CC) $(CFLAGS) -c ast/table_initiator.c

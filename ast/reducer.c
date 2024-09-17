@@ -32,8 +32,8 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
             ASTNode* assigner = pop(node_stack);
             ASTNode* identifier = pop(node_stack);
 
-            assigner->data.decl_node.identifier = identifier;
-            assigner->data.decl_node.value = value;
+            assigner->data.assignment_node.identifier = identifier;
+            assigner->data.assignment_node.value = value;
 
             printf("Reduction 1, returning to state %u\n", return_state);
 

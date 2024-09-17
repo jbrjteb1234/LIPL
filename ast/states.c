@@ -25,26 +25,26 @@ void drop_table(table_iterator* iterator);
 
 /** these tables allow us to find the index of the selected table
  *  for exmaple, in numbers table, operator enum 1 (subtraction) leads us to index 1
- *  int index (which only has one form), leads us to index 0 in the num table, 2 in the decl table
+ *  int index (which only has one form), leads us to index 0 in the num table, 2 in the assignment table
  */
 const uint32_t operator_index_lookup[][6] = {
     {1, 1,  2,  2},         //numbers table
-    {N, N,  N,  N,  1,  N}  //decl table
+    {N, N,  N,  N,  1,  N}  //assignment table
 };
 
 const uint32_t delimiter_index_lookup[][5] = {
     {3,3,N,N,N},    //numbers table
-    {5,N,N,N,N}     //decl table
+    {5,N,N,N,N}     //assignment table
 };
 
 const uint32_t int_index_lookup[2] = {
     0,  //numbers table
-    2   //decl table
+    2   //assignemnt table
 };
 
 const uint32_t identifier_index_lookup[2] = {
     0,  //numbers table
-    0,  //decl table
+    0,  //assignemnt table
 };
 
 /** Returns the index of the table based on the token, acquired from the tables
@@ -227,8 +227,8 @@ state_table* acquire_table_from_table_type(table_type type){
     switch(type){
         case NUMBERS_TABLE:
             return get_numbers_table();
-        case DECL_TABLE:
-            return get_decl_table();
+        case ASSIGNMENT_TABLE:
+            return get_assignment_table();
         case NONE:
             break;
     }
@@ -269,8 +269,8 @@ void drop_table(table_iterator* iterator){
     iterator->current = (table_progression*)pop(iterator->progression_stack);
 }
 
-/** creates a new table in memory and allocates memory for the stack 
- * 
+/** creates a new table iterator in memory and allocates memory for the stack 
+ *  all allocating is done here for the AST
  */
 table_iterator* initialize_table_iterator(void){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));

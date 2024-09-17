@@ -47,8 +47,8 @@ table_type find_tabletype_from_token(token* initiating_token){
         }
             
         case IDENTIFIER:{
-            //TODO: PROPERLY IMPLEMENT DECLERATION TABLES
-            return DECL_TABLE;
+            //TODO: PROPERLY IMPLEMENT ASSIGNMENT TABLES
+            return ASSIGNMENT_TABLE;
         }
 
         default:
