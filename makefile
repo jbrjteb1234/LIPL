@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS = -std=c17 -I. -Wall -Wextra -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition 
 
-run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o decl_table.o numbers_table.o table_initiator.o
-	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o decl_table.o numbers_table.o table_initiator.o
+run: lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o decl_table.o numbers_table.o table_initiator.o token_scanner.o
+	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_type.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o decl_table.o numbers_table.o table_initiator.o token_scanner.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -50,6 +50,8 @@ decl_table.o: ast/tables/decl_table.c
 table_initiator.o: ast/table_initiator.c
 	$(CC) $(CFLAGS) -c ast/table_initiator.c
 
+token_scanner.o: ast/ast_utility/token_scanner.c
+	$(CC) $(CFLAGS) -c ast/ast_utility/token_scanner.c
 
 clean:
 	rm -f *.o run
