@@ -13,15 +13,6 @@
 #include "ast_utility/token_scanner.h"
 
 void drop_table(table_iterator* iterator);
-/** These tables allow us to find the table given:
- *  - the table type
- *  - the token type
- * 
- *  It includes:
- *  - table lookup with table type
- *  - table type lookup with token type
- */
-
 
 /** these tables allow us to find the index of the selected table
  *  for exmaple, in numbers table, operator enum 1 (subtraction) leads us to index 1
@@ -29,22 +20,26 @@ void drop_table(table_iterator* iterator);
  */
 const uint32_t operator_index_lookup[][6] = {
     {1, 1,  2,  2},         //numbers table
-    {N, N,  N,  N,  1,  N}  //assignment table
+    {N, N,  N,  N,  1,  N},  //assignment table
+    {N,N}
 };
 
 const uint32_t delimiter_index_lookup[][5] = {
     {3,3,N,N,N},    //numbers table
-    {5,N,N,N,N}     //assignment table
+    {5,N,N,N,N},    //assignment table
+    {N,N,N,N,N},    //reserved table
 };
 
-const uint32_t int_index_lookup[2] = {
+const uint32_t int_index_lookup[3] = {
     0,  //numbers table
-    2   //assignemnt table
+    2,  //assignemnt table
+    N,  //reserved table
 };
 
-const uint32_t identifier_index_lookup[2] = {
+const uint32_t identifier_index_lookup[3] = {
     0,  //numbers table
     0,  //assignemnt table
+    N,  //reserved table
 };
 
 /** Returns the index of the table based on the token, acquired from the tables
@@ -89,34 +84,6 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
     //unrecognised symbol (erronoeus token-type)
     perror("Unrecognised token-type\n");
     return N;
-}
-
-/** converts token directly from tokenstream into an AST node
- *  adds AST node to the stack for reduction
- */
-void push_token_into_ast_node(table_iterator* iterator, token** current_lookahead){
-
-    if (current_lookahead == NULL){
-        return;
-    }
-
-    ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
-    new_ast_node->token = *current_lookahead;
-
-    //if it is a leaf node  then we can transfer data from token to node immedietly
-    if((*current_lookahead)->leaf == 1){
-        new_ast_node->leaf_node=1;
-        if((*current_lookahead)->token_type == IDENTIFIER){
-            new_ast_node->data.value_node.identifier = (*current_lookahead)->token_value.identifier_token_value;
-        }else{
-            new_ast_node->data.value_node.value = (*current_lookahead)->token_value.variable_value;
-        }
-    }else{
-        new_ast_node->leaf_node = 0;
-    }
-
-    push(iterator->node_stack, new_ast_node);
-
 }
 
 /** interprets next token in the stream - 
@@ -223,19 +190,6 @@ ASTNode* close_iterator(table_iterator* iterator){
     
 }
 
-state_table* acquire_table_from_table_type(table_type type){
-    switch(type){
-        case NUMBERS_TABLE:
-            return get_numbers_table();
-        case ASSIGNMENT_TABLE:
-            return get_assignment_table();
-        case NONE:
-            break;
-    }
-    perror("Invalid table type\n");
-    return NULL;
-}
-
 /** initiates iterator with a new type of table
  * 
  */
@@ -252,13 +206,8 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
     iterator->current->table = NULL;
     iterator->current->type = NONE;
 
-    if(type == NONE){
-        if((type = find_tabletype_from_token(*initiating_token)) == NONE){
-            return;
-        }
-    }
-    iterator->current->table = *acquire_table_from_table_type(type);
-    iterator->current->type = type;
+    initiate_statement(initiating_token, iterator);
+
     iterator->initiated = 1;
 
     push_token_into_ast_node(iterator, initiating_token);

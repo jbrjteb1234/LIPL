@@ -2,11 +2,14 @@
 #define TABLES
 
 #include <stdint.h>
+#include "../../utility/data_pool.h"
+#include "../../utility/stack.h"
 
 typedef enum {
     NONE = -1,
     NUMBERS_TABLE = 0,
-    ASSIGNMENT_TABLE = 1
+    ASSIGNMENT_TABLE = 1,
+    RESERVED_TABLE = 2
 } table_type;
 
 #define WIDTH 10
@@ -24,10 +27,28 @@ typedef enum {
 #define N 0x30000000
 #define A 0x40000000
 
+typedef struct {
+    table_type  type;
+    uint32_t    state;
+    uint32_t    (*table)[WIDTH];
+} table_progression;
+
+// Iterates the state tables and shifts/reduces individual tokens
+typedef struct{
+    uint8_t initiated;
+    stack* node_stack;
+    stack* progression_stack;
+    data_pool* progression_pool;
+    data_pool* node_pool;
+    table_progression* current;
+} table_iterator;
+
 typedef uint32_t state_table[HEIGHT][WIDTH];
 
 state_table* get_numbers_table(void);
 
 state_table* get_assignment_table(void);
+
+state_table* get_reserved_table(void);
 
 #endif

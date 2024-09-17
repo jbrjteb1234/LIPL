@@ -4,6 +4,6 @@
 #include "tables/tables.h"
 #include "../lexer/token.h"
 
-table_type find_tabletype_from_token(token* initiating_token);
+void initiate_statement(token** initiating_token, table_iterator* iterator);
 
 #endif
