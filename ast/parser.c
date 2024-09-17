@@ -7,6 +7,7 @@
 #include "states.h"
 #include "../utility/stack.h"
 #include "ast_utility/slist_functions.h"
+#include "ast_utility/token_scanner.h"
 /** Statement list - list of AST root nodes. One ast root node might hold lots of statement lists (Like a block in an if statement)
  *  The final output is a statement list - the main routine of the program
  */
@@ -30,6 +31,7 @@ statement_list* parse(token** scan_token){
         if(iterator->initiated == 0){
             initiate_table(iterator, scan_token, NONE);
         }else{
+            advance_token(scan_token);
             result = shift(iterator, scan_token);
             switch(result){
             case SHIFTED:

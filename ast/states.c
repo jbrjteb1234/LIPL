@@ -90,7 +90,6 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
  *  iterates state
  */
 shift_results shift(table_iterator* iterator, token** current_lookahead){
-    advance_token(current_lookahead);
     if (iterator->current->table == NULL){
         //error
         perror("Table not initiated\n");
@@ -116,6 +115,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     if (new_state == A){
         if(iterator->progression_stack->top == -1){
             printf("Completed parsing\n");
+            advance_token(current_lookahead);
             return COMPLETED;
         }else{
             printf("Returning to previous table\n");
@@ -142,7 +142,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     }else if ( (jump_mask & new_state) == jump_mask){
 
         //Firsly push current token into the stack
-        push_token_into_ast_node(iterator, current_lookahead);
         int new_table = new_state & 0x000fffff;
         new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
         iterator->current->state = new_state;
@@ -150,8 +149,8 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
         //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
         if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
-            push_token_into_ast_node(iterator, current_lookahead);
             printf("No jump required!\n");
+            push_token_into_ast_node(iterator, current_lookahead);
             return SHIFTED;
         }
         printf("Jumping to new table\n");

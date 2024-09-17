@@ -17,7 +17,6 @@ void advance_token(token** scan_token){
  *  adds AST node to the stack for reduction
  */
 void push_token_into_ast_node(table_iterator* iterator, token** current_lookahead){
-
     if (current_lookahead == NULL){
         return;
     }

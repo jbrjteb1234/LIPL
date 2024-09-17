@@ -40,6 +40,8 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
 
             printf("Reduction 1, returning to state %u\n", return_state);
 
+            push(node_stack, assigner);
+
             return return_state;
 
             break;
