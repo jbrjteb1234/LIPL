@@ -2,6 +2,7 @@
 #define STACK
 
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct{
     int32_t top;
