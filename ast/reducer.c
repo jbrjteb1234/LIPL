@@ -20,6 +20,7 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
             operator->data.binary_op_node.lhs = lhs;
             operator->data.binary_op_node.rhs = rhs;
             operator->data.binary_op_node.type = operator->token->token_value.operator_token_value;
+            operator->type = BINARY_OP_NODE;
 
             push(node_stack, operator);
             printf("Reduction 0, returning to state %u\n", return_state);
@@ -34,6 +35,8 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
 
             assigner->data.assignment_node.identifier = identifier;
             assigner->data.assignment_node.value = value;
+
+            assigner->type = ASSIGNMENT_NODE;
 
             printf("Reduction 1, returning to state %u\n", return_state);
 

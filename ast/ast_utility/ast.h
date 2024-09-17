@@ -9,11 +9,25 @@
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
 
+typedef enum{
+    VALUE_NODE,
+    IDENTIFIER_NODE,
+    BINARY_OP_NODE,
+    ASSIGNMENT_NODE,
+    DECLARATION_NODE,
+}ASTNodeType;
+
 struct ASTNode{
     
     token* token;
+    ASTNodeType type;
 
     union {
+        union{
+            void*   value;
+            int     identifier;
+        } value_node;
+
         struct {
             struct ASTNode* lhs;
             struct ASTNode* rhs;
@@ -23,29 +37,12 @@ struct ASTNode{
         struct {
             struct ASTNode* identifier;
             struct ASTNode* value;
-            
         } assignment_node;
-
-        struct {
-            struct ASTNode* node_a;
-        } unary_op_node;
-
-        struct {
-            struct ASTNode* condition;
-            struct ASTNode* true_block;
-            struct ASTNode* else_block;
-        } condition_else_node;
-
-        union{
-            void*   value;
-            int     identifier;
-        } value_node;
 
         // other node-specific data
     } data;
 
     struct ASTNode* parent;
-    char statement_list_node;
     bool leaf_node;
 
 };

@@ -4,6 +4,8 @@
 #include "ast_utility/ast.h"
 #include "table_initiator.h"
 #include "ast_utility/token_scanner.h"
+#include "reducer.h"
+#include "../utility/stack.h"
 
 #define T initiating_token
 #define TT token_type
@@ -15,7 +17,6 @@
 void initiate_statement(token** initiating_token, table_iterator* iterator){
     switch((*T)->TT){
         case RESERVED_WORD: {
-            
             //RESERVED WORD - CHECK WHICH RESERVED WORD IT IS
             switch ((*T)->TV.reserved_word_token_value){
                 //TODO: IMPLEMENT RESERVED WORDS
@@ -23,22 +24,24 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 //VARIABLE DECLERATION
                 case VAR:
 
-                    //DESIRED TOKENSTREAM: VAR ID =
-                    //OUTPUT INTO NODESTACK: ID = 
-                    //OUTCOME FSM: RES TABLE, STATE 0
+                    //DESIRED TOKENSTREAM: DECL =
+                    //OUTPUT INTO NODESTACK: DECL = 
+                    //OUTCOME FSM: RES TABLE, STATE 1
 
                     AT
                     if( (*T)->TT !=  IDENTIFIER) {break;}
                     PT
+                    ASTNode* identifier = peek(iterator->node_stack);
+                    identifier->type = DECLARATION_NODE;
+                    identifier->data.value_node.identifier = identifier->token->token_value.identifier_token_value;
                     AT
                     if( (*T)->TT != OPERATOR || (*T)->TV.operator_token_value != ASSIGNMENT ){break;} 
 
-
                     iterator->current->table = *get_reserved_table();
                     iterator->current->type = RESERVED_TABLE;
-                    iterator->current->state = 0;
+                    iterator->current->state = 1;
 
-                    break;
+                    return;
 
                 case FUNC:
                     break;

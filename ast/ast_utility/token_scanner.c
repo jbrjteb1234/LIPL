@@ -29,8 +29,10 @@ void push_token_into_ast_node(table_iterator* iterator, token** current_lookahea
     if((*current_lookahead)->leaf == 1){
         new_ast_node->leaf_node=1;
         if((*current_lookahead)->token_type == IDENTIFIER){
+            new_ast_node->type = IDENTIFIER_NODE;
             new_ast_node->data.value_node.identifier = (*current_lookahead)->token_value.identifier_token_value;
         }else{
+            new_ast_node->type = VALUE_NODE;
             new_ast_node->data.value_node.value = (*current_lookahead)->token_value.variable_value;
         }
     }else{

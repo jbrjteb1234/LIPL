@@ -27,19 +27,19 @@ const uint32_t operator_index_lookup[][6] = {
 const uint32_t delimiter_index_lookup[][5] = {
     {3,3,N,N,N},    //numbers table
     {5,N,N,N,N},    //assignment table
-    {N,N,N,N,N},    //reserved table
+    {3,N,N,N,N},    //reserved table
 };
 
 const uint32_t int_index_lookup[3] = {
     0,  //numbers table
     2,  //assignemnt table
-    N,  //reserved table
+    1,  //reserved table
 };
 
 const uint32_t identifier_index_lookup[3] = {
     0,  //numbers table
     0,  //assignemnt table
-    N,  //reserved table
+    0,  //reserved table
 };
 
 /** Returns the index of the table based on the token, acquired from the tables
