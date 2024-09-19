@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "lexeme.h"
 #include "../utility/safe_memory.h"
+#include "../grammar/grammar.h"
 
 /** creates and initialises character buffer - characters are fed from source file here
  *  @return character_buffer* 
@@ -117,9 +118,9 @@ bool produce_lexeme(character_buffer* buf, lexeme* out, int next_int){
         empty_buffer(buf);
         return true;
 
-    //the next char is a symbol. unless last char is symbol (could be multi-char symb like '=='), produce lexeme
+    //the next char is a symbol. check for multi-symbol
     }else if (ispunct(next)){
-        if (ispunct(last_val)){
+        if (ispunct(last_val) && next == '='){
             return false;
         }
         copy_buffer(buf, out);
