@@ -16,7 +16,8 @@ data_pool* init_data_pool(uint32_t element_size, uint32_t initial_size){
     new_pool->remaining = initial_size;
     new_pool->data = safe_malloc( (size_t) element_size * initial_size);
     for(uint32_t i=0; i<initial_size; i++){
-        push(new_pool->free_list, (uint8_t*)new_pool->data + i * element_size);
+        uint8_t* data_ptr = (uint8_t*)new_pool->data + i * element_size;
+        push(new_pool->free_list, data_ptr, false);
     }
     return new_pool;
 }
@@ -26,7 +27,7 @@ data_pool* init_data_pool(uint32_t element_size, uint32_t initial_size){
  */
 void return_to_pool(data_pool* pool, void* data){
     if (data>pool->data && (uint8_t*)data < (uint8_t*)pool->data + pool->max*pool->element_size){
-        push(pool->free_list, data);
+        push(pool->free_list, data, false);
         pool->remaining++;
     }
 }
@@ -43,7 +44,7 @@ void expand_data_pool(data_pool* pool){
     pool->data = safe_realloc(pool->data,  (size_t) pool->max * pool->element_size);
     pool->remaining = pool->max/2;
     for(uint32_t i=0; i<pool->max; i++){
-        push(pool->free_list, (uint8_t*)pool->data + i * pool->element_size);
+        push(pool->free_list, (uint8_t*)pool->data + i * pool->element_size, false);
     }
 }
 
