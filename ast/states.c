@@ -18,8 +18,8 @@ void drop_table(table_iterator* iterator);
  *  for exmaple, in numbers table, operator enum 1 (subtraction) leads us to index 1
  *  int index (which only has one form), leads us to index 0 in the num table, 2 in the assignment table
  */
-const uint32_t operator_index_lookup[][6] = {
-    {1, 1,  2,  2},         //numbers table
+const uint32_t operator_index_lookup[][12] = {
+    {1, 1,  2,  2,N,N,N,N,N,N,N,4},         //numbers table
     {N, N,  N,  N,  1,  N},  //assignment table
     {N,N}
 };
@@ -110,65 +110,76 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     }
 
     printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->current->state);
+    uint32_t new_state_type = new_state & general_mask;
 
     //finished parsing statement, passed to the iterator above
-    if (new_state == A){
-        if(iterator->progression_stack->top == -1){
-            printf("Completed parsing\n");
-            advance_token(current_lookahead);
-            return COMPLETED;
-        }else{
-            printf("Returning to previous table\n");
-            drop_table(iterator);
-            return shift(iterator, current_lookahead);
-        }
-    
-    }else if (new_state == N){
-        perror("Unexpected symbol\n");
-        return ERROR;
-        //error
-
-    }else if ( (reduction_mask & new_state) == reduction_mask ){
-        //apply reduction rule and then push new token
-        new_state = reduce(iterator->node_stack, new_state);
-        //the reduction rule gives a new state to return to, then call again to push the lookahead
-        if (new_state != N){
-            iterator->current->state = new_state;
-            return shift(iterator, current_lookahead);
-        }
-        perror("Invalid reduction\n");
-        return ERROR;
-
-    }else if ( (jump_mask & new_state) == jump_mask){
-
-        //Firsly push current token into the stack
-        int new_table = new_state & 0x000fffff;
-        new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
-        iterator->current->state = new_state;
-        //sets the current table to the state after parsing the table jumped to
-
-        //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
-        if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
-            printf("No jump required!\n");
-            push_token_into_ast_node(iterator, current_lookahead);
-            return SHIFTED;
-        }
-        printf("Jumping to new table\n");
+    switch(new_state_type){
+        case(A): {
+            if(iterator->progression_stack->top == -1){
+                printf("Completed parsing\n");
+                advance_token(current_lookahead);
+                return COMPLETED;
+            }else{
+                printf("Returning to previous table\n");
+                drop_table(iterator);
+                return shift(iterator, current_lookahead);
+            }
         
-        //jump to new table - initiate new table
-        initiate_table(iterator, current_lookahead, new_table);
-        return JUMP;
+        }case(N): {
+            perror("Unexpected symbol\n");
+            return ERROR;
+            //error
 
-    }else{
-        //new state - keep pushing new ast nodes to stack
-        iterator->current->state = new_state;
-        push_token_into_ast_node(iterator, current_lookahead);
-        return SHIFTED;
+        }case(reduction_mask): {
+            //apply reduction rule and then push new token
+            new_state = reduce(iterator->node_stack, new_state);
+            //the reduction rule gives a new state to return to, then call again to push the lookahead
+            if(iterator->current->return_stack->top > -1){
+                new_state = *(uint32_t*)pop(iterator->current->return_stack);
+                printf("Returning to state %d\n", new_state);
+                return shift(iterator, current_lookahead);
+            }else if (new_state != N){
+                iterator->current->state = new_state;
+                return shift(iterator, current_lookahead);
+            }
+            perror("Invalid reduction\n");
+            return ERROR;
+
+        }case(jump_mask): {
+
+            //Firsly push current token into the stack
+            int new_table = new_state & 0x000fffff;
+            new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
+            iterator->current->state = new_state;
+            //sets the current table to the state after parsing the table jumped to
+
+            //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
+            if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
+                printf("No jump required!\n");
+                push_token_into_ast_node(iterator, current_lookahead);
+                return SHIFTED;
+            }
+            printf("Jumping to new table\n");
+            
+            //jump to new table - initiate new table
+            initiate_table(iterator, current_lookahead, new_table);
+            return JUMP;
+        }case(save_mask): {
+
+            //save current state to the stack and jump to new state
+            //we dereference it on the stack as its going to be changing
+            new_state = new_state & 0x000fffff;
+            printf("Saving state: %d\n", new_state);
+            push(iterator->current->return_stack, &iterator->current->state, true);
+            break;
+        } default:
+            break;
     }
 
-    //no valid state found
-    perror("No valid state found\n");
-    return ERROR;
+    //new state - keep pushing new ast nodes to stack
+    iterator->current->state = new_state;
+    push_token_into_ast_node(iterator, current_lookahead);
+    return SHIFTED;
 }
 
 /** When an iterate has fully reduced and parsed a statement, it can be closed
@@ -196,7 +207,7 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
     printf("Initiating\n");
     if(iterator->current != NULL){
         //push current state onto the stack
-        push(iterator->progression_stack, iterator->current);
+        push(iterator->progression_stack, iterator->current, false);
     }
 
     //create a brand new table progression
@@ -204,6 +215,7 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
     iterator->current->state = 0;
     iterator->current->table = NULL;
     iterator->current->type = NONE;
+    iterator->current->return_stack = create_stack(sizeof(uint32_t));
 
     initiate_statement(initiating_token, iterator);
 
@@ -223,7 +235,7 @@ void drop_table(table_iterator* iterator){
 table_iterator* initialize_table_iterator(void){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
-    new_iterator->progression_stack = create_stack(sizeof(table_progression));
+    new_iterator->progression_stack = create_stack(sizeof(table_progression*));
     new_iterator->progression_pool = init_data_pool(sizeof(table_progression), 10);
 
     new_iterator->current = NULL;

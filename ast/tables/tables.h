@@ -5,6 +5,10 @@
 #include "../../utility/data_pool.h"
 #include "../../utility/stack.h"
 
+#define VAR_ENTRY 1;
+
+#define NUM_ENTRY 0;
+
 typedef enum {
     NONE = -1,
     NUMBERS_TABLE = 0,
@@ -15,6 +19,8 @@ typedef enum {
 #define WIDTH 10
 #define HEIGHT 10
 
+#define general_mask 0xf0000000
+
 //converts int (jump rule)
 #define jump_mask 0x10000000
 #define new_state_shift_count 20
@@ -24,12 +30,16 @@ typedef enum {
 #define reduction_return_state_shift_count 20
 #define R(reduction_rule,return_state) ((reduction_mask | reduction_rule) | (return_state<<reduction_return_state_shift_count))
 
-#define N 0x30000000
-#define A 0x40000000
+#define save_mask 0x30000000
+#define S(new_state) (save_mask | new_state)
+
+#define N 0x40000000
+#define A 0x50000000
 
 typedef struct {
     table_type  type;
     uint32_t    state;
+    stack*      return_stack;
     uint32_t    (*table)[WIDTH];
 } table_progression;
 

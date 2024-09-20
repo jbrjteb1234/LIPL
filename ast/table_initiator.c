@@ -11,10 +11,10 @@
 #define TT token_type
 #define TV token_value
 
-#define PT push_token_into_ast_node(iterator, initiating_token);
-#define AT advance_token(initiating_token);
+#define PT push_token_into_ast_node(iterator, T);
+#define AT advance_token(T);
 
-void initiate_statement(token** initiating_token, table_iterator* iterator){
+void initiate_statement(token** T, table_iterator* iterator){
     switch((*T)->TT){
         case RESERVED_WORD: {
             //RESERVED WORD - CHECK WHICH RESERVED WORD IT IS
@@ -27,7 +27,6 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     //DESIRED TOKENSTREAM: DECL =
                     //OUTPUT INTO NODESTACK: DECL = 
                     //OUTCOME FSM: RES TABLE, STATE 1
-
                     AT
                     if( (*T)->TT !=  IDENTIFIER) {break;}
                     PT
@@ -39,7 +38,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->current->table = *get_reserved_table();
                     iterator->current->type = RESERVED_TABLE;
-                    iterator->current->state = 1;
+                    iterator->current->state = VAR_ENTRY;
 
                     return;
 

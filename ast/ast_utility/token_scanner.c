@@ -21,8 +21,10 @@ void push_token_into_ast_node(table_iterator* iterator, token** current_lookahea
         return;
     }
 
+    token* new_token_pointer;
+    new_token_pointer = *current_lookahead;
     ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
-    new_ast_node->token = *current_lookahead;
+    new_ast_node->token = new_token_pointer;
 
     //if it is a leaf node  then we can transfer data from token to node immedietly
     if((*current_lookahead)->leaf == 1){
@@ -38,5 +40,5 @@ void push_token_into_ast_node(table_iterator* iterator, token** current_lookahea
         new_ast_node->leaf_node = 0;
     }
 
-    push(iterator->node_stack, new_ast_node);
+    push(iterator->node_stack, new_ast_node, false);
 }
