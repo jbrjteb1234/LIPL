@@ -14,6 +14,7 @@ typedef enum{
     GREATER_THAN    =8,
     GREATER_OR_EQUAL=9,
     LESS_OR_EQUAL   =10,
+    DOT             =11
 } operator_token;
 
 //different types of reserved word commands
@@ -66,6 +67,7 @@ typedef enum {
     X("+",              ADDITION,           operator_token_value, OPERATOR)  \
     X("-",              SUBTRACTION,        operator_token_value, OPERATOR)  \
     X("*",              MULTIPLICATION,     operator_token_value, OPERATOR)  \
+    X(".",              DOT,                operator_token_value, OPERATOR)  \
     X("/",              DIVISION,           operator_token_value, OPERATOR)  \
     X("{",              OPEN_CBRACKET,      delimiter_token_value, DELIMITER)  \
     X("}",              CLOSE_CBRACKET,     delimiter_token_value, DELIMITER)  \
