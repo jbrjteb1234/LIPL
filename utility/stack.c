@@ -38,7 +38,7 @@ void push(stack* pushed_stack, void* data_to_copy, bool dereference) {
         void* target = (char*)pushed_stack->data + (pushed_stack->top * pushed_stack->element_size);
         safe_memcpy(target, data_to_copy, pushed_stack->element_size);  // Copy the data to the stack
     }else if(pushed_stack->element_size == sizeof(void*)){
-        pushed_stack->data[++pushed_stack->top] = data_to_copy;
+        pushed_stack->data[pushed_stack->top] = data_to_copy;
     }else{
         perror("Invalid combination of data to copy and dereferencing for stack\n");
     }

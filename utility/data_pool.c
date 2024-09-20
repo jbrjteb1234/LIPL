@@ -15,8 +15,9 @@ data_pool* init_data_pool(uint32_t element_size, uint32_t initial_size){
     new_pool->max = initial_size;
     new_pool->remaining = initial_size;
     new_pool->data = safe_malloc( (size_t) element_size * initial_size);
+    uint8_t* data_ptr;
     for(uint32_t i=0; i<initial_size; i++){
-        uint8_t* data_ptr = (uint8_t*)new_pool->data + i * element_size;
+        data_ptr = (uint8_t*)new_pool->data + i * element_size;
         push(new_pool->free_list, data_ptr, false);
     }
     return new_pool;
