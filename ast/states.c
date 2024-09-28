@@ -19,27 +19,33 @@ void drop_table(table_iterator* iterator);
  *  int index (which only has one form), leads us to index 0 in the num table, 2 in the assignment table
  */
 const uint32_t operator_index_lookup[][12] = {
-    {1, 1,  2,  2,N,N,N,N,N,N,N,4},         //numbers table
+    {1, 1,  2,  2,N,N,N,N,N,N,N,4},         //var table
     {N, N,  N,  N,  1,  N},  //assignment table
     {N,N}
 };
 
 const uint32_t delimiter_index_lookup[][5] = {
-    {3,3,N,N,N},    //numbers table
+    {3,3,N,N,N},    //var table
     {5,N,N,N,N},    //assignment table
     {3,N,N,N,N},    //reserved table
 };
 
 const uint32_t int_index_lookup[3] = {
-    0,  //numbers table
+    0,  //var table
     2,  //assignemnt table
     1,  //reserved table
 };
 
 const uint32_t identifier_index_lookup[3] = {
-    0,  //numbers table
+    0,  //var table
     0,  //assignemnt table
     0,  //reserved table
+};
+
+const uint32_t string_index_lookup[3] = {
+    N,  //var table
+    N,  //assignemnt table
+    N,  //reserved table
 };
 
 /** Returns the index of the table based on the token, acquired from the tables
@@ -63,11 +69,8 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
             return delimiter_index_lookup[iterator->current->type][current_lookahead->token_value.delimiter_token_value];
 
             break;
+
         case(STRING_LITERAL):
-
-
-
-            break;
         case(INT_VALUE):
 
             return int_index_lookup[iterator->current->type];
@@ -146,7 +149,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             return ERROR;
 
         }case(jump_mask): {
-
+            
             //Firsly push current token into the stack
             int new_table = new_state & 0x000fffff;
             new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
@@ -169,7 +172,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //save current state to the stack and jump to new state
             //we dereference it on the stack as its going to be changing
             new_state = new_state & 0x000fffff;
-            printf("Saving state: %d\n", new_state);
+            printf("Saving state: %d\n", iterator->current->state);
             push(iterator->current->return_stack, &iterator->current->state, true);
             break;
         } default:
@@ -207,6 +210,7 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
     printf("Initiating\n");
     if(iterator->current != NULL){
         //push current state onto the stack
+        printf("Pushin new table onto stack\n");
         push(iterator->progression_stack, iterator->current, false);
     }
 

@@ -11,7 +11,7 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
     
     switch(rule){
         //basic binary operation, like 1+1 or 2*3
-        //numbers table reduction
+        //var table reduction
         case 0: {
             ASTNode* rhs = pop(node_stack);
             ASTNode* operator = pop(node_stack);
@@ -28,6 +28,7 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
             return return_state;
         }
 
+        //assignment rule, like a = 1
         case 1: {
             ASTNode* value = pop(node_stack);
             ASTNode* assigner = pop(node_stack);

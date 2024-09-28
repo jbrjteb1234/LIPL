@@ -67,11 +67,13 @@ void initiate_statement(token** T, table_iterator* iterator){
             break;
         }
         case STRING_LITERAL:{
+            iterator->current->table = *get_var_table();
+            iterator->current->type = VAR_TABLE;
             break;
         }
         case INT_VALUE:{
-            iterator->current->table = *get_numbers_table();
-            iterator->current->type = NUMBERS_TABLE;
+            iterator->current->table = *get_var_table();
+            iterator->current->type = VAR_TABLE;
             return;
         }
             
