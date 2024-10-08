@@ -54,7 +54,7 @@ void* acquire_from_pool(data_pool* pool){
         expand_data_pool(pool);
     }
     pool->remaining--;
-    return pop(pool->free_list);
+    return *(void**)pop(pool->free_list);
 }
 
 void shutdown_data_pool(data_pool* pool){

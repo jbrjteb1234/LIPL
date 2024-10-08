@@ -230,7 +230,7 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
 
 void drop_table(table_iterator* iterator){
     return_to_pool(iterator->progression_pool, iterator->current);
-    iterator->current = (table_progression*)pop(iterator->progression_stack);
+    iterator->current = *(table_progression**)pop(iterator->progression_stack);
 }
 
 /** creates a new table iterator in memory and allocates memory for the stack 
