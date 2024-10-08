@@ -7,34 +7,33 @@
 #include "reducer.h"
 #include "../utility/stack.h"
 
-#define T initiating_token
-#define TT token_type
-#define TV token_value
+#define T_TYPE (*initiating_token)->token_type
+#define T_VAL (*initiating_token)->token_value
 
-#define PT push_token_into_ast_node(iterator, T);
-#define AT advance_token(T);
+#define PUSH push_token_into_ast_node(iterator, initiating_token);
+#define ADV advance_token(initiating_token);
 
-void initiate_statement(token** T, table_iterator* iterator){
-    switch((*T)->TT){
+void initiate_statement(token** initiating_token, table_iterator* iterator){
+    switch(T_TYPE){
         case RESERVED_WORD: {
             //RESERVED WORD - CHECK WHICH RESERVED WORD IT IS
-            switch ((*T)->TV.reserved_word_token_value){
+            switch (T_VAL.reserved_word_token_value){
                 //TODO: IMPLEMENT RESERVED WORDS
 
                 //VARIABLE DECLERATION
                 case VAR:
 
-                    //DESIRED TOKENSTREAM: DECL =
+                    //DESIRED TOKENSTREAM: DECL =       (DECL = VAR ID)
                     //OUTPUT INTO NODESTACK: DECL = 
                     //OUTCOME FSM: RES TABLE, STATE 1
-                    AT
-                    if( (*T)->TT !=  IDENTIFIER) {break;}
-                    PT
+                    ADV
+                    if( T_TYPE !=  IDENTIFIER) {break;}
+                    PUSH
                     ASTNode* identifier = peek(iterator->node_stack);
                     identifier->type = DECLARATION_NODE;
                     identifier->data.value_node.identifier = identifier->token->token_value.identifier_token_value;
-                    AT
-                    if( (*T)->TT != OPERATOR || (*T)->TV.operator_token_value != ASSIGNMENT ){break;} 
+                    ADV
+                    if( T_TYPE != OPERATOR || T_VAL.operator_token_value != ASSIGNMENT ){break;} 
 
                     iterator->current->table = *get_reserved_table();
                     iterator->current->type = RESERVED_TABLE;
