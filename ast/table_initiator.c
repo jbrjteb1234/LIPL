@@ -30,7 +30,8 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     if( T_TYPE !=  IDENTIFIER) {break;}
                     PUSH
                     ASTNode* identifier = peek(iterator->node_stack);
-                    identifier->type = DECLARATION_NODE;
+                    identifier->type = RES_WORD_NODE;
+                    identifier->value.res_node_value = DECLERATION_NODE;
                     identifier->data.value_node.identifier = identifier->token->token_value.identifier_token_value;
                     ADV
                     if( T_TYPE != OPERATOR || T_VAL.operator_token_value != ASSIGNMENT ){break;} 
@@ -66,19 +67,19 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
             break;
         }
         case STRING_LITERAL:{
-            iterator->current->table = *get_var_table();
-            iterator->current->type = VAR_TABLE;
+            iterator->current->table = *get_expr_table();
+            iterator->current->type = EXPR_TABLE;
             break;
         }
         case INT_VALUE:{
-            iterator->current->table = *get_var_table();
-            iterator->current->type = VAR_TABLE;
+            iterator->current->table = *get_expr_table();
+            iterator->current->type = EXPR_TABLE;
             return;
         }
             
         case IDENTIFIER:{
-            iterator->current->table = *get_assignment_table();
-            iterator->current->type = ASSIGNMENT_TABLE;
+            iterator->current->table = *get_expr_table();
+            iterator->current->type = EXPR_TABLE;
             return;
         }
 

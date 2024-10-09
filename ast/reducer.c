@@ -19,7 +19,9 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
 
             operator->data.binary_op_node.lhs = lhs;
             operator->data.binary_op_node.rhs = rhs;
-            operator->type = BINARY_OP_NODE;
+            
+            //TODO: Implement a proper type system
+            //operator->type = BINARY_OP_NODE;
 
             push(node_stack, operator, false);
             printf("Reduction 0, returning to state %u\n", return_state);
