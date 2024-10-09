@@ -39,6 +39,12 @@ struct ASTNode{
             struct ASTNode* value;
         } assignment_node;
 
+        struct {
+            struct ASTNode* identifier;
+            struct ASTNode** arguments;
+            uint32_t num_arguments;
+        } function_node;
+
         // other node-specific data
     } data;
 
