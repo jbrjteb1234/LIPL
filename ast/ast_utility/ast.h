@@ -17,13 +17,13 @@ typedef enum{
 
 typedef enum{
     ID_NODE,
+    DEC_NODE,
     STR_NODE,
     INT_NODE,
 }leaf_node;
 
 typedef enum{
     ASSIGNMENT_NODE,
-    DECLERATION_NODE,
     ADDITION_NODE,
     SUBTRACTION_NODE,
     MULTIPLICATION_NODE,
@@ -47,7 +47,6 @@ typedef union{
 
 struct ASTNode{
     
-    token* token;
     ASTNodeType type;
     ASTNodeValue value;
 
