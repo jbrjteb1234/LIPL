@@ -19,33 +19,12 @@ uint32_t reduce(stack* node_stack, uint32_t reduction){
 
             operator->data.binary_op_node.lhs = lhs;
             operator->data.binary_op_node.rhs = rhs;
-            operator->data.binary_op_node.type = operator->token->token_value.operator_token_value;
             operator->type = BINARY_OP_NODE;
 
             push(node_stack, operator, false);
             printf("Reduction 0, returning to state %u\n", return_state);
 
             return return_state;
-        }
-
-        //assignment rule, like a = 1
-        case 1: {
-            ASTNode* value = pop(node_stack);
-            ASTNode* assigner = pop(node_stack);
-            ASTNode* identifier = pop(node_stack);
-
-            assigner->data.assignment_node.identifier = identifier;
-            assigner->data.assignment_node.value = value;
-
-            assigner->type = ASSIGNMENT_NODE;
-
-            printf("Reduction 1, returning to state %u\n", return_state);
-
-            push(node_stack, assigner, false);
-
-            return return_state;
-
-            break;
         }
     }
 
