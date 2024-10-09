@@ -11,7 +11,7 @@
 
 typedef enum {
     NONE = -1,
-    VAR_TABLE = 0,
+    EXPR_TABLE = 0,
     ASSIGNMENT_TABLE = 1,
     RESERVED_TABLE = 2,
     STRING_TABLE = 3,
@@ -56,9 +56,7 @@ typedef struct{
 
 typedef uint32_t state_table[HEIGHT][WIDTH];
 
-state_table* get_var_table(void);
-
-state_table* get_assignment_table(void);
+state_table* get_expr_table(void);
 
 state_table* get_reserved_table(void);
 
