@@ -181,7 +181,10 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
     //new state - keep pushing new ast nodes to stack
     iterator->current->state = new_state;
-    push_token_into_ast_node(iterator, current_lookahead, true);
+    //we dont need delimiters in the node stack
+    if((*current_lookahead)->token_type != DELIMITER){    
+        push_token_into_ast_node(iterator, current_lookahead, true);
+    }
     return SHIFTED;
 }
 
