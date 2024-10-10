@@ -159,8 +159,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
             if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
                 printf("No jump required!\n");
-                push_token_into_ast_node(iterator, current_lookahead, true);
-                return SHIFTED;
+                break;
             }
             printf("Jumping to new table\n");
             
