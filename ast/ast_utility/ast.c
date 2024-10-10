@@ -17,9 +17,11 @@ void assign_ast_node_type(ASTNode* node, token** current_lookahead){
     }
 
     switch( (*current_lookahead)->token_type ){
+        
         case RESERVED_WORD:
             printf("Reserved word in assign_ast_node_type\n");
             break;
+
         case OPERATOR:
             node->type = BINARY_OP_NODE;
             switch((*current_lookahead)->token_value.operator_token_value){
