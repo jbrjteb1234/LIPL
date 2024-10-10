@@ -15,7 +15,7 @@ state_table* get_expr_table(void){
         {N,         R(0,0), R(0,0), R(0,0), N,      N,      N},                         //STATE 6: expr . expr
 
         {8,         N,      N,      N,      N,      N,      N},                         //STATE 7: expr =
-        {N,         R(0,0), R(0,0), R(0,0), N,      N,      N},                         //STATE 8: expr = expr
+        {N,         S(1),   S(2),   R(0,0), N,      N,      R(0,0)},                    //STATE 8: expr = expr
 
         {10,        N,      N,      N,      N,      N,      N},                         //STATE 9: expr ,   [expr]
         {N,         N,      N,      R(1,0), N,      N,      R(1,0)},                    //STATE 10: expr , expr     [expr expr]
