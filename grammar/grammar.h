@@ -7,17 +7,18 @@
 
 //  LEXEME              TOKEN VALUE         TOKEN TYPE 
 #define DEFINE_TOKENS \
-    X("=",              ASSIGNMENT,         operator_token_value,       OPERATOR) \
-    X("==",             EQUIVALENT,         operator_token_value,       OPERATOR)  \
-    X("<",              LESS_THAN,          operator_token_value,       OPERATOR)  \
-    X(">",              GREATER_THAN,       operator_token_value,       OPERATOR)  \
-    X("=<",             LESS_OR_EQUAL,      operator_token_value,       OPERATOR)  \
-    X(">=",             GREATER_OR_EQUAL,   operator_token_value,       OPERATOR)  \
-    X("+",              ADDITION,           operator_token_value,       OPERATOR)  \
-    X("-",              SUBTRACTION,        operator_token_value,       OPERATOR)  \
-    X("*",              MULTIPLICATION,     operator_token_value,       OPERATOR)  \
-    X(".",              DOT,                operator_token_value,       OPERATOR)  \
-    X("/",              DIVISION,           operator_token_value,       OPERATOR)  \
+    X("=",              ASSIGNMENT,         operator_token_value,       OPERATOR)   \
+    X("==",             EQUIVALENT,         operator_token_value,       OPERATOR)   \
+    X("<",              LESS_THAN,          operator_token_value,       OPERATOR)   \
+    X(">",              GREATER_THAN,       operator_token_value,       OPERATOR)   \
+    X("=<",             LESS_OR_EQUAL,      operator_token_value,       OPERATOR)   \
+    X(">=",             GREATER_OR_EQUAL,   operator_token_value,       OPERATOR)   \
+    X("+",              ADDITION,           operator_token_value,       OPERATOR)   \
+    X("-",              SUBTRACTION,        operator_token_value,       OPERATOR)   \
+    X("*",              MULTIPLICATION,     operator_token_value,       OPERATOR)   \
+    X(".",              DOT,                operator_token_value,       OPERATOR)   \
+    X("/",              DIVISION,           operator_token_value,       OPERATOR)   \
+    X(",",              COMMA,              delimiter_token_value,      DELIMITER)  \
     X("{",              OPEN_CBRACKET,      delimiter_token_value,      DELIMITER)  \
     X("}",              CLOSE_CBRACKET,     delimiter_token_value,      DELIMITER)  \
     X("(",              OPEN_BRACKET,       delimiter_token_value,      DELIMITER)  \

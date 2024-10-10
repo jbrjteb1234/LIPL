@@ -33,6 +33,7 @@ typedef enum{
     CLOSE_BRACKET,
     OPEN_CBRACKET,
     CLOSE_CBRACKET,
+    COMMA,
 } delimiter_token;
 
 //The token value - could be an enum for operators or reserved words, or a variable value
