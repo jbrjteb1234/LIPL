@@ -28,12 +28,12 @@ typedef enum{
 } reserved_word_token;
 
 typedef enum{
-    EOS,
-    OPEN_BRACKET,
-    CLOSE_BRACKET,
-    OPEN_CBRACKET,
-    CLOSE_CBRACKET,
-    COMMA,
+    EOS =0,
+    OPEN_BRACKET = 1,
+    CLOSE_BRACKET = 2,
+    OPEN_CBRACKET = 3,
+    CLOSE_CBRACKET = 4,
+    COMMA = 5,
 } delimiter_token;
 
 //The token value - could be an enum for operators or reserved words, or a variable value
