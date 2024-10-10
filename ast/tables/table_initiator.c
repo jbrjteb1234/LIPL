@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "tables/tables.h"
-#include "ast_utility/ast.h"
+#include "tables.h"
+#include "../ast_utility/ast.h"
 #include "table_initiator.h"
-#include "ast_utility/token_scanner.h"
-#include "reducer.h"
-#include "../utility/stack.h"
+#include "../ast_utility/token_scanner.h"
+#include "../reducer.h"
+#include "../../utility/stack.h"
 
 #define T_TYPE (*initiating_token)->token_type
 #define T_VAL (*initiating_token)->token_value

@@ -9,7 +9,7 @@
 #include "../utility/stack.h"
 #include "ast_utility/ast.h"
 #include "reducer.h"
-#include "table_initiator.h"
+#include "tables/table_initiator.h"
 #include "ast_utility/token_scanner.h"
 
 void drop_table(table_iterator* iterator);

@@ -46,8 +46,8 @@ expr_table.o: ast/tables/expr_table.c
 reserved_table.o: ast/tables/reserved_table.c
 	$(CC) $(CFLAGS) -c ast/tables/reserved_table.c
 
-table_initiator.o: ast/table_initiator.c
-	$(CC) $(CFLAGS) -c ast/table_initiator.c
+table_initiator.o: ast/tables/table_initiator.c
+	$(CC) $(CFLAGS) -c ast/tables/table_initiator.c
 
 token_scanner.o: ast/ast_utility/token_scanner.c
 	$(CC) $(CFLAGS) -c ast/ast_utility/token_scanner.c
