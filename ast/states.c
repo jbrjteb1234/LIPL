@@ -66,6 +66,7 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
 
             break;
         case(DELIMITER):
+        
             return delimiter_index_lookup[iterator->current->type][current_lookahead->token_value.delimiter_token_value];
 
             break;
@@ -181,7 +182,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     //new state - keep pushing new ast nodes to stack
     iterator->current->state = new_state;
     //we dont need delimiters in the node stack
-    if((*current_lookahead)->token_type != DELIMITER){
+    if((*current_lookahead)->token_type != DELIMITER){    
         push_token_into_ast_node(iterator, current_lookahead, true);
     }
     return SHIFTED;
