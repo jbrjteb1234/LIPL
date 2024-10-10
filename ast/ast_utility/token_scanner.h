@@ -6,6 +6,6 @@
 #include "ast.h"
 
 void advance_token(token**);
-void push_token_into_ast_node(table_iterator* iterator, token** current_lookahead);
+void push_token_into_ast_node(table_iterator* iterator, token** current_lookahead, bool auto_assign);
 
 #endif

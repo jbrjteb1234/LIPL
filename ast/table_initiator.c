@@ -10,7 +10,7 @@
 #define T_TYPE (*initiating_token)->token_type
 #define T_VAL (*initiating_token)->token_value
 
-#define PUSH push_token_into_ast_node(iterator, initiating_token);
+#define PUSH push_token_into_ast_node(iterator, initiating_token, false);
 #define ADV advance_token(initiating_token);
 
 void initiate_statement(token** initiating_token, table_iterator* iterator){

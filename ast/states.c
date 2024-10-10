@@ -159,7 +159,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
             if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
                 printf("No jump required!\n");
-                push_token_into_ast_node(iterator, current_lookahead);
+                push_token_into_ast_node(iterator, current_lookahead, true);
                 return SHIFTED;
             }
             printf("Jumping to new table\n");
@@ -181,7 +181,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
     //new state - keep pushing new ast nodes to stack
     iterator->current->state = new_state;
-    push_token_into_ast_node(iterator, current_lookahead);
+    push_token_into_ast_node(iterator, current_lookahead, true);
     return SHIFTED;
 }
 
@@ -225,7 +225,7 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
 
     iterator->initiated = 1;
 
-    push_token_into_ast_node(iterator, initiating_token);
+    push_token_into_ast_node(iterator, initiating_token, true);
 }
 
 void drop_table(table_iterator* iterator){
