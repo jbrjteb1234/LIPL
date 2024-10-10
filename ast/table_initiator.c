@@ -30,9 +30,9 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     if( T_TYPE !=  IDENTIFIER) {break;}
                     PUSH
                     ASTNode* identifier = peek(iterator->node_stack);
-                    identifier->type = RES_WORD_NODE;
-                    identifier->value.res_node_value = DECLERATION_NODE;
-                    identifier->data.value_node.identifier = identifier->token->token_value.identifier_token_value;
+                    identifier->type = LEAF_NODE;
+                    identifier->value.leaf_node_value = DEC_NODE;
+                    identifier->data.value_node.identifier = T_VAL.identifier_token_value;
                     ADV
                     if( T_TYPE != OPERATOR || T_VAL.operator_token_value != ASSIGNMENT ){break;} 
 

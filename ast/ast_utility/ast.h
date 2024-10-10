@@ -10,6 +10,7 @@ typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
 
 typedef enum{
+    NONE_AST_TYPE,
     LEAF_NODE,
     BINARY_OP_NODE,
     RES_WORD_NODE,
