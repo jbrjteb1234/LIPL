@@ -14,6 +14,7 @@ typedef enum{
     LEAF_NODE,
     BINARY_OP_NODE,
     RES_WORD_NODE,
+    EXPR_LIST,
 }ASTNodeType;
 
 typedef enum{
@@ -67,6 +68,8 @@ struct ASTNode{
             struct ASTNode** arguments;
             uint32_t num_arguments;
         } function_node;
+                   
+        statement_list* expression_list_node;
 
         // other node-specific data
     } data;
