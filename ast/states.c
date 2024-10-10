@@ -66,7 +66,7 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
 
             break;
         case(DELIMITER):
-        
+
             return delimiter_index_lookup[iterator->current->type][current_lookahead->token_value.delimiter_token_value];
 
             break;
@@ -119,14 +119,22 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     //finished parsing statement, passed to the iterator above
     switch(new_state_type){
         case(A): {
-            if(iterator->progression_stack->top == -1){
-                printf("Completed parsing\n");
-                advance_token(current_lookahead);
-                return COMPLETED;
-            }else{
+            //firstly, check if theres a saved state to return to
+            if(iterator->current->return_stack->top > -1){
+                new_state = *(uint32_t*)pop(iterator->current->return_stack);
+                iterator->current->state = new_state;
+                printf("Returning to state %d\n", new_state);
+                return shift(iterator, current_lookahead);
+            //then, check if theres any other table progressions to return to
+            }else if(iterator->progression_stack->top > -1){
                 printf("Returning to previous table\n");
                 drop_table(iterator);
                 return shift(iterator, current_lookahead);
+            //if no saved states and no other tables to return to, then the statement is completed
+            }else{
+                printf("Completed parsing\n");
+                advance_token(current_lookahead);
+                return COMPLETED;
             }
         
         }case(N): {
@@ -138,11 +146,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //apply reduction rule and then push new token
             new_state = reduce(iterator, new_state);
             //the reduction rule gives a new state to return to, then call again to push the lookahead
-            if(iterator->current->return_stack->top > -1){
-                new_state = *(uint32_t*)pop(iterator->current->return_stack);
-                printf("Returning to state %d\n", new_state);
-                return shift(iterator, current_lookahead);
-            }else if (new_state != N){
+            if (new_state != N){
                 iterator->current->state = new_state;
                 return shift(iterator, current_lookahead);
             }
@@ -202,7 +206,7 @@ ASTNode* close_iterator(table_iterator* iterator){
     iterator->initiated=0;
     iterator->current=NULL;
 
-    return (ASTNode*)pop(iterator->node_stack);
+    return *(ASTNode**)pop(iterator->node_stack);
     
 }
 
