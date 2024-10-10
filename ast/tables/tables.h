@@ -10,7 +10,7 @@
 #define NUM_ENTRY 0;
 
 typedef enum {
-    NONE = -1,
+    NONE_TABLE = -1,
     EXPR_TABLE = 0,
     ASSIGNMENT_TABLE = 1,
     RESERVED_TABLE = 2,

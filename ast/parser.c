@@ -29,7 +29,7 @@ statement_list* parse(token** scan_token){
     while(true){
         
         if(iterator->initiated == 0){
-            initiate_table(iterator, scan_token, NONE);
+            initiate_table(iterator, scan_token, NONE_TABLE);
         }else{
             advance_token(scan_token);
             result = shift(iterator, scan_token);

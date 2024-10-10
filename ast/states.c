@@ -218,7 +218,7 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
     iterator->current = (table_progression*)acquire_from_pool(iterator->progression_pool);
     iterator->current->state = 0;
     iterator->current->table = NULL;
-    iterator->current->type = NONE;
+    iterator->current->type = NONE_TABLE;
     iterator->current->return_stack = create_stack(sizeof(uint32_t));
 
     initiate_statement(initiating_token, iterator);
