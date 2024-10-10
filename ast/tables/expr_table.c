@@ -8,17 +8,17 @@ state_table* get_expr_table(void){
         {3,         N,      N,      N,      N,      N,      N},                         //STATE 1: expr +-
         {4,         N,      N,      N,      N,      N,      N},                         //STATE 2: expr */
 
-        {N,         R(0,0), S(2),   R(0,0), S(5),   N,      N},                         //STATE 3: expr +- expr
-        {N,         R(0,0), R(0,0), R(0,0), S(5),   N,      N},                         //STATE 4: expr */ expr
+        {N,         R(0,0), S(2),   R(0,0), S(5),   N,      R(0,0)},                    //STATE 3: expr +- expr
+        {N,         R(0,0), R(0,0), R(0,0), S(5),   N,      R(0,0)},                    //STATE 4: expr */ expr
 
         {6,         N,      N,      N,      N,      N,      N},                         //STATE 5: expr .
-        {N,         R(0,0), R(0,0), R(0,0), N,      N,      N},                         //STATE 6: expr . expr
+        {N,         R(0,0), R(0,0), R(0,0), N,      N,      R(0,0)},                    //STATE 6: expr . expr
 
         {8,         N,      N,      N,      N,      N,      N},                         //STATE 7: expr =
-        {N,         S(1),   S(2),   R(0,0), N,      N,      R(0,0)},                    //STATE 8: expr = expr
+        {N,         S(1),   S(2),   R(0,0), S(5),   N,      R(0,0)},                    //STATE 8: expr = expr
 
         {10,        N,      N,      N,      N,      N,      N},                         //STATE 9: expr ,   [expr]
-        {N,         N,      N,      R(1,0), N,      N,      R(1,0)},                    //STATE 10: expr , expr     [expr expr]
+        {N,         S(1),   S(2),   R(1,0), S(5),   S(7),   R(1,0)},                    //STATE 10: expr , expr     [expr expr]
     };
     return &expr_table;
 }
