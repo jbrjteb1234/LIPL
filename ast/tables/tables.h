@@ -17,8 +17,8 @@ typedef enum {
     STRING_TABLE = 3,
 } table_type;
 
-#define WIDTH 10
-#define HEIGHT 10
+#define WIDTH 20
+#define HEIGHT 20
 
 #define general_mask 0xf0000000
 
