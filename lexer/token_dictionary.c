@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "token_type.h"
+#include "token_dictionary.h"
 #include "token.h"
 #include "../utility/safe_memory.h"
 #include "../grammar/grammar.h"

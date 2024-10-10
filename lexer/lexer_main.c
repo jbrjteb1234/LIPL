@@ -4,6 +4,7 @@
 #include "lexer_main.h"
 #include "lexeme.h"
 #include "token_type.h"
+#include "token_dictionary.h"
 #include "token.h"
 
 void print_token_stream(token* head) {

@@ -1,40 +1,57 @@
 #ifndef TOKEN_TYPE
 #define TOKEN_TYPE
 
-#define INITIAL_DICTIONARY_SIZE 50
-#define DICTIONARY_EXPAND_AMOUNT 10
+//different types of operator commands
+typedef enum{
+    ADDITION        =0,
+    SUBTRACTION     =1,
+    MULTIPLICATION  =2,
+    DIVISION        =3,
+    ASSIGNMENT      =4,
+    EQUIVALENT      =5,
+    NOT_EQUIVALENT  =6,
+    LESS_THAN       =7,
+    GREATER_THAN    =8,
+    GREATER_OR_EQUAL=9,
+    LESS_OR_EQUAL   =10,
+    DOT             =11
+} operator_token;
 
-#include "token.h"
-#include "lexeme.h"
+//different types of reserved word commands
+typedef enum{
+    VAR = 0,
+    FUNC = 1,
+    IF = 2,
+    ELSE = 3,
+    WHILE = 4,
+    RETURN = 5
+} reserved_word_token;
 
-#include <stdint.h>
+typedef enum{
+    EOS,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
+    OPEN_CBRACKET,
+    CLOSE_CBRACKET,
+} delimiter_token;
 
-//populates the dictionary - links string lexeme value token_value and token_function
-typedef struct{
-    token_values    token_value;
-    token_types     token_type;
-    char*           lexeme;
-} tokentype_dictionary_entry;
+//The token value - could be an enum for operators or reserved words, or a variable value
+typedef union{
+    operator_token          operator_token_value;
+    reserved_word_token     reserved_word_token_value;
+    delimiter_token         delimiter_token_value;
+    int                     identifier_token_value;
+    void*                   variable_value;               
+} token_values;
 
-//dictionary of tokentypes
-typedef struct{
-    uint32_t maximum_amount;
-    char* free_list;
-
-    int identifier_count;
-
-    tokentype_dictionary_entry** dictionary;
-} tokentype_dictionary;
-
-token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme);
-
-void expand_dictionary(tokentype_dictionary* dictionary);
-
-tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, char* lexeme);
-
-tokentype_dictionary* initialize_tokentype_dictionary(void);
-
-void create_new_tokentype(tokentype_dictionary*, char*, token_values, token_types);
+//describes the type of commands
+typedef enum {
+    RESERVED_WORD = 0,
+    OPERATOR = 1,
+    DELIMITER = 2,
+    STRING_LITERAL = 3,
+    INT_VALUE = 4,
+    IDENTIFIER = 5
+} token_types;
 
 #endif
-
