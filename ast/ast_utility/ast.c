@@ -21,8 +21,32 @@ void assign_ast_node_type(ASTNode* node, token** current_lookahead){
             printf("Reserved word in assign_ast_node_type\n");
             break;
         case OPERATOR:
+            node->type = BINARY_OP_NODE;
+            switch((*current_lookahead)->token_value.operator_token_value){
 
+                case ADDITION:
+                    node->value.binary_op_node_value = ADDITION_NODE;
+                    break;
 
+                case SUBTRACTION:
+                    node->value.binary_op_node_value = SUBTRACTION_NODE;
+                    break;
+
+                case MULTIPLICATION:
+                    node->value.binary_op_node_value = MULTIPLICATION_NODE;
+                    break;
+
+                case DIVISION:
+                    node->value.binary_op_node_value = DIVISION_NODE;
+                    break;
+
+                case ASSIGNMENT:
+                    node->value.binary_op_node_value = ASSIGNMENT_NODE;
+                    break;
+                
+                default:
+                    break;
+            }
 
             break;
         case DELIMITER:
