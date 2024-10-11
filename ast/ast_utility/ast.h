@@ -15,6 +15,7 @@ typedef enum{
     BINARY_OP_NODE,
     RES_WORD_NODE,
     EXPR_LIST,
+    PARENTHESES_NODE,
 }ASTNodeType;
 
 typedef enum{
