@@ -25,7 +25,7 @@ const uint32_t operator_index_lookup[][12] = {
 };
 
 const uint32_t delimiter_index_lookup[][6] = {
-    {3,N,N,N,N,6},    //var table
+    {3,7,8,N,N,6},    //var table
     {5,N,N,N,N,N},    //assignment table
     {3,N,N,N,N,N},    //reserved table
 };
@@ -103,13 +103,13 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     //finds the index in the table that the token points to
     uint32_t new_index = convert_token_to_index(iterator, *current_lookahead);
     uint32_t new_state;
-
     //if new_index is N, then an unrecognised symbol has appeared
     if(new_index != N){
         //acquire the new state (could be reduction, error, completion or another state)
         new_state = iterator->current->table[iterator->current->state][new_index];
     }else{
         //error - unrecognised symbol
+        perror("Unrecognised symbol\n");
         return ERROR;
     }
 
@@ -125,6 +125,10 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 iterator->current->state = new_state;
                 printf("Returning to state %d\n", new_state);
                 return shift(iterator, current_lookahead);
+            //also check if there is are any parentheses to close, if not, error
+            }else if(iterator->parentheses_stack->top > -1){
+                perror("Unmatched parentheses\n");
+                return ERROR;
             //then, check if theres any other table progressions to return to
             }else if(iterator->progression_stack->top > -1){
                 printf("Returning to previous table\n");
@@ -133,6 +137,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //if no saved states and no other tables to return to, then the statement is completed
             }else{
                 printf("Completed parsing\n");
+                //advance one to skip the EOS token
                 advance_token(current_lookahead);
                 return COMPLETED;
             }
@@ -179,7 +184,28 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             printf("Saving state: %d\n", iterator->current->state);
             push(iterator->current->return_stack, &iterator->current->state, true);
             break;
-        } default:
+        }case(open_parentheses): {
+            //push C to the return stack, to indicate an open bracket
+            uint32_t open_bracket_state_marker = C;
+            uint32_t state_after_close = new_state & 0x000fffff;
+            uint32_t bracket_state = (new_state & 0x0ff00000) >> open_parentheses_state_shift_count;
+            new_state = bracket_state;
+            printf("Bracket state: %d\n", bracket_state);
+            push(iterator->current->return_stack, &state_after_close, true);
+            push(iterator->current->return_stack, &open_bracket_state_marker, true);
+            break;
+        }case(C): {
+            new_state = *(uint32_t*)pop(iterator->current->return_stack);
+            if(new_state == C){
+                //parentheses closed, we can now return to the intended state
+                new_state = *(uint32_t*)pop(iterator->current->return_stack);
+                break;
+            }else{
+                //Still saved state in the parentheses stack, we can continue parsing
+                return shift(iterator, current_lookahead);
+            }
+        }
+        default:
             break;
     }
 
@@ -246,6 +272,7 @@ void drop_table(table_iterator* iterator){
 table_iterator* initialize_table_iterator(void){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
+    new_iterator->parentheses_stack = create_stack(sizeof(uint32_t));
     new_iterator->progression_stack = create_stack(sizeof(table_progression*));
     new_iterator->progression_pool = init_data_pool(sizeof(table_progression), 10);
 
