@@ -17,9 +17,9 @@ void advance_token(token** scan_token){
 /** converts token directly from tokenstream into an AST node
  *  adds AST node to the stack for reduction
  */
-void push_token_into_ast_node(table_iterator* iterator, token** current_lookahead, bool auto_assign){
+ASTNode* push_token_into_ast_node(table_iterator* iterator, token** current_lookahead, bool auto_assign){
     if (current_lookahead == NULL){
-        return;
+        return NULL;
     }
 
     ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
@@ -32,4 +32,5 @@ void push_token_into_ast_node(table_iterator* iterator, token** current_lookahea
 
 
     push(iterator->node_stack, new_ast_node, false);
+    return new_ast_node;
 }
