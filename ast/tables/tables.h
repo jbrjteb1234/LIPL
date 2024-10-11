@@ -34,8 +34,14 @@ typedef enum {
 #define save_mask 0x30000000
 #define S(new_state) (save_mask | new_state)
 
-#define N 0x40000000
-#define A 0x50000000
+#define open_parentheses 0x40000000
+#define O(new_state) (open_parentheses | new_state)
+
+#define close_parentheses 0x50000000
+#define C(new_state) (close_parentheses | new_state)
+
+#define N 0x60000000
+#define A 0x70000000
 
 typedef struct {
     table_type  type;
@@ -49,6 +55,7 @@ typedef struct{
     uint8_t initiated;
     stack* node_stack;
     stack* progression_stack;
+    stack* parentheses_stack;
     data_pool* progression_pool;
     data_pool* node_pool;
     table_progression* current;
