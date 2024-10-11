@@ -190,7 +190,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             uint32_t state_after_close = new_state & 0x000fffff;
             uint32_t bracket_state = (new_state & 0x0ff00000) >> open_parentheses_state_shift_count;
             new_state = bracket_state;
-            printf("Bracket state: %d\n", bracket_state);
+            printf("Opening bracket via state: %d\n", bracket_state);
             push(iterator->current->return_stack, &state_after_close, true);
             push(iterator->current->return_stack, &open_bracket_state_marker, true);
             break;
@@ -198,10 +198,12 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             new_state = *(uint32_t*)pop(iterator->current->return_stack);
             if(new_state == C){
                 //parentheses closed, we can now return to the intended state
+                printf("Closing bracket\n");
                 new_state = *(uint32_t*)pop(iterator->current->return_stack);
                 break;
             }else{
                 //Still saved state in the parentheses stack, we can continue parsing
+                iterator->current->state = new_state;
                 return shift(iterator, current_lookahead);
             }
         }
