@@ -25,20 +25,20 @@ typedef enum {
 //converts int (jump rule)
 #define jump_mask 0x10000000
 #define new_state_shift_count 20
-#define J(table_to_jump, new_state) ((jump_mask | (table_to_jump&0x000fffff)) | (new_state << new_state_shift_count))
+#define J(table_to_jump, jump_new_state) ((jump_mask | (table_to_jump&0x000fffff)) | (jump_new_state << new_state_shift_count))
 
 #define reduction_mask  0x20000000  //indicates that this is a reduction call
 #define reduction_return_state_shift_count 20
 #define R(reduction_rule,return_state) ((reduction_mask | reduction_rule) | (return_state<<reduction_return_state_shift_count))
 
 #define save_mask 0x30000000
-#define S(new_state) (save_mask | new_state)
+#define S(save_new_state) (save_mask | save_new_state)
 
 #define open_parentheses 0x40000000
-#define O(new_state) (open_parentheses | new_state)
+#define open_parentheses_state_shift_count 20
+#define O(open_parentheses_state, state_after_close) ((open_parentheses | state_after_close) | (open_parentheses_state<<open_parentheses_state_shift_count))
 
-#define close_parentheses 0x50000000
-#define C(new_state) (close_parentheses | new_state)
+#define C 0x50000000
 
 #define N 0x60000000
 #define A 0x70000000
