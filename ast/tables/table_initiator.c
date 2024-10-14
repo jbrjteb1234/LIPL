@@ -6,6 +6,7 @@
 #include "../ast_utility/token_scanner.h"
 #include "../reducer.h"
 #include "../../utility/stack.h"
+#include "../ast_utility/routines.h"
 
 #define T_TYPE (*initiating_token)->token_type
 #define T_VAL (*initiating_token)->token_value
@@ -36,9 +37,12 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     ADV
                     if( T_TYPE != OPERATOR || T_VAL.operator_token_value != ASSIGNMENT ){break;} 
 
+                    PUSH
+
                     iterator->current->table = *get_reserved_table();
                     iterator->current->type = RESERVED_TABLE;
                     iterator->current->state = VAR_ENTRY;
+
 
                     return;
 
@@ -64,22 +68,40 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
             break;
         }
         case DELIMITER:{
+
+            switch (T_VAL.delimiter_token_value){
+                case OPEN_BRACKET:
+
+                    iterator->current->table = *get_expr_table();
+                    iterator->current->type = EXPR_TABLE;
+                    
+                    iterator->current->state = open_expression_parentheses(iterator, O(11,0));
+
+                    return;
+            
+                default:
+                    break;
+            }
+
             break;
         }
         case STRING_LITERAL:{
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
+            PUSH
             break;
         }
         case INT_VALUE:{
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
+            PUSH
             return;
         }
             
         case IDENTIFIER:{
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
+            PUSH
             return;
         }
 

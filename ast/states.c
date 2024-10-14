@@ -11,6 +11,7 @@
 #include "reducer.h"
 #include "tables/table_initiator.h"
 #include "ast_utility/token_scanner.h"
+#include "ast_utility/routines.h"
 
 void drop_table(table_iterator* iterator);
 
@@ -186,13 +187,8 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             break;
         }case(open_parentheses): {
             //push C to the return stack, to indicate an open bracket
-            uint32_t open_bracket_state_marker = C;
-            uint32_t state_after_close = new_state & 0x000fffff;
-            uint32_t bracket_state = (new_state & 0x0ff00000) >> open_parentheses_state_shift_count;
-            new_state = bracket_state;
-            printf("Opening bracket via state: %d\n", bracket_state);
-            push(iterator->current->return_stack, &state_after_close, true);
-            push(iterator->current->return_stack, &open_bracket_state_marker, true);
+            //when closing a bracket, return states are popped, until C is found. this indicates open bracket
+            new_state = open_expression_parentheses(iterator, new_state);
             break;
         }case(C): {
             new_state = *(uint32_t*)pop(iterator->current->return_stack);
@@ -259,8 +255,6 @@ void initiate_table(table_iterator* iterator, token** initiating_token, table_ty
     initiate_statement(initiating_token, iterator);
 
     iterator->initiated = 1;
-
-    push_token_into_ast_node(iterator, initiating_token, true);
 }
 
 void drop_table(table_iterator* iterator){
