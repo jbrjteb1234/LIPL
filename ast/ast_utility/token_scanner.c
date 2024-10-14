@@ -27,13 +27,14 @@ token* lookahead(token** scan_token){
  *  adds AST node to the stack for reduction
  */
 ASTNode* push_token_into_ast_node(table_iterator* iterator, token** current_lookahead, bool auto_assign){
-    if (current_lookahead == NULL){
-        return NULL;
-    }
 
     ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
 
     if(auto_assign){
+        if (current_lookahead == NULL){
+            perror("Tried to auto assign without lookahead token\n");
+            return NULL;
+        }
         assign_ast_node_type(new_ast_node, current_lookahead);
     }else{
         new_ast_node->type = NONE_AST_TYPE;
