@@ -14,6 +14,15 @@ void advance_token(token** scan_token){
     }
 }
 
+token* lookahead(token** scan_token){
+    if((*scan_token)->next != NULL){
+        return (*scan_token)->next;
+    }else{
+        //perror("Tried to look ahead past end of tokenstream\n");
+        return NULL;
+    }
+}
+
 /** converts token directly from tokenstream into an AST node
  *  adds AST node to the stack for reduction
  */

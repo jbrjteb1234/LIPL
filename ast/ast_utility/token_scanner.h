@@ -9,4 +9,6 @@ void advance_token(token**);
 
 ASTNode* push_token_into_ast_node(table_iterator* iterator, token** current_lookahead, bool auto_assign);
 
+token* lookahead(token** scan_token);
+
 #endif
