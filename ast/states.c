@@ -168,7 +168,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //sets the current table to the state after parsing the table jumped to
 
             //firstly check the token after the current lookahead - if its a delimiter, we dont need to iterate the FSM - continue on current table to delimiter
-            if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER){
+            if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER && (*current_lookahead)->next->token_value.delimiter_token_value == EOS){
                 printf("No jump required!\n");
                 break;
             }
