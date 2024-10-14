@@ -27,17 +27,23 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     //DESIRED TOKENSTREAM: DECL =       (DECL = VAR ID)
                     //OUTPUT INTO NODESTACK: DECL = 
                     //OUTCOME FSM: RES TABLE, STATE 1
-                    ADV
+
+                    ADV //ADV TO IDENTIFIER
+
                     if( T_TYPE !=  IDENTIFIER) {break;}
-                    PUSH
+
+                    PUSH //PUSH IDENTIFIER INTO NODESTACK
+
                     ASTNode* identifier = peek(iterator->node_stack);
                     identifier->type = LEAF_NODE;
                     identifier->value.leaf_node_value = DEC_NODE;
                     identifier->data.value_node.identifier = T_VAL.identifier_token_value;
-                    ADV
+
+                    ADV //ADV TO ASSIGNMENT (=)
+
                     if( T_TYPE != OPERATOR || T_VAL.operator_token_value != ASSIGNMENT ){break;} 
 
-                    PUSH
+                    PUSH //PUSH ASSIGNMENT (=) INTO NODESTACK
 
                     iterator->current->table = *get_reserved_table();
                     iterator->current->type = RESERVED_TABLE;
