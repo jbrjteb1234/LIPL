@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS = -std=c17 -I. -Wall -Wextra -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition 
 
-run: lexer_main.o main.o lexeme.o token_dictionary.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o expr_table.o table_initiator.o token_scanner.o reserved_table.o
-	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_dictionary.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o expr_table.o table_initiator.o token_scanner.o reserved_table.o
+run: lexer_main.o main.o lexeme.o token_dictionary.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o expr_table.o table_initiator.o token_scanner.o reserved_table.o routines.o
+	$(CC) $(CFLAGS) -o run lexer_main.o main.o lexeme.o token_dictionary.o safe_memory.o parser.o stack.o states.o reducer.o data_pool.o ast.o slist_functions.o expr_table.o table_initiator.o token_scanner.o reserved_table.o routines.o
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
@@ -33,6 +33,9 @@ ast.o: ast/ast_utility/ast.c
 
 slist_functions.o: ast/ast_utility/slist_functions.c
 	$(CC) $(CFLAGS) -c ast/ast_utility/slist_functions.c
+
+routines.o: ast/ast_utility/routines.c
+	$(CC) $(CFLAGS) -c ast/ast_utility/routines.c
 
 data_pool.o: utility/data_pool.c
 	$(CC) $(CFLAGS) -c utility/data_pool.c
