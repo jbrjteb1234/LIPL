@@ -65,7 +65,7 @@ struct ASTNode{
         } binary_op_node;
 
         struct {
-            struct ASTNode* identifier;
+            int identifier;
             struct ASTNode** arguments;
             uint32_t num_arguments;
         } function_node;
