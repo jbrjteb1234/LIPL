@@ -5,8 +5,6 @@
 #include "../../utility/data_pool.h"
 #include "../../utility/stack.h"
 
-#define VAR_ENTRY 1;
-
 #define NUM_ENTRY 0;
 
 typedef enum {

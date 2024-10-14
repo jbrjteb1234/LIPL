@@ -24,7 +24,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 //VARIABLE DECLERATION
                 case VAR:
 
-                    //DESIRED TOKENSTREAM: DECL =       (DECL = VAR ID)
+                    //DESIRED TOKENSTREAM: DECL
                     //OUTPUT INTO NODESTACK: DECL = 
                     //OUTCOME FSM: RES TABLE, STATE 1
 
@@ -39,20 +39,15 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     identifier->value.leaf_node_value = DEC_NODE;
                     identifier->data.value_node.identifier = T_VAL.identifier_token_value;
 
-                    ADV //ADV TO ASSIGNMENT (=)
-
-                    if( T_TYPE != OPERATOR || T_VAL.operator_token_value != ASSIGNMENT ){break;} 
-
-                    PUSH //PUSH ASSIGNMENT (=) INTO NODESTACK
-
                     iterator->current->table = *get_reserved_table();
                     iterator->current->type = RESERVED_TABLE;
-                    iterator->current->state = VAR_ENTRY;
-
 
                     return;
 
                 case FUNC:
+
+                    //TODO: FUNCTION DECLERATION
+
                     break;
 
                 case IF:

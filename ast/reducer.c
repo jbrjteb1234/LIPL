@@ -11,8 +11,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
     stack* node_stack = iterator->node_stack;
     
     switch(rule){
-        //basic binary operation, like 1+1 or 2*3
-        //var table reduction
+        //general binary operation, like 1+1 or 2*3, a=4, 4.4
         case 0: {
             ASTNode* rhs = *(ASTNode**)pop(node_stack);
             ASTNode* operator = *(ASTNode**)pop(node_stack);

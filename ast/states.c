@@ -22,7 +22,7 @@ void drop_table(table_iterator* iterator);
 const uint32_t operator_index_lookup[][12] = {
     {1, 1,  2,  2,5,N,N,N,N,N,N,4},         //var table
     {N, N,  N,  N,  1,  N},  //assignment table
-    {N,N}
+    {N,N,N,N,4}
 };
 
 const uint32_t delimiter_index_lookup[][6] = {
