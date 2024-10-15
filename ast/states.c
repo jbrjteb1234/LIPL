@@ -186,7 +186,8 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             push(iterator->current->return_stack, &iterator->current->state, true);
             break;
         }case(open_parentheses): {
-            //push C to the return stack, to indicate an open bracket
+            //firstly push the intended state - after the brackets are reduced, we return to this state
+            //then push C to the return stack, to indicate an open bracket
             //when closing a bracket, return states are popped, until C is found. this indicates open bracket
             new_state = open_expression_parentheses(iterator, new_state);
             break;
