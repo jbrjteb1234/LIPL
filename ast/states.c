@@ -20,13 +20,13 @@ void drop_table(table_iterator* iterator);
  *  int index (which only has one form), leads us to index 0 in the num table, 2 in the assignment table
  */
 const uint32_t operator_index_lookup[][12] = {
-    {1,1,2,2,5,N,N,N,N,N,N,4},         //var table
+    {2,2,3,3,6,N,N,N,N,N,N,5},         //var table
     {N,N,N,N,1,N},  //assignment table
     {N,N,N,N,4,N,N,N,N,N,N,N}
 };
 
 const uint32_t delimiter_index_lookup[][6] = {
-    {3,7,8,N,N,6},    //var table
+    {4,8,9,N,N,7},    //var table
     {5,N,N,N,N,N},    //assignment table
     {3,5,6,N,N,7},    //reserved table
 };
@@ -38,13 +38,13 @@ const uint32_t int_index_lookup[3] = {
 };
 
 const uint32_t identifier_index_lookup[3] = {
-    0,  //var table
+    1,  //var table
     0,  //assignemnt table
     0,  //reserved table
 };
 
 const uint32_t string_index_lookup[3] = {
-    N,  //var table
+    0,  //var table
     N,  //assignemnt table
     N,  //reserved table
 };

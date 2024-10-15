@@ -92,7 +92,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     iterator->current->table = *get_expr_table();
                     iterator->current->type = EXPR_TABLE;
                     
-                    iterator->current->state = open_expression_parentheses(iterator, O(11,0));
+                    iterator->current->state = open_expression_parentheses(iterator, O(14,0));
 
                     return;
             
@@ -118,6 +118,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
         case IDENTIFIER:{
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
+            iterator->current->state = 1;
             PUSH
             return;
         }
