@@ -66,8 +66,8 @@ struct ASTNode{
 
         struct {
             int identifier;
-            struct ASTNode** arguments;
-            uint32_t num_arguments;
+            uint32_t arguments_count;
+            struct ASTNode* arguments_list;
         } function_node;
                    
         statement_list* list_node;
