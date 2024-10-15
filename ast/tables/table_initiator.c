@@ -7,6 +7,7 @@
 #include "../reducer.h"
 #include "../../utility/stack.h"
 #include "../ast_utility/routines.h"
+#include "../ast_utility/slist_functions.h"
 
 #define T_TYPE (*initiating_token)->token_type
 #define T_VAL (*initiating_token)->token_value
@@ -22,11 +23,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 //TODO: IMPLEMENT RESERVED WORDS
 
                 //VARIABLE DECLERATION
-                case VAR:
-
-                    //DESIRED TOKENSTREAM: DECL
-                    //OUTPUT INTO NODESTACK: DECL = 
-                    //OUTCOME FSM: RES TABLE, STATE 1
+                case VAR: {
 
                     ADV //ADV TO IDENTIFIER
 
@@ -43,13 +40,32 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     iterator->current->type = RESERVED_TABLE;
 
                     return;
-
-                case FUNC:
+                }
+                case FUNC: {
 
                     //TODO: FUNCTION DECLERATION
 
-                    break;
+                    ADV //ADV TO IDENTIFIER
 
+                    if( T_TYPE !=  IDENTIFIER) {break;}
+
+                    PUSH //PUSH IDENTIFIER INTO NODESTACK
+
+                    //convert identifier to function node
+                    ASTNode* func_dec_node = *(ASTNode**)peek(iterator->node_stack); 
+                    func_dec_node->type = RES_WORD_NODE;
+                    func_dec_node->value.res_node_value = FUNCTION_DEC_NODE;
+                    func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
+
+
+                    //LOAD RES TABLE
+
+                    iterator->current->table = *get_reserved_table();
+                    iterator->current->type = RESERVED_TABLE;
+                    iterator->current->state = 3;
+
+                    return;
+                }
                 case IF:
                     break;
                 
