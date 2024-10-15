@@ -23,4 +23,5 @@ void append_to_slist(statement_list* slist, ASTNode* new_node){
         expand_slist(slist);
     }
     slist->list[slist->index] = new_node;
+    ++slist->index;
 }
