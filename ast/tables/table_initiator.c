@@ -13,6 +13,7 @@
 #define T_VAL (*initiating_token)->token_value
 
 #define PUSH push_token_into_ast_node(iterator, initiating_token, false);
+#define PUSH_AUTO push_token_into_ast_node(iterator, initiating_token, true);
 #define ADV advance_token(initiating_token);
 
 void initiate_statement(token** initiating_token, table_iterator* iterator){
@@ -54,7 +55,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     //convert identifier to function node
                     ASTNode* func_dec_node = *(ASTNode**)peek(iterator->node_stack); 
                     func_dec_node->type = FUNC_NODE;
-                    func_dec_node->value.func_node_value = FUNCTION_DEC_NODE;
+                    func_dec_node->value.func_node_value = FUNC_DEC_NODE;
                     func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
 
 
@@ -105,13 +106,13 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
         case STRING_LITERAL:{
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
-            PUSH
+            PUSH_AUTO
             break;
         }
         case INT_VALUE:{
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
-            PUSH
+            PUSH_AUTO
             return;
         }
             
@@ -119,7 +120,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
             iterator->current->table = *get_expr_table();
             iterator->current->type = EXPR_TABLE;
             iterator->current->state = 1;
-            PUSH
+            PUSH_AUTO
             return;
         }
 
