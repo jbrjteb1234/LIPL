@@ -53,8 +53,8 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     //convert identifier to function node
                     ASTNode* func_dec_node = *(ASTNode**)peek(iterator->node_stack); 
-                    func_dec_node->type = RES_WORD_NODE;
-                    func_dec_node->value.res_node_value = FUNCTION_DEC_NODE;
+                    func_dec_node->type = FUNC_NODE;
+                    func_dec_node->value.func_node_value = FUNCTION_DEC_NODE;
                     func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
 
 

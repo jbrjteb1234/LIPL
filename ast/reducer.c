@@ -71,7 +71,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                     lhs->data.function_node.arguments_list = rhs;
                     lhs->data.function_node.arguments_count = rhs->data.list_node->index+1;
                     break;
-                case RES_WORD_NODE:
+                case FUNC_NODE:
                     lhs = rhs;
                     lhs->data.function_node.arguments_count = 1;
                     break;

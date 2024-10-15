@@ -14,6 +14,7 @@ typedef enum{
     LEAF_NODE,
     BINARY_OP_NODE,
     RES_WORD_NODE,
+    FUNC_NODE,
     LIST_NODE,
     PARENTHESES_NODE,
 }ASTNodeType;
@@ -24,6 +25,11 @@ typedef enum{
     STR_NODE,
     INT_NODE,
 }leaf_node;
+
+typedef enum{
+    FUNC_CALL_NODE,
+    FUNC_DEC_NODE,
+} func_node;
 
 typedef enum{
     ASSIGNMENT_NODE,
@@ -46,6 +52,7 @@ typedef union{
     leaf_node leaf_node_value;
     binary_op_node binary_op_node_value;
     res_node res_node_value;
+    func_node func_node_value;
 } ASTNodeValue;
 
 struct ASTNode{
