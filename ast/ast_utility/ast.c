@@ -69,14 +69,15 @@ void assign_ast_node_type(ASTNode* node, token** current_lookahead){
 
             break;
         case IDENTIFIER:
-
+            printf("Data about next token after lookahead: %d\n", (*current_lookahead)->next->token_type);
             if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER && (*current_lookahead)->next->token_value.delimiter_token_value == OPEN_BRACKET){
                 node->type = FUNC_NODE;
                 node->value.func_node_value = FUNC_CALL_NODE;
+                printf("fun node produced\n");
+            }else{
+                node->type = LEAF_NODE;
+                node->value.leaf_node_value = ID_NODE;
             }
-
-            node->type = LEAF_NODE;
-            node->value.leaf_node_value = ID_NODE;
 
             break;
     }
