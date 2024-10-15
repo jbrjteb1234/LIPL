@@ -39,7 +39,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                 return N;
             }
             ASTNode* lhs = *(ASTNode**)peek(node_stack);
-            if(lhs->type != LIST_NODE){
+            if(lhs != NULL && lhs->type != LIST_NODE){
                 pop(node_stack);
                 ASTNode* new_expr_list = acquire_from_pool(iterator->node_pool);
                 new_expr_list->type = LIST_NODE;
@@ -52,6 +52,36 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             }
             
             printf("Reduction 1, returning to state %u\n", return_state);
+            return return_state;
+        }
+
+        case 2: {
+            //function dec/call reduction
+            ASTNode* rhs = *(ASTNode**)pop(node_stack);
+            ASTNode* lhs;
+
+            switch(rhs->type){
+                case LEAF_NODE:
+                    lhs = *(ASTNode**)pop(node_stack);
+                    lhs->data.function_node.arguments_list = rhs;
+                    lhs->data.function_node.arguments_count = 1;
+                    break;
+                case LIST_NODE:
+                    lhs = *(ASTNode**)pop(node_stack);
+                    lhs->data.function_node.arguments_list = rhs;
+                    lhs->data.function_node.arguments_count = rhs->data.list_node->index+1;
+                    break;
+                case RES_WORD_NODE:
+                    lhs = rhs;
+                    lhs->data.function_node.arguments_count = 1;
+                    break;
+                default:
+                    perror("Invalid function call/dec node\n");
+                    return N;
+            }
+            push(node_stack, lhs, false);
+            
+            printf("Reduction 2, returning to state %u\n", return_state);
             return return_state;
         }
     }
