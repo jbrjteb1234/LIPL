@@ -70,6 +70,11 @@ void assign_ast_node_type(ASTNode* node, token** current_lookahead){
             break;
         case IDENTIFIER:
 
+            if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER && (*current_lookahead)->next->token_value.delimiter_token_value == OPEN_BRACKET){
+                node->type = RES_WORD_NODE;
+                node->value.res_node_value = FUNCTION_CALL_NODE;
+            }
+            
             node->type = LEAF_NODE;
             node->value.leaf_node_value = ID_NODE;
 
