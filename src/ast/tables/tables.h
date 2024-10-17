@@ -10,9 +10,7 @@
 typedef enum {
     NONE_TABLE = -1,
     EXPR_TABLE = 0,
-    ASSIGNMENT_TABLE = 1,
-    RESERVED_TABLE = 2,
-    STRING_TABLE = 3,
+    RESERVED_TABLE = 1,
 } table_type;
 
 #define WIDTH 20
