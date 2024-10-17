@@ -185,6 +185,15 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             printf("Saving state: %d\n", iterator->current->state);
             push(iterator->current->return_stack, &iterator->current->state, true);
             break;
+
+        }case(save_no_jump_mask): {
+            
+            //save no jump mask - save current state, but dont advance token
+            printf("Saving state: %d, but not advancing token\n", iterator->current->state);
+            push(iterator->current->return_stack, &iterator->current->state, true);
+            iterator->current->state = new_state & 0x000fffff;
+            return shift(iterator, current_lookahead);
+
         }case(open_parentheses): {
             //firstly push the intended state - after the brackets are reduced, we return to this state
             //then push C to the return stack, to indicate an open bracket
