@@ -51,10 +51,8 @@ typedef struct{
 
     uint8_t initiated;
     stack* node_stack;
-    stack* parentheses_stack;
-    data_pool* node_pool;
-
     stack* return_stack;
+    data_pool* node_pool;
 
     table_type  type;
     uint32_t    (*table)[WIDTH];

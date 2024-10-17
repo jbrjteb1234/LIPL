@@ -23,8 +23,8 @@ const uint32_t operator_index_lookup[][12] = {
 };
 
 const uint32_t delimiter_index_lookup[][6] = {
-    {4,8,9,N,N,7},    //var table
-    {3,5,6,N,N,7},    //reserved table
+    {4,8,9,11,N,7},    //var table
+    {3,5,6,8,N,7},    //reserved table
 };
 
 const uint32_t int_index_lookup[3] = {
@@ -140,10 +140,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 iterator->state = new_state;
             
                 return shift(iterator, current_lookahead);
-            //also check if there is are any parentheses to close, if not, error
-            }else if(iterator->parentheses_stack->top > -1){
-                perror("Unmatched parentheses\n");
-                return ERROR;
             //if no saved states and no other tables to return to, then the statement is completed
             }else{
                 printf("Completed parsing\n");
@@ -254,7 +250,6 @@ ASTNode* close_iterator(table_iterator* iterator){
 table_iterator* initialize_table_iterator(void){
     table_iterator* new_iterator = safe_malloc(sizeof(table_iterator));
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
-    new_iterator->parentheses_stack = create_stack(sizeof(uint32_t));
     new_iterator->return_stack = create_stack(sizeof(uint32_t));
     
     new_iterator->expr_table =      *get_expr_table();
