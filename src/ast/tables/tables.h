@@ -45,22 +45,22 @@ typedef enum {
 #define N 0x70000000
 #define A 0x80000000
 
-typedef struct {
-    table_type  type;
-    uint32_t    state;
-    stack*      return_stack;
-    uint32_t    (*table)[WIDTH];
-} table_progression;
-
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
+    uint32_t state;
+
     uint8_t initiated;
     stack* node_stack;
-    stack* progression_stack;
     stack* parentheses_stack;
-    data_pool* progression_pool;
     data_pool* node_pool;
-    table_progression* current;
+
+    stack* return_stack;
+
+    table_type  type;
+    uint32_t    (*table)[WIDTH];
+
+    uint32_t    (*reserved_table)[WIDTH];
+    uint32_t    (*expr_table)[WIDTH];
 } table_iterator;
 
 typedef uint32_t state_table[HEIGHT][WIDTH];

@@ -24,7 +24,7 @@ ASTNode* close_iterator(table_iterator* iterator);
 
 state_table* acquire_table_from_table_type(table_type type);
 
-void drop_table(table_iterator* iterator);
+void drop_table(table_iterator* iterator, table_type type);
 
 uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahead);
 

@@ -37,14 +37,12 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     identifier->value.leaf_node_value = DEC_NODE;
                     identifier->data.value_node.identifier = T_VAL.identifier_token_value;
 
-                    iterator->current->table = *get_reserved_table();
-                    iterator->current->type = RESERVED_TABLE;
+                    iterator->table = iterator->reserved_table;
+                    iterator->type = RESERVED_TABLE;
 
                     return;
                 }
                 case FUNC: {
-
-                    //TODO: FUNCTION DECLERATION
 
                     ADV //ADV TO IDENTIFIER
 
@@ -61,13 +59,16 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     //LOAD RES TABLE
 
-                    iterator->current->table = *get_expr_table();
-                    iterator->current->type = EXPR_TABLE;
-                    iterator->current->state = FCALL_EXPR_STATE;
+                    iterator->table = iterator->expr_table;
+                    iterator->type = EXPR_TABLE;
+                    iterator->state = FCALL_EXPR_STATE;
 
                     return;
                 }
                 case IF:
+
+                    
+
                     break;
                 
                 case ELSE:
@@ -90,10 +91,10 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
             switch (T_VAL.delimiter_token_value){
                 case OPEN_BRACKET:
 
-                    iterator->current->table = *get_expr_table();
-                    iterator->current->type = EXPR_TABLE;
+                    iterator->table = iterator->expr_table;
+                    iterator->type = EXPR_TABLE;
                     
-                    iterator->current->state = open_expression_parentheses(iterator, O(EXPR_OPENPAREN_STATE,0));
+                    iterator->state = open_expression_parentheses(iterator, O(EXPR_OPENPAREN_STATE,0));
 
                     return;
             
@@ -104,22 +105,22 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
             break;
         }
         case STRING_LITERAL:{
-            iterator->current->table = *get_expr_table();
-            iterator->current->type = EXPR_TABLE;
+            iterator->table = iterator->expr_table;
+            iterator->type = EXPR_TABLE;
             PUSH_AUTO
             break;
         }
         case INT_VALUE:{
-            iterator->current->table = *get_expr_table();
-            iterator->current->type = EXPR_TABLE;
+            iterator->table = iterator->expr_table;
+            iterator->type = EXPR_TABLE;
             PUSH_AUTO
             return;
         }
             
         case IDENTIFIER:{
-            iterator->current->table = *get_expr_table();
-            iterator->current->type = EXPR_TABLE;
-            iterator->current->state = 1;
+            iterator->table = iterator->expr_table;
+            iterator->type = EXPR_TABLE;
+            iterator->state = 1;
             PUSH_AUTO
             return;
         }
