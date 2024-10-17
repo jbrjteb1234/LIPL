@@ -30,8 +30,8 @@ typedef enum {
 #define save_mask 0x30000000
 #define S(save_new_state) (save_mask | save_new_state)
 
-#define save_no_jump_mask (0x40000000)
-#define SNJ(snj_new_state) (save_no_jump_mask | snj_new_state)
+#define sna_mask (0x40000000)
+#define SNA(sna_new_state) (sna_mask | sna_new_state)
 
 #define open_parentheses 0x50000000
 #define open_parentheses_state_shift_count 20
