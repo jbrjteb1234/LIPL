@@ -134,7 +134,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                     }
                     new_state = *(uint32_t*)pop(iterator->return_stack);
 
-                    printf("Returning to table: %u on state %u\n", new_state, iterator->state);
+                    printf("Returning to table: %u on state %u\n", iterator->type, new_state);
                 }
 
                 iterator->state = new_state;
@@ -170,7 +170,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
         }case(jump_mask): {
             
-            //Firsly push current token into the stack
+            //parse the jump state from the table
             int new_table = new_state & 0x000fffff;
             new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
             //sets the current table to the state after parsing the table jumped to
@@ -179,20 +179,9 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             if((*current_lookahead)->next != NULL && (*current_lookahead)->next->token_type == DELIMITER && (*current_lookahead)->next->token_value.delimiter_token_value == EOS){
                 printf("No jump required!\n");
                 break;
-            }
-            printf("Jumping to new table\n");
-
-            //push current state onto the stack
-            printf("Pushing current state and table to the stack\n");
-
-            uint32_t return_state = new_state;
-            uint32_t return_table = (jump_mask | (uint32_t)iterator->type);
-
-            push(iterator->return_stack, &return_state, true);
-            push(iterator->return_stack, &return_table, true);
-            
-            //jump to new table - initiate new table
-            initiate_table(iterator, current_lookahead, new_table);
+            }   
+            //jump to new table - initiate new table and save the post reduction state
+            initiate_table(iterator, current_lookahead, new_table, new_state);
             return JUMP;
         }case(save_mask): {
 
@@ -203,7 +192,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             push(iterator->return_stack, &iterator->state, true);
             break;
 
-        }case(save_no_jump_mask): {
+        }case(sna_mask): {
             
             //save no jump mask - save current state, but dont advance token
             printf("Saving state: %d, but not advancing token\n", iterator->state);
@@ -257,21 +246,6 @@ ASTNode* close_iterator(table_iterator* iterator){
 
     return *(ASTNode**)pop(iterator->node_stack);
     
-}
-
-/** initiates iterator with a new type of table
- * 
- */
-void initiate_table(table_iterator* iterator, token** initiating_token, table_type type){
-    printf("Initiating\n");
-
-    iterator->state = 0;
-    iterator->table = NULL;
-    iterator->type = NONE_TABLE;
-
-    initiate_statement(initiating_token, iterator);
-
-    iterator->initiated = 1;
 }
 
 /** creates a new table iterator in memory and allocates memory for the stack 

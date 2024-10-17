@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "ast_utility/ast.h"
 #include "../utility/safe_memory.h"
+#include "tables/table_initiator.h"
 #include "states.h"
 #include "../utility/stack.h"
 #include "ast_utility/slist_functions.h"
@@ -29,7 +30,7 @@ statement_list* parse(token** scan_token){
     while(true){
         
         if(iterator->initiated == 0){
-            initiate_table(iterator, scan_token, NONE_TABLE);
+            initiate_table(iterator, scan_token, NONE_TABLE, N);
         }else{
             advance_token(scan_token);
             result = shift(iterator, scan_token);

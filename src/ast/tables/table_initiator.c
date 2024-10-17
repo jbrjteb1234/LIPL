@@ -130,3 +130,26 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
     }
     perror("Unexpected token before FSM parsing");
 }
+
+/** initiates iterator with a new type of table
+ * 
+ */
+void initiate_table(table_iterator* iterator, token** initiating_token, table_type type, uint32_t state_to_save){
+    printf("Initiating\n");
+
+    if(state_to_save != N){
+        uint32_t return_state = state_to_save;
+        uint32_t return_table = (jump_mask | (uint32_t)iterator->type);
+
+        push(iterator->return_stack, &return_state, true);
+        push(iterator->return_stack, &return_table, true);
+    }
+
+    iterator->state = 0;
+    iterator->table = NULL;
+    iterator->type = NONE_TABLE;
+
+    initiate_statement(initiating_token, iterator);
+
+    iterator->initiated = 1;
+}

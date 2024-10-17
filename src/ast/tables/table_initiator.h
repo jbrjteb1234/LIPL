@@ -6,4 +6,6 @@
 
 void initiate_statement(token** initiating_token, table_iterator* iterator);
 
+void initiate_table(table_iterator* iterator, token** initiating_token, table_type type, uint32_t state_to_save);
+
 #endif
