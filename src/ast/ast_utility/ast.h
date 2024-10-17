@@ -76,6 +76,11 @@ struct ASTNode{
             uint32_t arguments_count;
             struct ASTNode* arguments_list;
         } function_node;
+
+        struct {
+            int identifier;
+            struct ASTNode* condition;
+        } conditional_block_node;
                    
         statement_list* list_node;
 
@@ -83,6 +88,8 @@ struct ASTNode{
     } data;
 
     struct ASTNode* parent;
+    bool block_flag;
+    statement_list* block;
 };
 
 struct statement_list{
