@@ -20,7 +20,7 @@ void drop_table(table_iterator* iterator);
  *  int index (which only has one form), leads us to index 0 in the num table, 2 in the assignment table
  */
 const uint32_t operator_index_lookup[][12] = {
-    {2,2,3,3,6,N,N,N,N,N,N,5},         //var table
+    {2,2,3,3,6,10,10,10,10,10,10,5},         //var table
     {N,N,N,N,1,N},  //assignment table
     {N,N,N,N,4,N,N,N,N,N,N,N}
 };
@@ -280,7 +280,7 @@ table_iterator* initialize_table_iterator(void){
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->parentheses_stack = create_stack(sizeof(uint32_t));
     new_iterator->progression_stack = create_stack(sizeof(table_progression*));
-    new_iterator->progression_pool = init_data_pool(sizeof(table_progression), 10);
+    new_iterator->progression_pool = init_data_pool(sizeof(table_progression), 100);
 
     new_iterator->current = NULL;
 
