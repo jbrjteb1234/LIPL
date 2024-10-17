@@ -30,7 +30,7 @@ state_table* get_expr_table(void){
 
         {0,         1,      N,      N,      N,      N,      N,      N,          N,          C,          N},         //STATE 17: (
         {N,         N,      N,      N,      N,      N,      N,      N,          O(17,19),   19,         N},         //STATE 18: FCALL 
-        {N,         N,      R(2,0), R(2,0), R(2,0), N,      N,      R(2,0),     N,          N,          N},         //STATE 19: FCALL (...)
+        {N,         N,      R(2,0), R(2,0), R(2,0), N,      N,      R(2,0),     N,          R(2,0),     N},         //STATE 19: FCALL (...)
 
 
     };
