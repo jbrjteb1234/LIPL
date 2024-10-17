@@ -61,9 +61,9 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     //LOAD RES TABLE
 
-                    iterator->current->table = *get_reserved_table();
-                    iterator->current->type = RESERVED_TABLE;
-                    iterator->current->state = 3;
+                    iterator->current->table = *get_expr_table();
+                    iterator->current->type = EXPR_TABLE;
+                    iterator->current->state = FCALL_EXPR_STATE;
 
                     return;
                 }
