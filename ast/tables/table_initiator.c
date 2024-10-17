@@ -93,7 +93,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     iterator->current->table = *get_expr_table();
                     iterator->current->type = EXPR_TABLE;
                     
-                    iterator->current->state = open_expression_parentheses(iterator, O(14,0));
+                    iterator->current->state = open_expression_parentheses(iterator, O(EXPR_OPENPAREN_STATE,0));
 
                     return;
             

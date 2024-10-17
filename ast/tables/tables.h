@@ -38,6 +38,7 @@ typedef enum {
 #define open_parentheses 0x50000000
 #define open_parentheses_state_shift_count 20
 #define O(open_parentheses_state, state_after_close) ((open_parentheses | state_after_close) | (open_parentheses_state<<open_parentheses_state_shift_count))
+#define EXPR_OPENPAREN_STATE 17
 
 #define C 0x60000000
 
