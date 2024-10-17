@@ -29,6 +29,7 @@ token* lookahead(token** scan_token){
 ASTNode* push_token_into_ast_node(table_iterator* iterator, token** current_lookahead, bool auto_assign){
 
     ASTNode* new_ast_node = acquire_from_pool(iterator->node_pool);
+    new_ast_node->block_flag=0;
 
     if(auto_assign){
         if (current_lookahead == NULL){
