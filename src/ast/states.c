@@ -151,7 +151,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
         }case(jump_mask): {
             
             //parse the jump state from the table
-            int new_table = new_state & 0x000fffff;
             new_state = ( (new_state & 0x0ff00000) >> new_state_shift_count);
             //sets the current table to the state after parsing the table jumped to
 
