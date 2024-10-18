@@ -57,8 +57,13 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
                     func_dec_node->block_flag=true;
 
+                    //copy in the res table manually so once the arguments have been parsed, it can return to res table to continue
 
-                    //LOAD RES TABLE
+                    uint32_t res_table_state = 4;
+                    uint32_t res_table = jump_mask | RESERVED_TABLE;
+
+                    push(iterator->return_stack, &res_table_state, true);
+                    push(iterator->return_stack, &res_table, true);
 
                     iterator->table = iterator->expr_table;
                     iterator->type = EXPR_TABLE;
