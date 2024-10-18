@@ -118,26 +118,10 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 new_state = *(uint32_t*)pop(iterator->return_stack);
                 
                 if((new_state & general_mask) == jump_mask){
-                    //new table type contained within masked state on the return stack
-                    iterator->type = new_state & 0x0fffffff;
-                    
-                    switch(iterator->type){
-                        case EXPR_TABLE:
-                            iterator->table = iterator->expr_table;
-                            break;
-                        case RESERVED_TABLE:
-                            iterator->table = iterator->reserved_table;
-                            break;
-                        case NONE_TABLE:
-                            perror("Invalid table return");
-                            break;
-                    }
-                    new_state = *(uint32_t*)pop(iterator->return_stack);
-
-                    printf("Returning to table: %u on state %u\n", iterator->type, new_state);
+                    return_to_table(iterator, new_state);
+                }else{
+                    iterator->state = new_state;
                 }
-
-                iterator->state = new_state;
             
                 return shift(iterator, current_lookahead);
             //if no saved states and no other tables to return to, then the statement is completed
@@ -211,7 +195,13 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 break;
             }else{
                 //Still saved state in the parentheses stack, we can continue parsing
-                iterator->state = new_state;
+
+                if((new_state & general_mask) == jump_mask){
+                    return_to_table(iterator, new_state);
+                }else{
+                    iterator->state = new_state;
+                }
+
                 return shift(iterator, current_lookahead);
             }
         }

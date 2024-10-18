@@ -14,3 +14,24 @@ uint32_t open_expression_parentheses(table_iterator* iterator, uint32_t new_stat
     push(iterator->return_stack, &open_bracket_state_marker, true);
     return new_state;
 }
+
+void return_to_table(table_iterator* iterator, uint32_t new_state){
+    //new table type contained within masked state on the return stack
+    iterator->type = new_state & 0x0fffffff;
+    
+    switch(iterator->type){
+        case EXPR_TABLE:
+            iterator->table = iterator->expr_table;
+            break;
+        case RESERVED_TABLE:
+            iterator->table = iterator->reserved_table;
+            break;
+        case NONE_TABLE:
+            perror("Invalid table return");
+            break;
+    }
+    new_state = *(uint32_t*)pop(iterator->return_stack);
+    iterator->state = new_state;
+
+    printf("Returning to table: %u on state %u\n", iterator->type, new_state);
+}
