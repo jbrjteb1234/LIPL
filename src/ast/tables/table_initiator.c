@@ -55,6 +55,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     func_dec_node->type = FUNC_NODE;
                     func_dec_node->value.func_node_value = FUNC_DEC_NODE;
                     func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
+                    func_dec_node->block_flag=true;
 
 
                     //LOAD RES TABLE
@@ -65,12 +66,15 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     return;
                 }
-                case IF:
+                case IF: {
 
-                    
+                    ASTNode* if_node = push_token_into_ast_node(iterator, NULL, false);
+                    if_node->type = RES_WORD_NODE;
+                    if_node->value.res_node_value = IF_NODE;
+                    if_node->block_flag=true;
 
                     break;
-                
+                }
                 case ELSE:
                     break;
 
@@ -136,7 +140,6 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
  */
 void initiate_table(table_iterator* iterator, token** initiating_token, table_type type, uint32_t state_to_save){
     printf("Initiating\n");
-
     if(state_to_save != N){
         uint32_t return_state = state_to_save;
         uint32_t return_table = (jump_mask | (uint32_t)iterator->type);
