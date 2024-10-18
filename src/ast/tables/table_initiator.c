@@ -138,7 +138,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 /** initiates iterator with a new type of table
  * 
  */
-void initiate_table(table_iterator* iterator, token** initiating_token, table_type type, uint32_t state_to_save){
+void initiate_table(table_iterator* iterator, token** initiating_token, uint32_t state_to_save){
     printf("Initiating\n");
     if(state_to_save != N){
         uint32_t return_state = state_to_save;

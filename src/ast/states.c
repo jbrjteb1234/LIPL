@@ -161,7 +161,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 break;
             }   
             //jump to new table - initiate new table and save the post reduction state
-            initiate_table(iterator, current_lookahead, new_table, new_state);
+            initiate_table(iterator, current_lookahead, new_state);
             return JUMP;
         }case(save_mask): {
 
