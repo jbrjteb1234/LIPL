@@ -37,13 +37,16 @@ typedef enum {
 #define open_parentheses_state_shift_count 20
 #define O(open_parentheses_state, state_after_close) ((open_parentheses | state_after_close) | (open_parentheses_state<<open_parentheses_state_shift_count))
 
-#define EXPR_OPENPAREN_STATE 17
-#define FCALL_EXPR_STATE 18
-
 #define C 0x60000000
 
-#define N 0x70000000
-#define A 0x80000000
+#define OB 0x70000000
+#define CB 0x80000000
+
+#define N 0x90000000
+#define A 0xa0000000
+
+#define EXPR_OPENPAREN_STATE 17
+#define FCALL_EXPR_STATE 18
 
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
