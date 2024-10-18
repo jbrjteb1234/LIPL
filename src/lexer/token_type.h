@@ -22,8 +22,8 @@ typedef enum{
     VAR = 0,
     FUNC = 1,
     IF = 2,
-    ELSE = 3,
-    WHILE = 4,
+    WHILE = 3,
+    ELSE = 4,
     RETURN = 5
 } reserved_word_token;
 
