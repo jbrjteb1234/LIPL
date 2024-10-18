@@ -16,34 +16,34 @@ typedef enum {
 #define WIDTH 20
 #define HEIGHT 30
 
-#define general_mask 0xf0000000
+#define general_mask (uint32_t) 0xf0000000
 
 //converts int (jump rule)
-#define jump_mask 0x10000000
+#define jump_mask (uint32_t) 0x10000000
 #define new_state_shift_count 20
 #define J(table_to_jump, jump_new_state) ((jump_mask | (table_to_jump&0x000fffff)) | (jump_new_state << new_state_shift_count))
 
-#define reduction_mask  0x20000000  //indicates that this is a reduction call
+#define reduction_mask  (uint32_t) 0x20000000  //indicates that this is a reduction call
 #define reduction_return_state_shift_count 20
 #define R(reduction_rule,return_state) ((reduction_mask | reduction_rule) | (return_state<<reduction_return_state_shift_count))
 
-#define save_mask 0x30000000
+#define save_mask (uint32_t) 0x30000000
 #define S(save_new_state) (save_mask | save_new_state)
 
-#define sna_mask (0x40000000)
+#define sna_mask (uint32_t) (0x40000000)
 #define SNA(sna_new_state) (sna_mask | sna_new_state)
 
-#define open_parentheses 0x50000000
+#define open_parentheses (uint32_t) 0x50000000
 #define open_parentheses_state_shift_count 20
 #define O(open_parentheses_state, state_after_close) ((open_parentheses | state_after_close) | (open_parentheses_state<<open_parentheses_state_shift_count))
 
-#define C 0x60000000
+#define C (uint32_t) 0x60000000
 
-#define OB 0x70000000
-#define CB 0x80000000
+#define OB (uint32_t) 0x70000000
+#define CB (uint32_t) 0x80000000
 
-#define N 0x90000000
-#define A 0xa0000000
+#define N (uint32_t) 0x90000000
+#define A (uint32_t) 0xa0000000
 
 #define EXPR_OPENPAREN_STATE 17
 #define FCALL_EXPR_STATE 18
