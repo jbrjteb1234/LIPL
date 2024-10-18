@@ -24,6 +24,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 //TODO: IMPLEMENT RESERVED WORDS
 
                 //VARIABLE DECLERATION
+                ASTNode* current_node;
                 case VAR: {
 
                     ADV //ADV TO IDENTIFIER
@@ -32,10 +33,10 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     PUSH //PUSH IDENTIFIER INTO NODESTACK
 
-                    ASTNode* identifier = peek(iterator->node_stack);
-                    identifier->type = LEAF_NODE;
-                    identifier->value.leaf_node_value = DEC_NODE;
-                    identifier->data.value_node.identifier = T_VAL.identifier_token_value;
+                    ASTNode* current_node = peek(iterator->node_stack);
+                    current_node->type = LEAF_NODE;
+                    current_node->value.leaf_node_value = DEC_NODE;
+                    current_node->data.value_node.identifier = T_VAL.identifier_token_value;
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
@@ -49,11 +50,11 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     if( T_TYPE !=  IDENTIFIER) {break;}
 
                     //convert identifier to function node
-                    ASTNode* func_dec_node = PUSH //PUSH IDENTIFIER IN TO NODE STACK
-                    func_dec_node->type = FUNC_NODE;
-                    func_dec_node->value.func_node_value = FUNC_DEC_NODE;
-                    func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
-                    func_dec_node->block_flag=true;
+                    current_node = PUSH //PUSH IDENTIFIER IN TO NODE STACK
+                    current_node->type = FUNC_NODE;
+                    current_node->value.func_node_value = FUNC_DEC_NODE;
+                    current_node->data.function_node.identifier = T_VAL.identifier_token_value;
+                    current_node->block_flag=true;
 
                     //copy in the res table manually so once the arguments have been parsed, it can return to res table to continue
 
@@ -69,23 +70,27 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     return;
                 }
-                case IF: {
+                case IF:
+                case WHILE:
 
-                    ASTNode* if_node = PUSH
-                    if_node->type = RES_WORD_NODE;
-                    if_node->value.res_node_value = IF_NODE;
-                    if_node->block_flag=true;
+                    current_node = PUSH
+                    current_node->type = RES_WORD_NODE;
+                    
+                    if(T_VAL.reserved_word_token_value == IF){
+                        current_node->value.res_node_value = IF_NODE;
+                    }else{
+                        current_node->value.res_node_value = WHILE_NODE;
+                    }
+                    
+                    current_node->block_flag=true;
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
                     iterator->state = 5;
 
                     return;
-                }
+        
                 case ELSE:
-                    break;
-
-                case WHILE:
                     break;
 
                 case RETURN:
