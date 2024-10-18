@@ -56,11 +56,12 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
         }
 
         case 2: {
-            //function dec/call reduction
+            //reductions for control structure nodes (if, func, while)
             ASTNode* rhs = *(ASTNode**)pop(node_stack);
             ASTNode* lhs;
 
             switch(rhs->type){
+                case BINARY_OP_NODE:
                 case LEAF_NODE:
                     lhs = *(ASTNode**)pop(node_stack);
                     lhs->data.function_node.arguments_list = rhs;
@@ -71,12 +72,13 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                     lhs->data.function_node.arguments_list = rhs;
                     lhs->data.function_node.arguments_count = rhs->data.list_node->index+1;
                     break;
+                case RES_WORD_NODE:
                 case FUNC_NODE:
                     lhs = rhs;
-                    lhs->data.function_node.arguments_count = 1;
+                    lhs->data.function_node.arguments_count = 0;
                     break;
                 default:
-                    perror("Invalid function call/dec node\n");
+                    perror("Invalid node for reduction rule 2\n");
                     return N;
             }
             push(node_stack, lhs, false);

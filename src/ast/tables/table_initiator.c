@@ -48,10 +48,8 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     if( T_TYPE !=  IDENTIFIER) {break;}
 
-                    PUSH //PUSH IDENTIFIER INTO NODESTACK
-
                     //convert identifier to function node
-                    ASTNode* func_dec_node = *(ASTNode**)peek(iterator->node_stack); 
+                    ASTNode* func_dec_node = PUSH //PUSH IDENTIFIER IN TO NODE STACK
                     func_dec_node->type = FUNC_NODE;
                     func_dec_node->value.func_node_value = FUNC_DEC_NODE;
                     func_dec_node->data.function_node.identifier = T_VAL.identifier_token_value;
@@ -73,12 +71,16 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 }
                 case IF: {
 
-                    ASTNode* if_node = push_token_into_ast_node(iterator, NULL, false);
+                    ASTNode* if_node = PUSH
                     if_node->type = RES_WORD_NODE;
                     if_node->value.res_node_value = IF_NODE;
                     if_node->block_flag=true;
 
-                    break;
+                    iterator->table = iterator->reserved_table;
+                    iterator->type = RESERVED_TABLE;
+                    iterator->state = 5;
+
+                    return;
                 }
                 case ELSE:
                     break;
