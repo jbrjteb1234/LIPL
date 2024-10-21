@@ -20,10 +20,8 @@ statement_list* parse(token** scan_token){
 
     //working list - current parent ast node where statements are being added
     
-
-    table_iterator* iterator = initialize_table_iterator();
     statement_list* global_slist = create_new_slist();
-    statement_list *current_working_list = global_slist;
+    table_iterator* iterator = initialize_table_iterator(global_slist);
 
     shift_results result;
 
@@ -36,7 +34,7 @@ statement_list* parse(token** scan_token){
             result = shift(iterator, scan_token);
             switch(result){
             case SHIFTED:
-                
+                //shifted
                 break;
             case JUMP:
                 //jumped
@@ -50,7 +48,7 @@ statement_list* parse(token** scan_token){
                 return NULL;
             case COMPLETED: {
                 ASTNode* new_statement = close_iterator(iterator);
-                append_to_slist(current_working_list, new_statement);
+                append_to_slist(iterator->working_list, new_statement);
                 break;
             }
             }

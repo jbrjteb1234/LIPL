@@ -15,7 +15,8 @@ typedef enum {
     SHIFTED,
     REDUCED,
     COMPLETED,
-    JUMP
+    JUMP,
+    OPEN_BLOCK,
 } shift_results;
 
 shift_results shift(table_iterator* iterator, token** current_token);
@@ -26,6 +27,6 @@ state_table* acquire_table_from_table_type(table_type type);
 
 uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahead);
 
-table_iterator* initialize_table_iterator(void);
+table_iterator* initialize_table_iterator(statement_list* global_slist);
 
 #endif

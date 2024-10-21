@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include "../../utility/data_pool.h"
 #include "../../utility/stack.h"
+#include "../ast_utility/ast.h"
+#include "../ast_utility/slist_functions.h"
 
 #define NUM_ENTRY 0;
 
@@ -51,6 +53,8 @@ typedef enum {
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
     uint32_t state;
+
+    statement_list* working_list;
 
     uint8_t initiated;
     stack* node_stack;
