@@ -70,29 +70,52 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     return;
                 }
+                case ELIF:
                 case IF:
                 case WHILE:
 
                     current_node = PUSH
-                    current_node->type = RES_WORD_NODE;
+                    current_node->type = CONDITIONAL_BLOCK_NODE;
+                    current_node->data.conditional_block_node.alternate = NULL;
                     
-                    if(T_VAL.reserved_word_token_value == IF){
-                        current_node->value.res_node_value = IF_NODE;
-                    }else{
-                        current_node->value.res_node_value = WHILE_NODE;
+                    switch(T_VAL.reserved_word_token_value){
+                        case IF:
+                            current_node->value.conditional_block_node_value = IF_NODE;
+                            break;
+                        case WHILE:                        
+                            current_node->value.conditional_block_node_value = WHILE_NODE;
+                            break;
+                        case ELIF:
+                            attach_to_previous_conditional_block(iterator, current_node);
+                            current_node->value.conditional_block_node_value = ELIF_NODE;
+                            break;
+                        default:
+                            break;
                     }
                     
                     current_node->block_flag=true;
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 5;
+                    iterator->state = 5;                    
 
                     return;
-        
-                case ELSE:
-                    break;
 
+                case ELSE:
+
+                    current_node = PUSH;
+
+                    attach_to_previous_conditional_block(iterator, current_node);
+
+                    current_node->type = CONDITIONAL_BLOCK_NODE;
+                    current_node->value.conditional_block_node_value = ELSE_NODE;
+
+                    iterator->table = iterator->reserved_table;
+                    iterator->type = RESERVED_TABLE;
+                    iterator->state = 7;   
+
+                    return;
+                
                 case RETURN:
                     break;
             }
@@ -113,11 +136,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     iterator->state = open_expression_parentheses(iterator, O(EXPR_OPENPAREN_STATE,0));
 
                     return;
-                
-                case CLOSE_CBRACKET:
-                    perror("Crbacket made it to table init");
-                    return;
-            
+                    
                 default:
                     break;
             }

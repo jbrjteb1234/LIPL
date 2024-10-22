@@ -17,6 +17,7 @@ typedef enum{
     FUNC_NODE,
     LIST_NODE,
     PARENTHESES_NODE,
+    CONDITIONAL_BLOCK_NODE,
 }ASTNodeType;
 
 typedef enum{
@@ -40,18 +41,17 @@ typedef enum{
 }binary_op_node;
 
 typedef enum{
-    FUNCTION_DEC_NODE,
-    FUNCTION_CALL_NODE,
     IF_NODE,
     ELSE_NODE,
     WHILE_NODE,
     FOR_NODE,
-} res_node;
+    ELIF_NODE,
+} conditional_block_node;
 
 typedef union{
     leaf_node leaf_node_value;
     binary_op_node binary_op_node_value;
-    res_node res_node_value;
+    conditional_block_node conditional_block_node_value;
     func_node func_node_value;
 } ASTNodeValue;
 
@@ -78,8 +78,8 @@ struct ASTNode{
         } function_node;
 
         struct {
-            int identifier;
             struct ASTNode* condition;
+            struct ASTNode* alternate;
         } conditional_block_node;
                    
         statement_list* list_node;

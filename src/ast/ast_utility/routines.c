@@ -48,3 +48,13 @@ void return_to_previous_state(table_iterator* iterator){
         iterator->state = new_state;
     }
 }
+
+void attach_to_previous_conditional_block(table_iterator* iterator, ASTNode* new_block_node){
+    ASTNode* last_statement = get_from_slist(iterator->working_list, iterator->working_list->index);
+    if(last_statement->type != CONDITIONAL_BLOCK_NODE || last_statement->value.conditional_block_node_value == ELSE_NODE){
+        perror("\nTried to attach to unattachable block\n");
+        return;
+    }
+
+    last_statement->data.conditional_block_node.alternate = new_block_node;
+}

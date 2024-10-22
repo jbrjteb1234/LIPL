@@ -16,6 +16,8 @@ state_table* get_reserved_table(void){
         {N,     N,      N,      N,      N,      J(0,6), N,      N,      N},         //5 - IF
         {N,     N,      N,      R(2,4), N,      N,      N,      N,      R(2,4)},    //6 - IF EXPR
 
+        {N,     N,      N,      N,      N,      N,      N,      N,      OB},        //7 - ELSE
+
     };
     return &reserved_table;
 }
