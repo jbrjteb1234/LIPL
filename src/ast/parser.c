@@ -22,6 +22,7 @@ statement_list* parse(token** scan_token){
     
     statement_list* global_slist = create_new_slist();
     table_iterator* iterator = initialize_table_iterator(global_slist);
+    stack* working_list_stack = create_stack(sizeof(statement_list*));
 
     shift_results result;
 
@@ -33,24 +34,35 @@ statement_list* parse(token** scan_token){
             advance_token(scan_token);
             result = shift(iterator, scan_token);
             switch(result){
-            case SHIFTED:
-                //shifted
-                break;
-            case JUMP:
-                //jumped
-                break;
-            case REDUCED:
-                //reduce
-                break;
-            case ERROR:
-                //error
-                perror("Error in parsing");
-                return NULL;
-            case COMPLETED: {
-                ASTNode* new_statement = close_iterator(iterator);
-                append_to_slist(iterator->working_list, new_statement);
-                break;
-            }
+                case SHIFTED:
+                    //shifted
+                    break;
+                case JUMP:
+                    //jumped
+                    break;
+                case REDUCED:
+                    //reduce
+                    break;
+                case ERROR:
+                    //error
+                    perror("Error in parsing");
+                    return NULL;
+                case COMPLETED: {
+                    ASTNode* new_statement = close_iterator(iterator);
+                    append_to_slist(iterator->working_list, new_statement);
+                    break;
+                }case OPEN_BLOCK: {
+                    ASTNode* control_block = close_iterator(iterator);
+                    if(control_block->block_flag == false){
+                        perror("Tried to open block on non-block node\n");
+                        return NULL;
+                    }
+                    statement_list* new_block = create_new_slist();
+                    push(working_list_stack, iterator->working_list, false);
+                    control_block->block = new_block;
+                    iterator->working_list = new_block;
+                    break;
+                }
             }
         }
         if((*scan_token)->next == NULL){

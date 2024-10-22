@@ -81,6 +81,9 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                     perror("Invalid node for reduction rule 2\n");
                     return N;
             }
+
+            lhs->block_flag = true;
+
             push(node_stack, lhs, false);
             
             printf("Reduction 2, returning to state %u\n", return_state);
