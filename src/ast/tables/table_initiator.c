@@ -113,6 +113,10 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     iterator->state = open_expression_parentheses(iterator, O(EXPR_OPENPAREN_STATE,0));
 
                     return;
+                
+                case CLOSE_CBRACKET:
+                    perror("Crbacket made it to table init");
+                    return;
             
                 default:
                     break;
@@ -150,7 +154,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 /** initiates iterator with a new type of table
  * 
  */
-bool initiate_table(table_iterator* iterator, token** initiating_token, uint32_t state_to_save){
+void initiate_table(table_iterator* iterator, token** initiating_token, uint32_t state_to_save){
     printf("Initiating\n");
     if(state_to_save != N){
         uint32_t return_state = state_to_save;
@@ -158,11 +162,6 @@ bool initiate_table(table_iterator* iterator, token** initiating_token, uint32_t
 
         push(iterator->return_stack, &return_state, true);
         push(iterator->return_stack, &return_table, true);
-    }
-
-    if((*initiating_token)->token_type == DELIMITER && (*initiating_token)->token_value.delimiter_token_value == CLOSE_CBRACKET){
-        advance_token(initiating_token);
-        return true;
     }
 
     iterator->state = 0;
@@ -174,6 +173,4 @@ bool initiate_table(table_iterator* iterator, token** initiating_token, uint32_t
     iterator->initiated = 1;
 
     advance_token(initiating_token);
-
-    return false;
 }
