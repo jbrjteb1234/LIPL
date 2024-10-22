@@ -115,14 +115,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
         case(A): {
             //firstly, check if theres a saved state to return to
             if(iterator->return_stack->top > -1){
-                new_state = *(uint32_t*)pop(iterator->return_stack);
-                
-                if((new_state & general_mask) == jump_mask){
-                    return_to_table(iterator, new_state);
-                }else{
-                    iterator->state = new_state;
-                }
-            
+                return_to_previous_state(iterator);
                 return shift(iterator, current_lookahead);
             //if no saved states and no other tables to return to, then the statement is completed
             }else{
@@ -186,23 +179,18 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             new_state = open_expression_parentheses(iterator, new_state);
             break;
         }case(C): {
-            new_state = *(uint32_t*)pop(iterator->return_stack);
-            if(new_state == C){
-                //parentheses closed, we can now return to the intended state
-                printf("Closing bracket\n");
-                new_state = *(uint32_t*)pop(iterator->return_stack);
-                break;
-            }else{
-                //Still saved state in the parentheses stack, we can continue parsing
 
-                if((new_state & general_mask) == jump_mask){
-                    return_to_table(iterator, new_state);
-                }else{
-                    iterator->state = new_state;
-                }
-
-                return shift(iterator, current_lookahead);
+            return_to_previous_state(iterator);
+            printf("Returning states\n");
+            if(iterator->state == C){
+                printf("Returning to pre-bracket state\n");
+                printf("Return stack hegiht: %d\n", iterator->return_stack->top);
+                return_to_previous_state(iterator);
+                return JUMP;
             }
+            //still states in the bracket that need to be returned to
+            return shift(iterator, current_lookahead);
+            
         }case(OB): {
             //open block
             return OPEN_BLOCK;

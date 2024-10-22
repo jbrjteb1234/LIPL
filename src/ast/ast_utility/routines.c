@@ -35,3 +35,16 @@ void return_to_table(table_iterator* iterator, uint32_t new_state){
 
     printf("Returning to table: %u on state %u\n", iterator->type, new_state);
 }
+
+void return_to_previous_state(table_iterator* iterator){
+    if(iterator->return_stack->top == -1){
+        perror("Tried to return to previous state without a previous state\n");
+        return;
+    }
+    uint32_t new_state = *(uint32_t*)pop(iterator->return_stack);
+    if((new_state & general_mask) == jump_mask){
+        return_to_table(iterator, new_state);
+    }else{
+        iterator->state = new_state;
+    }
+}
