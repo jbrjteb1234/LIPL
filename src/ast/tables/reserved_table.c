@@ -11,7 +11,7 @@ state_table* get_reserved_table(void){
 
         {J(0,2),J(0,2), N,      N,      N,      N,      C,      N,      N},         //3 - (
 
-        {N,     N,      N,      A,      N,      N,      N,      N,      OB},        //4 - CONTROL STRUCTURE + (...)
+        {N,     N,      N,      A,      N,      N,      N,      N,      OB},        //4 - [ CONTROL STRUCTURE, (...) ]
 
         {N,     N,      N,      N,      N,      J(0,6), N,      N,      N},         //5 - IF
         {N,     N,      N,      R(2,4), N,      N,      N,      N,      R(2,4)},    //6 - IF EXPR

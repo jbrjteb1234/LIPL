@@ -193,6 +193,12 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             
         }case(OB): {
             //open block
+
+            if(iterator->return_stack->top != -1){
+                return_to_previous_state(iterator);
+                return shift(iterator, current_lookahead);
+            }
+
             return OPEN_BLOCK;
         }
         default:

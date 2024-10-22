@@ -150,7 +150,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 /** initiates iterator with a new type of table
  * 
  */
-void initiate_table(table_iterator* iterator, token** initiating_token, uint32_t state_to_save){
+bool initiate_table(table_iterator* iterator, token** initiating_token, uint32_t state_to_save){
     printf("Initiating\n");
     if(state_to_save != N){
         uint32_t return_state = state_to_save;
@@ -160,6 +160,10 @@ void initiate_table(table_iterator* iterator, token** initiating_token, uint32_t
         push(iterator->return_stack, &return_table, true);
     }
 
+    if((*initiating_token)->token_type == DELIMITER && (*initiating_token)->token_value.delimiter_token_value == CLOSE_CBRACKET){
+        return true;
+    }
+
     iterator->state = 0;
     iterator->table = NULL;
     iterator->type = NONE_TABLE;
@@ -167,4 +171,6 @@ void initiate_table(table_iterator* iterator, token** initiating_token, uint32_t
     initiate_statement(initiating_token, iterator);
 
     iterator->initiated = 1;
+
+    return false;
 }

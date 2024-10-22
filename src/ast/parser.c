@@ -29,7 +29,15 @@ statement_list* parse(token** scan_token){
     while(true){
         
         if(iterator->initiated == 0){
-            initiate_table(iterator, scan_token, N);
+            if(initiate_table(iterator, scan_token, N)){
+                //closing cbracket
+                if(working_list_stack->top == -1){
+                    perror("Tried to close block without opening one\n");
+                    return NULL;
+                }
+                iterator->working_list = *(statement_list**)pop(working_list_stack);
+                advance_token(scan_token);
+            }
         }else{
             advance_token(scan_token);
             result = shift(iterator, scan_token);
@@ -57,10 +65,14 @@ statement_list* parse(token** scan_token){
                         perror("Tried to open block on non-block node\n");
                         return NULL;
                     }
+                    
                     statement_list* new_block = create_new_slist();
                     push(working_list_stack, iterator->working_list, false);
                     control_block->block = new_block;
                     iterator->working_list = new_block;
+
+                    advance_token(scan_token);
+
                     break;
                 }
             }
