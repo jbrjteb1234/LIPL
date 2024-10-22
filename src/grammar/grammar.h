@@ -26,6 +26,7 @@
     X(";",              EOS,                delimiter_token_value,      DELIMITER)  \
     X("if",             IF,                 reserved_word_token_value,  RESERVED_WORD)   \
     X("else",           ELSE,               reserved_word_token_value,  RESERVED_WORD)   \
+    X("elif",           ELIF,               reserved_word_token_value,  RESERVED_WORD)   \
     X("while",          WHILE,              reserved_word_token_value,  RESERVED_WORD)   \
     X("return",         RETURN,             reserved_word_token_value,  RESERVED_WORD)   \
     X("func",           FUNC,               reserved_word_token_value,  RESERVED_WORD)   \

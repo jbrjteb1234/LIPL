@@ -24,7 +24,8 @@ typedef enum{
     IF = 2,
     WHILE = 3,
     ELSE = 4,
-    RETURN = 5
+    ELIF = 5,
+    RETURN = 6
 } reserved_word_token;
 
 typedef enum{
