@@ -57,7 +57,7 @@ statement_list* parse(token** scan_token){
                     perror("Tried to open block on non-block node\n");
                     return NULL;
                 }
-
+                append_to_slist(iterator->working_list, control_block);
                 statement_list* new_block = create_new_slist();
                 push(working_list_stack, iterator->working_list, false);
                 control_block->block = new_block;

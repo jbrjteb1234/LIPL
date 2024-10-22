@@ -186,7 +186,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //open block
 
             if(iterator->return_stack->top > -1){
-                printf("Found open block, but incomplete states\n");
                 return_to_previous_state(iterator);
                 return HOLD;
             }
