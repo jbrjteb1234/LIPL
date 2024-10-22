@@ -109,6 +109,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     current_node->type = CONDITIONAL_BLOCK_NODE;
                     current_node->value.conditional_block_node_value = ELSE_NODE;
+                    current_node->block_flag=true;
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
@@ -136,7 +137,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     iterator->state = open_expression_parentheses(iterator, O(EXPR_OPENPAREN_STATE,0));
 
                     return;
-                    
+
                 default:
                     break;
             }
