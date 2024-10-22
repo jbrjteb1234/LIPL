@@ -88,10 +88,8 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
  *  iterates state
  */
 shift_results shift(table_iterator* iterator, token** current_lookahead){
-    if (iterator->table == NULL){
-        //error
-        perror("Table not initiated\n");
-        return ERROR;
+    if (iterator->initiated == 0 || iterator->table == NULL){
+        return NOT_INITIATED;
     }
 
     //finds the index in the table that the token points to
@@ -109,20 +107,16 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
     printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->state);
     uint32_t new_state_type = new_state & general_mask;
-
     //finished parsing statement, passed to the iterator above
     switch(new_state_type){
         case(A): {
             //firstly, check if theres a saved state to return to
             if(iterator->return_stack->top > -1){
                 return_to_previous_state(iterator);
-                return shift(iterator, current_lookahead);
+                return HOLD;
             //if no saved states and no other tables to return to, then the statement is completed
             }else{
-                printf("Completed parsing\n");
-                //advance one to skip the EOS token
-                advance_token(current_lookahead);
-                return COMPLETED;
+                return FINISH;
             }
         
         }case(N): {
@@ -136,7 +130,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             //the reduction rule gives a new state to return to, then call again to push the lookahead
             if (new_state != N){
                 iterator->state = new_state;
-                return shift(iterator, current_lookahead);
+                return HOLD;
             }
             perror("Invalid reduction\n");
             return ERROR;
@@ -154,7 +148,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             }   
             //jump to new table - initiate new table and save the post reduction state
             initiate_table(iterator, current_lookahead, new_state);
-            return JUMP;
+            return HOLD;
         }case(save_mask): {
 
             //save current state to the stack and jump to new state
@@ -170,7 +164,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             printf("Saving state: %d, but not advancing token\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
             iterator->state = new_state & 0x000fffff;
-            return shift(iterator, current_lookahead);
+            return HOLD;
 
         }case(open_parentheses): {
             //firstly push the intended state - after the brackets are reduced, we return to this state
@@ -181,22 +175,20 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
         }case(C): {
 
             return_to_previous_state(iterator);
-            printf("Returning states\n");
             if(iterator->state == C){
-                printf("Returning to pre-bracket state\n");
-                printf("Return stack hegiht: %d\n", iterator->return_stack->top);
                 return_to_previous_state(iterator);
-                return JUMP;
+                return ADVANCE;
             }
             //still states in the bracket that need to be returned to
-            return shift(iterator, current_lookahead);
+            return HOLD;
             
         }case(OB): {
             //open block
 
-            if(iterator->return_stack->top != -1){
+            if(iterator->return_stack->top > -1){
+                printf("Found open block, but incomplete states\n");
                 return_to_previous_state(iterator);
-                return shift(iterator, current_lookahead);
+                return HOLD;
             }
 
             return OPEN_BLOCK;
@@ -211,7 +203,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     if((*current_lookahead)->token_type != DELIMITER){    
         push_token_into_ast_node(iterator, current_lookahead, true);
     }
-    return SHIFTED;
+    return ADVANCE;
 }
 
 /** When an iterate has fully reduced and parsed a statement, it can be closed
@@ -225,7 +217,6 @@ ASTNode* close_iterator(table_iterator* iterator){
 
     iterator->initiated=0;
     iterator->table=NULL;
-
     return *(ASTNode**)pop(iterator->node_stack);
     
 }

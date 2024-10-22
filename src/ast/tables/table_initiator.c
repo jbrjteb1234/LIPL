@@ -161,6 +161,7 @@ bool initiate_table(table_iterator* iterator, token** initiating_token, uint32_t
     }
 
     if((*initiating_token)->token_type == DELIMITER && (*initiating_token)->token_value.delimiter_token_value == CLOSE_CBRACKET){
+        advance_token(initiating_token);
         return true;
     }
 
@@ -171,6 +172,8 @@ bool initiate_table(table_iterator* iterator, token** initiating_token, uint32_t
     initiate_statement(initiating_token, iterator);
 
     iterator->initiated = 1;
+
+    advance_token(initiating_token);
 
     return false;
 }

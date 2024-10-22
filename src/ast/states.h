@@ -12,11 +12,11 @@
 
 typedef enum {
     ERROR,
-    SHIFTED,
-    REDUCED,
-    COMPLETED,
-    JUMP,
+    HOLD,
+    ADVANCE,
     OPEN_BLOCK,
+    FINISH,
+    NOT_INITIATED,
 } shift_results;
 
 shift_results shift(table_iterator* iterator, token** current_token);
