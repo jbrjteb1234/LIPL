@@ -25,3 +25,11 @@ void append_to_slist(statement_list* slist, ASTNode* new_node){
     slist->list[slist->index] = new_node;
     ++slist->index;
 }
+
+ASTNode* get_from_slist(statement_list* slist, uint32_t index){
+    if(index >= slist->index){
+        perror("Tried to access index out of bounds in statement list\n");
+        return NULL;
+    }
+    return slist->list[index];
+}
