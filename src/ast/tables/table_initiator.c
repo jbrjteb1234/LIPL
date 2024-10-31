@@ -38,8 +38,10 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     current_node->value.leaf_node_value = DEC_NODE;
                     current_node->data.value_node.identifier = T_VAL.identifier_token_value;
 
-                    iterator->table = iterator->reserved_table;
-                    iterator->type = RESERVED_TABLE;
+                    iterator->table = iterator->expr_table;
+                    iterator->type = EXPR_TABLE;
+
+                    iterator->state = 1;
 
                     return;
                 }
@@ -58,7 +60,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     //copy in the res table manually so once the arguments have been parsed, it can return to res table to continue
 
-                    uint32_t res_table_state = 4;
+                    uint32_t res_table_state = 3;
                     uint32_t res_table = jump_mask | RESERVED_TABLE;
 
                     push(iterator->return_stack, &res_table_state, true);
@@ -118,6 +120,11 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     return;
                 
                 case RETURN:
+
+                    current_node = PUSH;
+
+                    //current_node->type = RES
+
                     break;
             }
 
