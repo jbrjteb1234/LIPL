@@ -60,7 +60,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     //copy in the res table manually so once the arguments have been parsed, it can return to res table to continue
 
-                    uint32_t res_table_state = 3;
+                    uint32_t res_table_state = 0;
                     uint32_t res_table = jump_mask | RESERVED_TABLE;
 
                     push(iterator->return_stack, &res_table_state, true);
@@ -99,7 +99,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 5;                    
+                    iterator->state = 2;                    
 
                     return;
 
@@ -115,7 +115,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 7;   
+                    iterator->state = 4;   
 
                     return;
                 
