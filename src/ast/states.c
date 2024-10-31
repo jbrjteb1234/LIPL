@@ -127,6 +127,16 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
         }case(reduction_mask): {
             //apply reduction rule and then push new token
             new_state = reduce(iterator, new_state);
+
+            uint32_t* return_state = (uint32_t*)peek(iterator->return_stack);
+
+            if(return_state != NULL && *return_state != C){
+                //check if there is states to return to
+                printf("Reduced, now returning to %u\n", *return_state);
+                return_to_previous_state(iterator);
+                return HOLD;
+            }
+
             //the reduction rule gives a new state to return to, then call again to push the lookahead
             if (new_state != N){
                 iterator->state = new_state;
