@@ -123,7 +123,19 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     current_node = PUSH;
 
-                    //current_node->type = RES
+                    //todo implement
+
+                    break;
+                
+                case GLOBAL:
+
+                    //todo implement
+
+                    break;
+
+                case CONST:
+
+                    //todo implement
 
                     break;
             }
