@@ -48,11 +48,16 @@ typedef enum{
     ELIF_NODE,
 } conditional_block_node;
 
+typedef enum{
+    RETURN_NODE,
+} res_word_node;
+
 typedef union{
     leaf_node leaf_node_value;
     binary_op_node binary_op_node_value;
     conditional_block_node conditional_block_node_value;
     func_node func_node_value;
+    res_word_node reserved_word_value;
 } ASTNodeValue;
 
 struct ASTNode{
