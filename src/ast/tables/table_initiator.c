@@ -26,7 +26,6 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 //VARIABLE DECLERATION
                 ASTNode* current_node;
                 case VAR: {
-
                     ADV //ADV TO IDENTIFIER
 
                     if( T_TYPE !=  IDENTIFIER) {break;}
@@ -58,17 +57,11 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     current_node->data.function_node.identifier = T_VAL.identifier_token_value;
                     current_node->block_flag=true;
 
-                    //copy in the res table manually so once the arguments have been parsed, it can return to res table to continue
 
-                    uint32_t res_table_state = 0;
-                    uint32_t res_table = jump_mask | RESERVED_TABLE;
-
-                    push(iterator->return_stack, &res_table_state, true);
-                    push(iterator->return_stack, &res_table, true);
-
-                    iterator->table = iterator->expr_table;
-                    iterator->type = EXPR_TABLE;
-                    iterator->state = FCALL_EXPR_STATE;
+                    //set state in res table
+                    iterator->table = iterator->reserved_table;
+                    iterator->type = RESERVED_TABLE;
+                    iterator->state = 0; 
 
                     return;
                 }
@@ -99,7 +92,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 2;                    
+                    iterator->state = 0;                    
 
                     return;
 
@@ -115,7 +108,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 4;   
+                    iterator->state = 3;   
 
                     return;
                 
@@ -193,15 +186,8 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 /** initiates iterator with a new type of table
  * 
  */
-void initiate_table(table_iterator* iterator, token** initiating_token, uint32_t state_to_save){
+void initiate_table(table_iterator* iterator, token** initiating_token){
     printf("Initiating\n");
-    if(state_to_save != N){
-        uint32_t return_state = state_to_save;
-        uint32_t return_table = (jump_mask | (uint32_t)iterator->type);
-
-        push(iterator->return_stack, &return_state, true);
-        push(iterator->return_stack, &return_table, true);
-    }
 
     iterator->state = 0;
     iterator->table = NULL;

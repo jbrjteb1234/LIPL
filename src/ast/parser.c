@@ -84,7 +84,7 @@ statement_list* parse(token** scan_token){
                     break;
                 }
 
-                initiate_table(iterator, scan_token, N);
+                initiate_table(iterator, scan_token);
                     
                 break;
             }  

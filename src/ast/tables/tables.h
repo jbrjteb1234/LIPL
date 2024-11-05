@@ -50,9 +50,14 @@ typedef enum {
 #define EXPR_OPENPAREN_STATE 16
 #define FCALL_EXPR_STATE 17
 
+//sets item's specifier field 
+#define set_specifier(item, current_token) ((iterator)->specifiers |= (0b1 << (current_token)->token_value.reserved_word_token_value))
+#define read_specifier_field(item, res_token_val) ((iterator)->specifiers & (0b1 << (res_token_val)))
+
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
     uint32_t state;
+    uint16_t specifiers;
 
     statement_list* working_list;
 

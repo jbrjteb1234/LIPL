@@ -1,7 +1,7 @@
 #include "tables.h"
 state_table* get_expr_table(void){
     //  R(0) = reduce binary operator (like 1+1 or 2*1)
-    //  0 var      1 id    2 +-    3 */     4 eos   5 .     6 =     7 ,         8 (         9 )         10 COMP     11 {
+    //  0 var      1 id    2 +-    3 */     4 eos   5 .     6 =         7 ,         8 (         9 )         10 COMP     11 {
     static state_table expr_table = {
         {N,         N,      2,          3,      A,      8,      N,      13,         O(16,0),    C,          19,         OB},            //STATE 0: var/expr
         {N,         N,      2,          3,      A,      N,      10,     13,         SNA(17),    C,          19,         N},             //STATE 1: ID

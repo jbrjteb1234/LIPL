@@ -19,12 +19,12 @@
  */
 const uint32_t operator_index_lookup[][12] = {
     {2,2,3,3,6,10,10,10,10,10,10,5},         //var table
-    {N,N,N,N,4,N,N,N,N,N,N,N}
+    {N,N,N,N,3,N,N,N,N,N,N,N}
 };
 
 const uint32_t delimiter_index_lookup[][6] = {
     {4,8,9,11,N,7},    //var table
-    {3,5,6,8,N,7},    //reserved table
+    {2,3,4,5,N,N},    //reserved table
 };
 
 const uint32_t int_index_lookup[3] = {
@@ -39,7 +39,7 @@ const uint32_t identifier_index_lookup[3] = {
 
 const uint32_t string_index_lookup[3] = {
     0,  //var table
-    N,  //reserved table
+    0,  //reserved table
 };
 
 /** Returns the index of the table based on the token, acquired from the tables
@@ -49,9 +49,8 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
     switch(current_lookahead->token_type){
         case(RESERVED_WORD):
 
-            //TODO: PARSE RESERVED WORDS
-
-            //since reserved words differ in how they are parsed, we need seperate tables for each reserved word(s)
+            set_specifier(iterator, current_lookahead);
+            return C;
 
             break;
         case(OPERATOR):
@@ -96,13 +95,18 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     uint32_t new_index = convert_token_to_index(iterator, *current_lookahead);
     uint32_t new_state;
     //if new_index is N, then an unrecognised symbol has appeared
-    if(new_index != N){
-        //acquire the new state (could be reduction, error, completion or another state)
-        new_state = iterator->table[iterator->state][new_index];
-    }else{
-        //error - unrecognised symbol
-        perror("Unrecognised symbol\n");
-        return ERROR;
+    switch(new_index){
+        //acquire the new state
+        case(N):
+            //error - unrecognised symbol
+            perror("Unrecognised symbol\n");
+            return ERROR;
+            break;
+        //reserved word - set the specifier register and ADVANCE
+        case(C):
+            return ADVANCE;
+        default:
+            new_state = iterator->table[iterator->state][new_index];
     }
 
     printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->state);
@@ -157,8 +161,17 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 break;
             }   
             //jump to new table - initiate new table and save the post reduction state
-            initiate_table(iterator, current_lookahead, new_state);
+            
+            uint32_t return_state = new_state;
+            uint32_t return_table = (jump_mask | (uint32_t)iterator->type);
+
+            push(iterator->return_stack, &return_state, true);
+            push(iterator->return_stack, &return_table, true);
+            
+            initiate_table(iterator, current_lookahead);
+            
             return HOLD;
+
         }case(save_mask): {
 
             //save current state to the stack and jump to new state
@@ -225,6 +238,7 @@ ASTNode* close_iterator(table_iterator* iterator){
     }
 
     iterator->initiated=0;
+    iterator->specifiers=0x0000;
     iterator->table=NULL;
     return *(ASTNode**)pop(iterator->node_stack);
     
@@ -242,6 +256,8 @@ table_iterator* initialize_table_iterator(statement_list* global_slist){
     
     new_iterator->expr_table =      *get_expr_table();
     new_iterator->reserved_table =  *get_reserved_table();
+
+    new_iterator->specifiers = 0x0000;
 
     new_iterator->table = NULL;
 
