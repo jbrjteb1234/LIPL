@@ -20,6 +20,8 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             operator->data.binary_op_node.lhs = lhs;
             operator->data.binary_op_node.rhs = rhs;
 
+            operator->specifiers = iterator->specifiers;
+
             push(node_stack, operator, false);
             printf("Reduction 0, returning to state %u\n", return_state);
 

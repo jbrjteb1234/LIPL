@@ -25,25 +25,6 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                 //VARIABLE DECLERATION
                 ASTNode* current_node;
-                case VAR: {
-                    ADV //ADV TO IDENTIFIER
-
-                    if( T_TYPE !=  IDENTIFIER) {break;}
-
-                    PUSH //PUSH IDENTIFIER INTO NODESTACK
-
-                    ASTNode* current_node = peek(iterator->node_stack);
-                    current_node->type = LEAF_NODE;
-                    current_node->value.leaf_node_value = DEC_NODE;
-                    current_node->data.value_node.identifier = T_VAL.identifier_token_value;
-
-                    iterator->table = iterator->expr_table;
-                    iterator->type = EXPR_TABLE;
-
-                    iterator->state = 1;
-
-                    return;
-                }
                 case FUNC: {
 
                     ADV //ADV TO IDENTIFIER
@@ -120,17 +101,17 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     break;
                 
+                case VAR:
                 case GLOBAL:
-
-                    //todo implement
-
-                    break;
-
                 case CONST:
 
-                    //todo implement
+                    set_specifiers(iterator, T_VAL.reserved_word_token_value);
+                    ADV;
 
-                    break;
+                    initiate_statement(initiating_token, iterator);
+
+                    return;
+
             }
 
             break;

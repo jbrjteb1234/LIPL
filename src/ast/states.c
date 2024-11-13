@@ -49,8 +49,7 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
     switch(current_lookahead->token_type){
         case(RESERVED_WORD):
 
-            set_specifier(iterator, current_lookahead);
-            return C;
+            return N;
 
             break;
         case(OPERATOR):
@@ -102,7 +101,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             perror("Unrecognised symbol\n");
             return ERROR;
             break;
-        //reserved word - set the specifier register and ADVANCE
+        //reserved word - set the specifiers register and ADVANCE
         case(C):
             return ADVANCE;
         default:
