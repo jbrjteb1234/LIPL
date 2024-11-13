@@ -93,6 +93,7 @@ struct ASTNode{
     } data;
 
     struct ASTNode* parent;
+    bool reduced;
     uint32_t specifiers;
     bool block_flag;
     statement_list* block;

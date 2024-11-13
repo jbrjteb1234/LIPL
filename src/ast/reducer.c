@@ -74,10 +74,16 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                     lhs->data.function_node.arguments_list = rhs;
                     lhs->data.function_node.arguments_count = rhs->data.list_node->index+1;
                     break;
-                case RES_WORD_NODE:
                 case FUNC_NODE:
-                    lhs = rhs;
-                    lhs->data.function_node.arguments_count = 0;
+                    if(rhs->reduced){
+                        lhs = *(ASTNode**)pop(node_stack);
+                        lhs->data.function_node.arguments_list = rhs;
+                        lhs->data.function_node.arguments_count = 1;
+                    }else{
+                        lhs = rhs;
+                        lhs->data.function_node.arguments_count = 0;
+                    }
+
                     break;
                 default:
                     perror("Invalid node for reduction rule 2\n");
@@ -85,6 +91,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             }
 
             lhs->block_flag = true;
+            lhs->reduced = true;
 
             push(node_stack, lhs, false);
             
