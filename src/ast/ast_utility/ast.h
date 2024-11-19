@@ -86,6 +86,10 @@ struct ASTNode{
             struct ASTNode* condition;
             struct ASTNode* alternate;
         } conditional_block_node;
+
+        struct {
+            struct ASTNode* value;
+        } return_block_node;
                    
         statement_list* list_node;
 

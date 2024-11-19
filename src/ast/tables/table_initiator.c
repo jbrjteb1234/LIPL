@@ -96,8 +96,12 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                 case RETURN:
 
                     current_node = PUSH;
+                    current_node->type = RES_WORD_NODE;
+                    current_node->value.reserved_word_value = RETURN_NODE;
 
-                    //todo implement
+                    iterator->table = iterator->reserved_table;
+                    iterator->type = RESERVED_TABLE;
+                    iterator->state = 6;
 
                     break;
                 

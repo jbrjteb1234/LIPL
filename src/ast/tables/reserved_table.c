@@ -14,8 +14,9 @@ state_table* get_reserved_table(void){
         {N,     N,      A,      N,      N,      OB},        //4 - CONTROL STRUCTURE[...]                                        
 
         {N,     N,      N,      N,      N,      OB},        //5 - ELSE
-        {N,     N,      A,      N,      N,      N},         //6 - return
-        {J(0,6),J(0,6), R(2,6), N,      N,      N},         //7 - return (...)
+
+        {J(0,7),J(0,7), A,      J(0,7), N,      N},         //6 - return
+        {N,     N,      R(4,6), N,      N,      N},         //7 - return (...)
 
     };
     return &reserved_table;

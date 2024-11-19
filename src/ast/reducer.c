@@ -113,6 +113,17 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             printf("Reduction 3, returning to state %u\n", return_state);
             return return_state;
         }
+
+        case 4: {
+            //reduction for return
+            ASTNode* lhs = *(ASTNode**)peek(node_stack);
+            ASTNode* rhs = *(ASTNode**)pop(node_stack);
+
+            lhs->data.return_block_node.value = rhs;
+
+            printf("Reduction 3, returning to state %u\n", return_state);
+            return return_state;
+        }
     }
 
     //invalid rule providede
