@@ -37,7 +37,6 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
                     current_node->value.func_node_value = FUNC_DEC_NODE;
                     current_node->data.function_node.identifier = T_VAL.identifier_token_value;
                     current_node->block_flag=true;
-                    current_node->reduced = false;
 
 
                     //set state in res table
