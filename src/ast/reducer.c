@@ -58,7 +58,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
         }
 
         case 2: {
-            //reductions for control structure nodes (if, func, while)
+            //reductions for functions
             ASTNode* rhs = *(ASTNode**)pop(node_stack);
             ASTNode* lhs;
 
@@ -96,6 +96,21 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             push(node_stack, lhs, false);
             
             printf("Reduction 2, returning to state %u\n", return_state);
+            return return_state;
+        }
+
+        case 3: {
+            //reduction for conditional statements (if, elif, while)
+            ASTNode* lhs = *(ASTNode**)peek(node_stack);
+            ASTNode* rhs = *(ASTNode**)pop(node_stack);
+
+            lhs->data.conditional_block_node.condition = rhs;
+            lhs->data.conditional_block_node.alternate = NULL;
+
+            lhs->block_flag = true;
+            lhs->reduced = true;
+
+            printf("Reduction 3, returning to state %u\n", return_state);
             return return_state;
         }
     }

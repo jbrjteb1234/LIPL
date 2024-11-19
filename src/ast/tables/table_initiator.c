@@ -73,7 +73,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 0;                    
+                    iterator->state = 2;                    
 
                     return;
 
@@ -89,7 +89,7 @@ void initiate_statement(token** initiating_token, table_iterator* iterator){
 
                     iterator->table = iterator->reserved_table;
                     iterator->type = RESERVED_TABLE;
-                    iterator->state = 3;   
+                    iterator->state = 4;   
 
                     return;
                 

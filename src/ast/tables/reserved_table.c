@@ -5,13 +5,17 @@
 state_table* get_reserved_table(void){
 //      0 ID    1 NUM   2 EOS   3 (     4 )     5 {          
     static state_table reserved_table = {
-        {N,     N,      N,      J(0,1), N,      N},                                         //0 - CONTROL STRUCTURE
-        {N,     N,      R(2,2), N,      N,      R(2,2)},                                    //1 - CONTROL STRUCTURE, (...)
-        {N,     N,      A,      N,      N,      OB},                                        //2 - CONTROL STRUCTURE[...]                                        
+        {N,     N,      N,      J(0,1), N,      N},         //0 - FUNC DEC
+        {N,     N,      R(2,4), N,      N,      R(2,4)},    //1 - FUNC DEC, (...)
 
-        {N,     N,      N,      N,      N,      OB},                                        //3 - ELSE
-        {N,     N,      A,      N,      N,      N},                                         //4 - return
-        {J(0,4),J(0,4), R(2,4), N,      N,      N},                                         //5 - return (...)
+        {N,     N,      N,      J(0,3), N,      N},         //2 - CONDITIONAL                    
+        {N,     N,      R(3,4), N,      N,      R(3,4)},    //3 - CONDITIONAL, (...)
+
+        {N,     N,      A,      N,      N,      OB},        //4 - CONTROL STRUCTURE[...]                                        
+
+        {N,     N,      N,      N,      N,      OB},        //5 - ELSE
+        {N,     N,      A,      N,      N,      N},         //6 - return
+        {J(0,6),J(0,6), R(2,6), N,      N,      N},         //7 - return (...)
 
     };
     return &reserved_table;
