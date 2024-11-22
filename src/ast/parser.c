@@ -66,23 +66,22 @@ statement_list* parse(token** scan_token){
                 advance_token(scan_token);
 
                 break;
-            }case NOT_INITIATED: {
-                
-                //CLOSING CBRACKET FUNCTION
-                if((*scan_token)->token_type == DELIMITER && (*scan_token)->token_value.delimiter_token_value == CLOSE_CBRACKET){
-                    if((*scan_token)->next == NULL){
-                        final_token = true;
-                    }else{
-                        advance_token(scan_token);
-                    }
-                    if(working_list_stack->top == -1){
-                        perror("Tried to close block without opening one\n");
-                        return NULL;
-                    }
-                    printf("Climbing working list stack\n");
-                    iterator->working_list = *(statement_list**)pop(working_list_stack);
-                    break;
+            }case CLOSE_BLOCK: {
+                           
+                if((*scan_token)->next == NULL){
+                    final_token = true;
+                }else{
+                    advance_token(scan_token);
                 }
+                if(working_list_stack->top == -1){
+                    perror("Tried to close block without opening one\n");
+                    return NULL;
+                }
+                printf("Climbing working list stack\n");
+                iterator->working_list = *(statement_list**)pop(working_list_stack);
+                break;
+
+            }case NOT_INITIATED: {
 
                 initiate_table(iterator, scan_token);
                     

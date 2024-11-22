@@ -15,6 +15,7 @@ typedef enum {
     HOLD,
     ADVANCE,
     OPEN_BLOCK,
+    CLOSE_BLOCK,
     FINISH,
     NOT_INITIATED,
 } shift_results;

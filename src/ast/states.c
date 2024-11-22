@@ -87,6 +87,9 @@ uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahe
  */
 shift_results shift(table_iterator* iterator, token** current_lookahead){
     if (iterator->initiated == 0 || iterator->table == NULL){
+        if( (*current_lookahead)->token_type == DELIMITER && (*current_lookahead)->token_value.delimiter_token_value == CLOSE_CBRACKET){
+            return CLOSE_BLOCK;
+        }
         return NOT_INITIATED;
     }
 
