@@ -9,6 +9,17 @@
 #include "../utility/stack.h"
 #include "ast_utility/slist_functions.h"
 #include "ast_utility/token_scanner.h"
+
+/*  TODO: 
+    Create file to convert token to an index. it will also handle setting up tables if needed
+    Create proper state 0 for each table to downsize table initiator
+    Move away from manual token intialization, instead increase create specifier handler function
+    Seperate reserved words into two categories: specifiers (var, func, global, const) which simply modify expressions to function differently and commands (like return, else, if)
+    The commands will be implemented via their own state table, 
+    modifiers implemented through the specifier handler function called at reduction
+    Also sort out the fucking enum names
+*/
+
 /** Statement list - list of AST root nodes. One ast root node might hold lots of statement lists (Like a block in an if statement)
  *  The final output is a statement list - the main routine of the program
  */
