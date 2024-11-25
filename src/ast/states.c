@@ -18,12 +18,6 @@
  *  iterates state
  */
 shift_results shift(table_iterator* iterator, token** current_lookahead){
-    if (iterator->initiated == 0 || iterator->table == NULL){
-        if( (*current_lookahead)->token_type == DELIMITER && (*current_lookahead)->token_value.delimiter_token_value == CLOSE_CBRACKET){
-            return CLOSE_BLOCK;
-        }
-        return NOT_INITIATED;
-    }
 
     //finds the index in the table that the token points to
     uint32_t new_index = convert_token_to_index(iterator, *current_lookahead);
@@ -39,6 +33,12 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
         //reserved word - set the specifiers register and ADVANCE
         case(C):
             return ADVANCE;
+        case(OB):
+            return CLOSE_BLOCK;
+        case(NI):
+            return NOT_INITIATED;
+        case(CB):
+            return CLOSE_BLOCK;
         default:
             new_state = iterator->table[iterator->state][new_index];
     }

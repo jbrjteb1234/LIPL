@@ -31,18 +31,29 @@ const uint32_t string_index_lookup[3] = {
  * 
  */
 uint32_t convert_token_to_index(table_iterator* iterator, token* current_lookahead){
+
+    if (iterator->initiated == 0 || iterator->table == NULL){
+        if( current_lookahead->token_type == DELIMITER && current_lookahead->token_value.delimiter_token_value == CLOSE_CBRACKET){
+            return CB;
+        }
+        return NI;
+    }
+    
     switch(current_lookahead->token_type){
         case(RESERVED_WORD):
 
             return N;
 
-            break;
         case(OPERATOR):
 
             return operator_index_lookup[iterator->type][current_lookahead->token_value.operator_token_value];
 
             break;
         case(DELIMITER):
+
+            if( current_lookahead->token_type == DELIMITER && current_lookahead->token_value.delimiter_token_value == CLOSE_CBRACKET){
+                return CB;
+            }
 
             return delimiter_index_lookup[iterator->type][current_lookahead->token_value.delimiter_token_value];
 

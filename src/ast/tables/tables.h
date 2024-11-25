@@ -47,6 +47,8 @@ typedef enum {
 #define N (uint32_t) 0x90000000
 #define A (uint32_t) 0xa0000000
 
+#define NI (uint32_t) 0xb0000000
+
 #define EXPR_OPENPAREN_STATE 16
 #define FCALL_EXPR_STATE 17
 
