@@ -33,11 +33,18 @@ typedef enum{
 } func_node;
 
 typedef enum{
-    ASSIGNMENT_NODE,
-    ADDITION_NODE,
-    SUBTRACTION_NODE,
-    MULTIPLICATION_NODE,
-    DIVISION_NODE,
+    ADDITION_NODE           =   ADDITION,
+    SUBTRACTION_NODE        =   SUBTRACTION,
+    MULTIPLICATION_NODE     =   MULTIPLICATION,
+    DIVISION_NODE           =   DIVISION,
+    ASSIGNMENT_NODE         =   ASSIGNMENT,
+    EQUIVALENT_NODE         =   EQUIVALENT,
+    NOT_EQUIVALENT_NODE     =   NOT_EQUIVALENT,
+    LESS_THAN_NODE          =   LESS_THAN,
+    GREATER_THAN_NODE       =   GREATER_THAN,
+    GREATER_OR_EQUAL_NODE   =   GREATER_OR_EQUAL,
+    LESS_OR_EQUAL_NODE      =   LESS_OR_EQUAL,
+    DOT_NODE                =   DOT,
 }binary_op_node;
 
 typedef enum{
