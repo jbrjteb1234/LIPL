@@ -9,21 +9,10 @@
 
 #define NUM_ENTRY 0;
 
-typedef enum {
-    NONE_TABLE = -1,
-    EXPR_TABLE = 0,
-    RESERVED_TABLE = 1,
-} table_type;
-
-#define WIDTH 20
-#define HEIGHT 30
+#define WIDTH 50
+#define HEIGHT 50
 
 #define general_mask (uint32_t) 0xf0000000
-
-//converts int (jump rule)
-#define jump_mask (uint32_t) 0x10000000
-#define new_state_shift_count 20
-#define J(table_to_jump, jump_new_state) ((jump_mask | (table_to_jump&0x000fffff)) | (jump_new_state << new_state_shift_count))
 
 #define reduction_mask  (uint32_t) 0x20000000  //indicates that this is a reduction call
 #define reduction_return_state_shift_count 20
@@ -63,22 +52,16 @@ typedef struct{
 
     statement_list* working_list;
 
-    uint8_t initiated;
     stack* node_stack;
     stack* return_stack;
     data_pool* node_pool;
 
-    table_type  type;
     uint32_t    (*table)[WIDTH];
 
-    uint32_t    (*reserved_table)[WIDTH];
-    uint32_t    (*expr_table)[WIDTH];
 } table_iterator;
 
 typedef uint32_t state_table[HEIGHT][WIDTH];
 
-state_table* get_expr_table(void);
-
-state_table* get_reserved_table(void);
+state_table* get_state_table(void);
 
 #endif

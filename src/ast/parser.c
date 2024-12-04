@@ -4,11 +4,10 @@
 #include "parser.h"
 #include "ast_utility/ast.h"
 #include "../utility/safe_memory.h"
-#include "tables/table_initiator.h"
 #include "states.h"
 #include "../utility/stack.h"
 #include "ast_utility/slist_functions.h"
-#include "ast_utility/token_scanner.h"
+#include "ast_utility/routines.h"
 
 /*  TODO: 
     Create file to convert token to an index. it will also handle setting up tables if needed
@@ -92,12 +91,7 @@ statement_list* parse(token** scan_token){
                 iterator->working_list = *(statement_list**)pop(working_list_stack);
                 break;
 
-            }case NOT_INITIATED: {
-
-                initiate_table(iterator, scan_token);
-                    
-                break;
-            }  
+            } 
         }
     }
 
