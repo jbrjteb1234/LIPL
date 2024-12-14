@@ -21,9 +21,6 @@
 #define save_mask (uint32_t) 0x30000000
 #define S(save_new_state) (save_mask | save_new_state)
 
-#define sna_mask (uint32_t) (0x40000000)
-#define SNA(sna_new_state) (sna_mask | sna_new_state)
-
 #define open_parentheses (uint32_t) 0x50000000
 #define open_parentheses_state_shift_count 20
 #define O(open_parentheses_state, state_after_close) ((open_parentheses | state_after_close) | (open_parentheses_state<<open_parentheses_state_shift_count))

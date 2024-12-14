@@ -82,14 +82,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             push(iterator->return_stack, &iterator->state, true);
             break;
 
-        }case(sna_mask): {
-            
-            //save no jump mask - save current state, but dont advance token
-            printf("Saving state: %d, but not advancing token\n", iterator->state);
-            push(iterator->return_stack, &iterator->state, true);
-            iterator->state = new_state & 0x000fffff;
-            return HOLD;
-
         }case(open_parentheses): {
             
             uint32_t open_bracket_state_marker = C;
