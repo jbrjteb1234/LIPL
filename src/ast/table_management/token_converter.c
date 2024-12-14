@@ -29,7 +29,7 @@ const uint32_t delimiter_index_lookup[20] = {
  */
 uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr){
     
-    token* current_lookahead = *current_lookahead_addr;
+    token* current_lookahead = (iterator->token_override == -1) ? *current_lookahead_addr : iterator->token_override;
 
     switch(current_lookahead->token_type){
         case(RESERVED_WORD):
