@@ -146,6 +146,8 @@ table_iterator* initialize_table_iterator(statement_list* global_slist){
 
     new_iterator->specifiers = 0x0000;
 
+    new_iterator->token_override = -1;
+
     new_iterator->table = *get_state_table();
     new_iterator->state = 0;
 
