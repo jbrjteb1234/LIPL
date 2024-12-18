@@ -3,12 +3,13 @@ state_table* get_state_table(void){
     //  R(1) = reduce binary operator (like 1+1 or 1*1)
     //  0 var       1 id    2 +-        3 */    4 eos   5 .     6 =     7 ,         8 (         9 )         10 COMP     11 {    12 }        13 FUNC
     static state_table table = {
-        {2,         3,      N,          N,      N,      N,      N,      N,          N,          N,          N,          N,          N,      4},             //STATE 1: INIT
+        {1,         2,      N,          N,      N,      N,      N,      N,          O,          N,          N,          N,          N,      4},             //STATE 0: INIT
 
-        {N,         N,      N,          N,      A,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 2: VAR
-        {N,         N,      N,          N,      A,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 3: ID
-        {N,         N,      N,          N,      N,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 4: FUNC
+        {N,         N,      N,          N,      A,      N,      N,      N,          N,          C,          N,          N,          N,      N},             //STATE 1: VAR
+        {N,         N,      N,          N,      A,      N,      N,      N,          N,          C,          N,          N,          N,      N},             //STATE 2: ID
+        {N,         N,      N,          N,      N,      N,      N,      N,          O,          N,          N,          N,          N,      N},             //STATE 3: FUNC
 
+        {N,         N,      N,          N,      N,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 4: 
         {N,         N,      N,          N,      N,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 5: 
         {N,         N,      N,          N,      N,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 6: 
         {N,         N,      N,          N,      N,      N,      N,      N,          N,          N,          N,          N,          N,      N},             //STATE 7: 

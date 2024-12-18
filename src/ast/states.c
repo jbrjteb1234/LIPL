@@ -11,6 +11,7 @@
 #include "reducer.h"
 #include "ast_utility/routines.h"
 #include "table_management/token_converter.h"
+#include "../lexer/token_type.h"
 
 /** interprets next token in the stream - 
  *  iterates state
@@ -19,7 +20,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
     //convert token to astnode, push to the stack, and handle the new state
     uint32_t new_index = convert_token(iterator,  current_lookahead);
-    uint32_t new_state;
+    uint32_t new_state = N;
     
     switch(new_index){
 
@@ -33,7 +34,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
     //TODO: HANDLE INDEX RESULT
 
-    printf("The next state is %d, pointed to by index %d, on current state %d\n",new_state, new_index, iterator->state);
+    printf("The next state is %u, pointed to by index %u, on current state %u\n",new_state, new_index, iterator->state);
     uint32_t new_state_type = new_state & general_mask;
     //finished parsing statement, passed to the iterator above
     switch(new_state_type){
@@ -82,23 +83,22 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             push(iterator->return_stack, &iterator->state, true);
             break;
 
-        }case(open_parentheses): {
+        }case(O): {
             
-            uint32_t open_bracket_state_marker = C;
-            uint32_t state_after_close = new_state & 0x000fffff;
-            uint32_t bracket_state = (new_state & 0x0ff00000) >> open_parentheses_state_shift_count;
-            new_state = bracket_state;
-            printf("Opening bracket via state: %d\n", bracket_state);
-            push(iterator->return_stack, &state_after_close, true);
-            push(iterator->return_stack, &open_bracket_state_marker, true);
+            new_state = INIT_STATE;
+            uint32_t o_state = O;
+            printf("Opening bracket and saving state: %d\n", iterator->state);
+            push(iterator->return_stack, &iterator->state, true);
+            push(iterator->return_stack, &o_state, true);
             
             return ADVANCE;
 
         }case(C): {
 
             return_to_previous_state(iterator);
-            if(iterator->state == C){
+            if(iterator->state == O){
                 return_to_previous_state(iterator);
+                iterator->state = iterator->table[iterator->state][VAR_INDEX];
                 return ADVANCE;
             }
             //still states in the bracket that need to be returned to
@@ -145,8 +145,6 @@ table_iterator* initialize_table_iterator(statement_list* global_slist){
     new_iterator->return_stack = create_stack(sizeof(uint32_t));
 
     new_iterator->specifiers = 0x0000;
-
-    new_iterator->token_override = -1;
 
     new_iterator->table = *get_state_table();
     new_iterator->state = 0;

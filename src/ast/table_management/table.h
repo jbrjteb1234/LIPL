@@ -12,6 +12,8 @@
 #define WIDTH 50
 #define HEIGHT 50
 
+#define INIT_STATE 0
+
 #define general_mask (uint32_t) 0xf0000000
 
 #define reduction_mask  (uint32_t) 0x20000000  //indicates that this is a reduction call
@@ -21,9 +23,7 @@
 #define save_mask (uint32_t) 0x30000000
 #define S(save_new_state) (save_mask | save_new_state)
 
-#define open_parentheses (uint32_t) 0x50000000
-#define open_parentheses_state_shift_count 20
-#define O(open_parentheses_state, state_after_close) ((open_parentheses | state_after_close) | (open_parentheses_state<<open_parentheses_state_shift_count))
+#define O (uint32_t) 0x50000000
 
 #define C (uint32_t) 0x60000000
 
@@ -52,8 +52,6 @@ typedef struct{
     stack* node_stack;
     stack* return_stack;
     data_pool* node_pool;
-
-    int32_t token_override;
 
     uint32_t    (*table)[WIDTH];
 

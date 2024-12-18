@@ -11,12 +11,6 @@ const uint32_t delimiter_index_lookup[20] = {
     4,8,9,11,12,7    //var table
 };
 
-#define VAR_INDEX 0
-
-#define ID_INDEX 1
-
-#define FUNC_INDEX 13
-
 #define CREATE_NEW_AST_NODE \
     ASTNode* new_node = acquire_from_pool((iterator)->node_pool); \
     push((iterator)->node_stack, (new_node), false); \
@@ -30,8 +24,7 @@ const uint32_t delimiter_index_lookup[20] = {
 uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr){
     
     token* current_lookahead = *current_lookahead_addr;
-    token_types next_type = (iterator->token_override == -1) ? (*current_lookahead_addr)->token_type : (uint32_t) iterator->token_override;
-    iterator->token_override = -1;
+    token_types next_type = (*current_lookahead_addr)->token_type;
 
     switch(next_type){
         case(RESERVED_WORD):
