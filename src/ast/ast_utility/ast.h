@@ -116,6 +116,4 @@ struct statement_list{
     ASTNode** list;
 };
 
-void assign_ast_node_type(ASTNode* node, token** current_lookahead);
-
 #endif
