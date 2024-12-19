@@ -149,6 +149,9 @@ table_iterator* initialize_table_iterator(statement_list* global_slist){
     new_iterator->table = *get_state_table();
     new_iterator->state = 0;
 
+    new_iterator->new_node_buffer = NULL;
+    new_iterator->new_node_buffer_set_flag = false;
+
     new_iterator->node_pool = init_data_pool(sizeof(ASTNode), 20);
 
     return new_iterator;

@@ -8,3 +8,5 @@ void advance_token(token** scan_token);
 token* lookahead(token** scan_token);
 
 void attach_to_previous_conditional_block(table_iterator* iterator, ASTNode* new_block_node);
+
+void transfer_node_buffer(table_iterator* iterator);

@@ -43,3 +43,10 @@ void attach_to_previous_conditional_block(table_iterator* iterator, ASTNode* new
 
     last_statement->data.conditional_block_node.alternate = new_block_node;
 }
+
+void transfer_node_buffer(table_iterator* iterator){
+    if(iterator->new_node_buffer_set_flag){
+        push(iterator->node_stack, iterator->new_node_buffer, false);
+    }
+    iterator->new_node_buffer_set_flag = false;
+}

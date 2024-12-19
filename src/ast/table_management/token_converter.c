@@ -13,10 +13,10 @@ const uint32_t delimiter_index_lookup[20] = {
 
 #define CREATE_NEW_AST_NODE \
     ASTNode* new_node = acquire_from_pool((iterator)->node_pool); \
-    push((iterator)->node_stack, (new_node), false); \
     (new_node)->block_flag = false; \
-    (new_node)->reduced = false;
-
+    (new_node)->reduced = false; \
+    iterator->new_node_buffer = new_node; \
+    iterator->new_node_buffer_set_flag = true
 
 /** Returns the index of the table based on the token, acquired from the tables
  * 

@@ -49,6 +49,9 @@ typedef struct{
 
     statement_list* working_list;
 
+    bool new_node_buffer_set_flag;
+    ASTNode* new_node_buffer;
+
     stack* node_stack;
     stack* return_stack;
     data_pool* node_pool;

@@ -47,6 +47,7 @@ statement_list* parse(token** scan_token){
                 //hold same token, shift again
                 break;
             case ADVANCE:
+                transfer_node_buffer(iterator);
                 advance_token(scan_token);
                 break;
             case FINISH: {
