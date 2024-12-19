@@ -59,7 +59,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
             uint32_t* return_state = (uint32_t*)peek(iterator->return_stack);
 
-            if(return_state != NULL && *return_state != C){
+            if(return_state != NULL && *return_state != O && iterator->return_stack->top > -1){
                 //check if there is states to return to
                 printf("Reduced, now returning to %u\n", *return_state);
                 return_to_previous_state(iterator);
@@ -85,10 +85,10 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
         }case(O): {
             
-            new_state = INIT_STATE;
             uint32_t o_state = O;
             printf("Opening bracket and saving state: %d\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
+            iterator->state = INIT_STATE;
             push(iterator->return_stack, &o_state, true);
             
             return ADVANCE;
