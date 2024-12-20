@@ -35,7 +35,9 @@
 #define N (uint32_t) 0x90000000
 #define A (uint32_t) 0xa0000000
 
-#define NI (uint32_t) 0xb0000000
+#define save_with_vs_mask (uint32_t) 0xb0000000
+#define VS save_with_vs_mask
+#define SV(save_new_state) (save_with_vs_mask | save_new_state)
 
 //sets item's specifiers field 
 #define set_specifiers(item, byte) ((iterator)->specifiers |= (1 << (byte)))
@@ -63,6 +65,6 @@ typedef uint32_t state_table[HEIGHT][WIDTH];
 
 state_table* get_state_table(void);
 
-void apply_virtual_state(table_iterator* iterator);
+void apply_virtual_shift(table_iterator* iterator);
 
 #endif

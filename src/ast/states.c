@@ -60,9 +60,12 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             uint32_t* return_state = (uint32_t*)peek(iterator->return_stack);
 
             if(return_state != NULL && *return_state != O && iterator->return_stack->top > -1){
-                //check if there is states to return to. if there is a state to return to, apply virtual state to handle that state with the reduced node
+                //check if there is states to return to. if there is a state to return to, apply virtual shift to handle that state with the reduced node
                 return_to_previous_state(iterator);
-                apply_virtual_state(iterator);
+                if(iterator->state == VS){
+                    return_to_previous_state(iterator);
+                    apply_virtual_shift(iterator);
+                }
                 return HOLD;
             }
 
@@ -76,10 +79,20 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
         }case(save_mask): {
 
-            //save current state to the stack and jump to new state
-            //we dereference it on the stack as its going to be changing
+            //save a reducable state
             printf("Saving state: %d\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
+            iterator->state = new_state & 0x000fffff;
+            return ADVANCE;
+        
+        }case(VS): {
+
+            //save a non-reducable state, will require a virtual shift to
+            //save a reducable state
+            printf("Saving state: %d and marking a virtual shift\n", iterator->state);
+            push(iterator->return_stack, &iterator->state, true);
+            uint32_t vs_state = VS;
+            push(iterator->return_stack, &vs_state, true);
             iterator->state = new_state & 0x000fffff;
             return ADVANCE;
 
@@ -98,7 +111,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             
             if(iterator->state == O){
                 return_to_previous_state(iterator);
-                apply_virtual_state(iterator);
+                apply_virtual_shift(iterator);
                 return ADVANCE;
             }
             //still states in the bracket that need to be returned to
