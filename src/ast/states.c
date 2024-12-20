@@ -60,9 +60,9 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             uint32_t* return_state = (uint32_t*)peek(iterator->return_stack);
 
             if(return_state != NULL && *return_state != O && iterator->return_stack->top > -1){
-                //check if there is states to return to
-                printf("Reduced, now returning to %u\n", *return_state);
+                //check if there is states to return to. if there is a state to return to, apply virtual state to handle that state with the reduced node
                 return_to_previous_state(iterator);
+                apply_virtual_state(iterator);
                 return HOLD;
             }
 
@@ -78,10 +78,10 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
             //save current state to the stack and jump to new state
             //we dereference it on the stack as its going to be changing
-            new_state = new_state & 0x000fffff;
             printf("Saving state: %d\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
-            break;
+            iterator->state = new_state & 0x000fffff;
+            return ADVANCE;
 
         }case(O): {
             
@@ -94,11 +94,11 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             return ADVANCE;
 
         }case(C): {
-
             return_to_previous_state(iterator);
+            
             if(iterator->state == O){
                 return_to_previous_state(iterator);
-                iterator->state = iterator->table[iterator->state][VAR_INDEX];
+                apply_virtual_state(iterator);
                 return ADVANCE;
             }
             //still states in the bracket that need to be returned to

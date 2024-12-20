@@ -4,11 +4,11 @@
 #include <stdio.h>
 
 const uint32_t operator_index_lookup[20] = {
-    2,2,3,3,6,10,10,10,10,10,10,5,         //var table
+    1,1,2,2,5,9,9,9,9,9,9,4,         //var table
 };
 
 const uint32_t delimiter_index_lookup[20] = {
-    4,8,9,11,12,7    //var table
+    3,7,8,10,11,6    //var table
 };
 
 #define CREATE_NEW_AST_NODE \
@@ -25,6 +25,7 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
     
     token* current_lookahead = *current_lookahead_addr;
     token_types next_type = (*current_lookahead_addr)->token_type;
+    iterator->new_node_buffer_set_flag = false;
 
     switch(next_type){
         case(RESERVED_WORD):
@@ -78,7 +79,7 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
             new_node->type = LEAF_NODE;
             new_node->value.leaf_node_value = STR_NODE;
 
-            return VAR_INDEX;
+            return EXPR_INDEX;
         }
 
         case(INT_VALUE): {
@@ -88,7 +89,7 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
             new_node->type = LEAF_NODE;
             new_node->value.leaf_node_value = INT_NODE;
 
-            return VAR_INDEX;
+            return EXPR_INDEX;
         }
 
         case(IDENTIFIER): {
@@ -108,7 +109,7 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
             }
             new_node->type = LEAF_NODE;
             new_node->value.leaf_node_value = ID_NODE;
-            return ID_INDEX;
+            return EXPR_INDEX;
             
         }
 

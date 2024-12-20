@@ -7,12 +7,14 @@
 #include "../ast_utility/ast.h"
 #include "../ast_utility/slist_functions.h"
 
-#define NUM_ENTRY 0;
-
 #define WIDTH 50
 #define HEIGHT 50
 
 #define INIT_STATE 0
+
+#define EXPR_INDEX 0
+
+#define FUNC_INDEX 12
 
 #define general_mask (uint32_t) 0xf0000000
 
@@ -34,9 +36,6 @@
 #define A (uint32_t) 0xa0000000
 
 #define NI (uint32_t) 0xb0000000
-
-#define EXPR_OPENPAREN_STATE 16
-#define FCALL_EXPR_STATE 17
 
 //sets item's specifiers field 
 #define set_specifiers(item, byte) ((iterator)->specifiers |= (1 << (byte)))
@@ -63,5 +62,7 @@ typedef struct{
 typedef uint32_t state_table[HEIGHT][WIDTH];
 
 state_table* get_state_table(void);
+
+void apply_virtual_state(table_iterator* iterator);
 
 #endif
