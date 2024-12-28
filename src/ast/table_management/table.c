@@ -9,18 +9,20 @@ state_table* get_state_table(void){
         {N,         4,          6,          A,          N,          N,          N,          N,          C,          N,          N,          N,          N},             //STATE 1: EXPR
 
         {3,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 2: FUNC
-        {N,         N,          N,          R(2,1),     N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 3: FUNC (EXPR)
+        {N,         R(2,1),     R(2,1),     R(2,1),     N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 3: FUNC (EXPR)
 
         {5,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 4: EXPR +-
-        {N,         N,          S(6),       R(0,1),     N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 5: EXPR +- EXPR
+        {N,         R(0,1),     S(6),       R(0,1),     S(10),      N,          N,          N,          N,          N,          N,          N,          N},             //STATE 5: EXPR +- EXPR
         
-        {7,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 6: EXPR */
-        {N,         R(0,1),     N,          R(0,1),     N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 7: EXPR */ EXPR
+        {7,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 6: EXPR */
+        {N,         R(0,1),     R(0,1),     R(0,1),     S(10),      N,          N,          N,          N,          N,          N,          N,          N},             //STATE 7: EXPR */ EXPR
         
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 8: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 9: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 10: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 11: 
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 8: EXPR COMP
+        {N,         S(4),       S(6),       R(0,1),     S(10),      N,          N,          N,          N,          N,          N,          N,          N},             //STATE 9: EXPR COMP EXPR
+
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 10: EXPR .
+        {N,         R(0,1),     R(0,1),     R(0,1),     R(0,1),     N,          N,          N,          N,          N,          N,          N,          N},             //STATE 11: EXPR . EXPR
+
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 12: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 13: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 14: 
