@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "lexer/lexer_main.h"
-#include "AST/parser.h"
+#include "ast/parser.h"
 
 int main(int arg_count, char *args[]){
 
