@@ -9,26 +9,10 @@
 #include "ast_utility/slist_functions.h"
 #include "ast_utility/routines.h"
 
-/*  TODO: 
-    Create file to convert token to an index. it will also handle setting up tables if needed
-    Create proper state 0 for each table to downsize table initiator
-    Move away from manual token intialization, instead increase create specifier handler function
-    Seperate reserved words into two categories: specifiers (var, func, global, const) which simply modify expressions to function differently and commands (like return, else, if)
-    The commands will be implemented via their own state table, 
-    modifiers implemented through the specifier handler function called at reduction
-    Also sort out the fucking enum names
-*/
-
-/** Statement list - list of AST root nodes. One ast root node might hold lots of statement lists (Like a block in an if statement)
- *  The final output is a statement list - the main routine of the program
- */
-
 /** parses the token stream (entry point for the parser)
  *  returns statement list of all global nodes
  */
 statement_list* parse(token** scan_token){
-
-    //working list - current parent ast node where statements are being added
     
     statement_list* global_slist = create_new_slist();
     table_iterator* iterator = initialize_table_iterator(global_slist);
@@ -96,6 +80,5 @@ statement_list* parse(token** scan_token){
         }
     }
 
-    //placeholder until AST is done
     return global_slist;
 }
