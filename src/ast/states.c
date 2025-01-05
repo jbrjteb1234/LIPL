@@ -24,9 +24,15 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     
     switch(new_index){
 
-        case(N):
-            return ERROR;
+        case C_ADVANCE:
+            return ADVANCE;
+        
+        case C_ADVANCE_ADD_ALTERNATE:
+            return ADVANCE_ADD_ALTERNATE;
 
+        case C_ERROR:
+            return ERROR;
+        
         default:
             new_state = iterator->table[iterator->state][new_index];
             break;

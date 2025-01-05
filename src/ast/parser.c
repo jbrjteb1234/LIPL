@@ -47,15 +47,15 @@ statement_list* parse(token** scan_token){
 
                 break;
             }case OPEN_BLOCK: {
-                ASTNode* control_block = close_iterator(iterator);
-                if(control_block->block_flag == false){
+                ASTNode* control_statement = close_iterator(iterator);
+                if(control_statement->block_flag == false){
                     perror("Tried to open block on non-block node\n");
                     return NULL;
                 }
-                append_to_slist(iterator->working_list, control_block);
+                append_to_slist(iterator->working_list, control_statement);
                 statement_list* new_block = create_new_slist();
                 push(working_list_stack, iterator->working_list, false);
-                control_block->block = new_block;
+                control_statement->block = new_block;
                 iterator->working_list = new_block;
 
                 advance_token(scan_token);
@@ -76,7 +76,20 @@ statement_list* parse(token** scan_token){
                 iterator->working_list = *(statement_list**)pop(working_list_stack);
                 break;
 
-            } 
+            }case ADVANCE_ADD_ALTERNATE: {
+
+
+                ASTNode* last_statement = get_from_slist(iterator->working_list, iterator->working_list->index);
+                if(last_statement->type != CONDITIONAL_BLOCK_NODE || last_statement->value.conditional_block_node_value == ELSE_NODE){
+                    perror("\nTried to attach to unattachable block\n");
+                    return;
+                }
+
+                last_statement->data.conditional_block_node.alternate = iterator->new_node_buffer;
+
+                transfer_node_buffer(iterator);
+                advance_token(scan_token);
+            }
         }
     }
 

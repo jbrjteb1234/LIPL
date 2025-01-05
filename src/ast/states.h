@@ -17,6 +17,7 @@ typedef enum {
     OPEN_BLOCK,
     CLOSE_BLOCK,
     FINISH,
+    ADVANCE_ADD_ALTERNATE,
 } shift_results;
 
 shift_results shift(table_iterator* iterator, token** current_token);

@@ -21,7 +21,7 @@ const uint32_t delimiter_index_lookup[20] = {
 /** Returns the index of the table based on the token, acquired from the tables
  * 
  */
-uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr){
+token_conversion_results convert_token(table_iterator* iterator, token** current_lookahead_addr){
     
     token* current_lookahead = *current_lookahead_addr;
     token_types next_type = (*current_lookahead_addr)->token_type;
@@ -33,23 +33,61 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
             //todo IMPLEMENT RESERVED WORDS
             switch(current_lookahead->token_value.reserved_word_token_value){
                 case VAR:
-                    break;
                 case FUNC:
-                    break;
-                case IF:
-                    break;
-                case WHILE:
-                    break;
-                case ELSE:
-                    break;
-                case ELIF:
-                    break;
-                case RETURN:
-                    break;
                 case GLOBAL:
-                    break;
                 case CONST:
-                    break;
+
+                    set_specifiers(iterator, current_lookahead->token_value.reserved_word_token_value);
+                    return C_ADVANCE;
+
+                case IF:
+
+                    CREATE_NEW_AST_NODE;
+                    new_node->type = CONDITIONAL_BLOCK_NODE;
+                    new_node->value.conditional_block_node_value = IF_NODE;
+                    new_node->block_flag = true;
+                    new_node->data.conditional_block_node.alternate = NULL;
+
+                    return C_ADVANCE;
+                    
+                case WHILE:
+
+                    CREATE_NEW_AST_NODE;
+                    new_node->type = CONDITIONAL_BLOCK_NODE;
+                    new_node->value.conditional_block_node_value = WHILE_NODE;
+                    new_node->block_flag = true;
+                    new_node->data.conditional_block_node.alternate = NULL;
+                    
+                    return C_ADVANCE;
+                
+                case ELSE:
+
+                    CREATE_NEW_AST_NODE;
+                    new_node->type = CONDITIONAL_BLOCK_NODE;
+                    new_node->value.conditional_block_node_value = ELSE_NODE;
+                    new_node->block_flag = true;
+                    new_node->data.conditional_block_node.alternate = NULL;
+
+                    return C_ADVANCE_ADD_ALTERNATE;
+
+                case ELIF:
+
+                    CREATE_NEW_AST_NODE;
+                    new_node->type = CONDITIONAL_BLOCK_NODE;
+                    new_node->value.conditional_block_node_value = ELIF_NODE;
+                    new_node->block_flag = true;
+                    new_node->data.conditional_block_node.alternate = NULL;
+
+                    return C_ADVANCE_ADD_ALTERNATE;
+
+                case RETURN:
+
+                    CREATE_NEW_AST_NODE;
+                    new_node->type = RES_WORD_NODE;
+                    new_node->value.reserved_word_value = RETURN_NODE;
+
+                    return C_ADVANCE;
+
                 default:
                     break;
             }
@@ -118,5 +156,5 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
     }
     //unrecognised symbol (erronoeus token-type)
     perror("Unrecognised token-type\n");
-    return N;
+    return C_ERROR;
 }
