@@ -78,17 +78,18 @@ statement_list* parse(token** scan_token){
 
             }case ADVANCE_ADD_ALTERNATE: {
 
-
                 ASTNode* last_statement = get_from_slist(iterator->working_list, iterator->working_list->index);
                 if(last_statement->type != CONDITIONAL_BLOCK_NODE || last_statement->value.conditional_block_node_value == ELSE_NODE){
                     perror("\nTried to attach to unattachable block\n");
-                    return;
+                    return NULL;
                 }
 
                 last_statement->data.conditional_block_node.alternate = iterator->new_node_buffer;
 
                 transfer_node_buffer(iterator);
                 advance_token(scan_token);
+
+                break;
             }
         }
     }
