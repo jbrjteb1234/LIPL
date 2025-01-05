@@ -40,7 +40,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
                     set_specifiers(iterator, current_lookahead->token_value.reserved_word_token_value);
                     return C_ADVANCE;
 
-                case IF:
+                case IF: {
 
                     CREATE_NEW_AST_NODE;
                     new_node->type = CONDITIONAL_BLOCK_NODE;
@@ -50,7 +50,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
 
                     return C_ADVANCE;
                     
-                case WHILE:
+                }case WHILE: {
 
                     CREATE_NEW_AST_NODE;
                     new_node->type = CONDITIONAL_BLOCK_NODE;
@@ -60,7 +60,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
                     
                     return C_ADVANCE;
                 
-                case ELSE:
+                }case ELSE: {
 
                     CREATE_NEW_AST_NODE;
                     new_node->type = CONDITIONAL_BLOCK_NODE;
@@ -70,7 +70,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
 
                     return C_ADVANCE_ADD_ALTERNATE;
 
-                case ELIF:
+                }case ELIF: {
 
                     CREATE_NEW_AST_NODE;
                     new_node->type = CONDITIONAL_BLOCK_NODE;
@@ -80,7 +80,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
 
                     return C_ADVANCE_ADD_ALTERNATE;
 
-                case RETURN:
+                }case RETURN: {
 
                     CREATE_NEW_AST_NODE;
                     new_node->type = RES_WORD_NODE;
@@ -88,7 +88,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
 
                     return C_ADVANCE;
 
-                default:
+                }default:
                     break;
             }
 
