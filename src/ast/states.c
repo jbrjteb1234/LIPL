@@ -38,8 +38,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             break;
     }
 
-    //TODO: HANDLE INDEX RESULT
-
     printf("The next state is %u, pointed to by index %u, on current state %u\n",new_state, new_index, iterator->state);
     uint32_t new_state_type = new_state & general_mask;
     //finished parsing statement, passed to the iterator above
