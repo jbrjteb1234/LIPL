@@ -72,7 +72,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 }
                 return HOLD;
             }
-
+            //REMOVE RETURN STATE FOR REDUCTION CALLS AND MAKE IT DEFAULT TO EXPRESSION STATE
             //the reduction rule gives a new state to return to, then call again to push the lookahead
             if (new_state != N){
                 iterator->state = new_state;
@@ -91,7 +91,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
         
         }case(VS): {
 
-            //save a non-reducable state, will require a virtual shift to
+            //save a non-reducable state, will require a virtual shift (push expr) to move to intended state
             //save a reducable state
             printf("Saving state: %d and marking a virtual shift\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
@@ -102,6 +102,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
 
         }case(O): {
             
+            //push state before the bracket, then push an open bracket symbol
             uint32_t o_state = O;
             printf("Opening bracket and saving state: %d\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
@@ -111,6 +112,9 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             return ADVANCE;
 
         }case(C): {
+
+            //pop any unreduced states. if its O, pop again to return to pre bracket state 
+
             return_to_previous_state(iterator);
             
             if(iterator->state == O){
@@ -146,7 +150,6 @@ ASTNode* close_iterator(table_iterator* iterator){
     }
 
     iterator->state=0;
-    iterator->specifiers=0x0000;
     return *(ASTNode**)pop(iterator->node_stack);
     
 }
@@ -160,8 +163,6 @@ table_iterator* initialize_table_iterator(statement_list* global_slist){
     
     new_iterator->node_stack = create_stack(sizeof(ASTNode*));
     new_iterator->return_stack = create_stack(sizeof(uint32_t));
-
-    new_iterator->specifiers = 0x0000;
 
     new_iterator->table = *get_state_table();
     new_iterator->state = 0;

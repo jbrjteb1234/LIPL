@@ -37,9 +37,7 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
                 case GLOBAL:
                 case CONST:
 
-                    set_specifiers(iterator, current_lookahead->token_value.reserved_word_token_value);
-                    return C_ADVANCE;
-
+                    return N;
                 case IF: {
 
                     CREATE_NEW_AST_NODE;
@@ -138,11 +136,6 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
 
             if( next->token_type == DELIMITER && next->token_value.delimiter_token_value == OPEN_BRACKET ){
                 new_node->type = FUNC_NODE;
-                if(read_specifiers_field(new_node, FUNC_NODE)){
-                    new_node->value.func_node_value = FUNC_DEC_NODE;
-                    return N;
-                }
-                new_node->value.func_node_value = FUNC_CALL_NODE;
                 return FUNC_INDEX;
             }
             new_node->type = LEAF_NODE;

@@ -2,37 +2,41 @@
 #include "stdio.h"
 state_table* get_state_table(void){
     //  R(1) = reduce binary operator (like 1+1 or 1*1)
-    //  0 expr      1 +-        2 */        3 eos       4 .         5 =         6 ,         7 (         8 )         9 COMP      10 {        11 }        12 FUNC
+    //  0 expr      1 +-        2 */        3 eos       4 .         5 =         6 ,         7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 IF/WH/EI 14 ELSE     16 RETURN   
     static state_table table = {
-        {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          2},             //STATE 0: INIT
+        {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          2,          14,         16,         17},             //STATE 0: INIT
 
         {N,         4,          6,          A,          10,         N,          12,         N,          C,          N,          N,          N,          N},             //STATE 1: EXPR
 
         {3,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 2: FUNC
-        {N,         R(2,1),     R(2,1),     R(2,1),     N,          N,          R(2,1),     N,          N,          N,          N,          N,          N},             //STATE 3: FUNC (EXPR)
+        {N,         R(2,1),     R(2,1),     R(2,1),     N,          N,          R(2,1),     N,          R(2,1),     R(2,1),     N,          N,          N},             //STATE 3: FUNC (EXPR)
 
-        {5,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 4: EXPR +-
-        {N,         R(0,1),     S(6),       R(0,1),     S(10),      N,          R(0,1),     N,          N,          N,          N,          N,          N},             //STATE 5: EXPR +- EXPR
-        
-        {7,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 6: EXPR */
-        {N,         R(0,1),     R(0,1),     R(0,1),     S(10),      N,          R(0,1),     N,          N,          N,          N,          N,          N},             //STATE 7: EXPR */ EXPR
-        
-        {9,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 8: EXPR COMP
-        {N,         S(4),       S(6),       R(0,1),     S(10),      N,          R(0,1),     N,          N,          N,          N,          N,          N},             //STATE 9: EXPR COMP EXPR
+        {5,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          SV(2)},         //STATE 4: EXPR +-
+        {N,         R(0,1),     S(6),       R(0,1),     S(10),      N,          R(0,1),     N,          R(0,1),     R(0,1),     N,          N,          N},             //STATE 5: EXPR +- EXPR
+
+        {7,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          SV(2)},         //STATE 6: EXPR */
+        {N,         R(0,1),     R(0,1),     R(0,1),     S(10),      N,          R(0,1),     N,          N,          R(0,1),     N,          N,          N},             //STATE 7: EXPR */ EXPR
+
+        {9,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          SV(2)},         //STATE 8: EXPR COMP
+        {N,         S(4),       S(6),       R(0,1),     S(10),      N,          R(0,1),     N,          N,          R(0,1),     N,          N,          N},             //STATE 9: EXPR COMP EXPR
 
         {11,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 10: EXPR .
-        {N,         R(0,1),     R(0,1),     R(0,1),     R(0,1),     N,          R(0,1),     N,          N,          N,          N,          N,          N},             //STATE 11: EXPR . EXPR
+        {N,         R(0,1),     R(0,1),     R(0,1),     R(0,1),     N,          R(0,1),     N,          R(0,1),     R(0,1),     N,          N,          N},             //STATE 11: EXPR . EXPR
 
-        {13,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          SV(2)},         //STATE 12: EXPR ,
-        {N,         S(4),       S(6),       R(1,1),     S(10),      N,          R(1,1),     N,          N,          N,          N,          N,          N},             //STATE 13: EXPR , EXPR
-    
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 14: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 15: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 16: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 17: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 18: 
+        {13,        N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          SV(2)},         //STATE 12: EXPR ,
+        {N,         S(4),       S(6),       R(1,1),     S(10),      N,          R(1,1),     N,          R(1,1),     R(1,1),     N,          N,          N},             //STATE 13: EXPR , EXPR
+
+        {14,        N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 14: CON_S 
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 15: CON_S EXPR
+
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 16: ELSE
+        
+        {N,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 17: RETURN
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 18: RETURN EXPR
+
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 19: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 20: 
+
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 21: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 22: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 23: 

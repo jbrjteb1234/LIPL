@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "reducer.h"
 #include "ast_utility/slist_functions.h"
+#include "table_management/table.h"
 
 uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
@@ -20,10 +21,8 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             operator->data.binary_op_node.lhs = lhs;
             operator->data.binary_op_node.rhs = rhs;
 
-            operator->specifiers = iterator->specifiers;
-
             push(node_stack, operator, false);
-            printf("Reduction 0");
+            printf("Reduction 0\n");
 
             return return_state;
         }
@@ -53,12 +52,12 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                 append_to_slist(lhs->data.list_node, rhs);
             }
             
-            printf("Reduction 1");
+            printf("Reduction 1\n");
             return return_state;
         }
 
         case 2: {
-            //reductions for functions
+            //reductions for function call
             ASTNode* rhs = *(ASTNode**)pop(node_stack);
             ASTNode* lhs;
 
@@ -92,12 +91,15 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                     return N;
             }
 
-            lhs->block_flag = true;
             lhs->reduced = true;
+
+            if(node_stack->top > -1){
+
+            }
 
             push(node_stack, lhs, false);
             
-            printf("Reduction 2");
+            printf("Reduction 2\n");
             return return_state;
         }
 
@@ -112,7 +114,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             lhs->block_flag = true;
             lhs->reduced = true;
 
-            printf("Reduction 3");
+            printf("Reduction 3\n");
             return return_state;
         }
 
@@ -123,8 +125,18 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
             lhs->data.return_block_node.value = rhs;
 
-            printf("Reduction 3");
+            printf("Reduction 4\n");
             return return_state;
+        }
+
+        case 5: {
+            //reduction for function decleration
+            reduce(iterator, R(2,0));
+
+            ASTNode* func_node = *(ASTNode**)peek(node_stack);
+
+            func_node->value.func_node_value = FUNC_DEC_NODE; 
+            func_node->block_flag = 1; 
         }
     }
 

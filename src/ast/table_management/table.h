@@ -39,14 +39,9 @@
 #define VS save_with_vs_mask
 #define SV(save_new_state) (save_with_vs_mask | save_new_state)
 
-//sets item's specifiers field 
-#define set_specifiers(item, byte) ((iterator)->specifiers |= (1 << (byte)))
-#define read_specifiers_field(item, res_token_val) ((iterator)->specifiers & (1 << (res_token_val)))
-
 // Iterates the state tables and shifts/reduces individual tokens
 typedef struct{
     uint32_t state;
-    uint16_t specifiers;
 
     statement_list* working_list;
 
