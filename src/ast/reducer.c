@@ -23,7 +23,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             operator->specifiers = iterator->specifiers;
 
             push(node_stack, operator, false);
-            printf("Reduction 0, returning to state %u\n", return_state);
+            printf("Reduction 0");
 
             return return_state;
         }
@@ -53,7 +53,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                 append_to_slist(lhs->data.list_node, rhs);
             }
             
-            printf("Reduction 1, returning to state %u\n", return_state);
+            printf("Reduction 1");
             return return_state;
         }
 
@@ -76,10 +76,12 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
                     break;
                 case FUNC_NODE:
                     if(rhs->reduced){
+                        //if rhs is reduced, then it is a different func node, not the one we are reducing
                         lhs = *(ASTNode**)pop(node_stack);
                         lhs->data.function_node.arguments_list = rhs;
                         lhs->data.function_node.arguments_count = 1;
                     }else{
+                        //if rhs is not reduced, then it is the func node we are currently reducing
                         lhs = rhs;
                         lhs->data.function_node.arguments_count = 0;
                     }
@@ -95,7 +97,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
             push(node_stack, lhs, false);
             
-            printf("Reduction 2, returning to state %u\n", return_state);
+            printf("Reduction 2");
             return return_state;
         }
 
@@ -110,7 +112,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             lhs->block_flag = true;
             lhs->reduced = true;
 
-            printf("Reduction 3, returning to state %u\n", return_state);
+            printf("Reduction 3");
             return return_state;
         }
 
@@ -121,7 +123,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
             lhs->data.return_block_node.value = rhs;
 
-            printf("Reduction 3, returning to state %u\n", return_state);
+            printf("Reduction 3");
             return return_state;
         }
     }
