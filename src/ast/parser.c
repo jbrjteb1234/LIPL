@@ -12,6 +12,14 @@
 /** parses the token stream (entry point for the parser)
  *  returns statement list of all global nodes
  */
+
+void transfer_node_buffer(table_iterator* iterator){
+    if(iterator->new_node_buffer_set_flag){
+        push(iterator->node_stack, iterator->new_node_buffer, false);
+    }
+    iterator->new_node_buffer_set_flag = false;
+}
+
 statement_list* parse(token** scan_token){
     
     statement_list* global_slist = create_new_slist();

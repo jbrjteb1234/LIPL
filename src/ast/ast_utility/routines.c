@@ -34,9 +34,3 @@ token* lookahead(token** scan_token){
     }
 }
 
-void transfer_node_buffer(table_iterator* iterator){
-    if(iterator->new_node_buffer_set_flag){
-        push(iterator->node_stack, iterator->new_node_buffer, false);
-    }
-    iterator->new_node_buffer_set_flag = false;
-}
