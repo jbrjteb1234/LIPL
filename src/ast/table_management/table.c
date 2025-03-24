@@ -6,7 +6,7 @@ state_table* get_state_table(void){
     static state_table table = {
         {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          CB,         2,          23,         15,         17,         18,         20},             //STATE 0: INIT
 
-        {N,         4,          6,          A,          10,         N,          12,         N,          C,          8,          N,          N,          N},             //STATE 1: EXPR
+        {N,         4,          6,          A,          10,         27,         12,         N,          C,          8,          N,          N,          N},             //STATE 1: EXPR
 
         {3,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 2: FUNC
         {N,         R(2),       R(2),       R(2),       N,          N,          R(2),       N,          R(2),       R(2),       N,          N,          N},             //STATE 3: FUNC EXPR
@@ -44,8 +44,9 @@ state_table* get_state_table(void){
         {N,         N,          N,          N,          N,          24,         N,          N,          N,          N,          N,          N,          N},             //STATE 24: VAR EXPR
         {25,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 25: VAR EXPR = 
         {N,         N,          N,          R(6),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 26: VAR EXPR = EXPR
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 27:  
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 28:                     
+
+        {28,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 27: EXPR =
+        {N,         N,          N,          R(0),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 28: EXPR = EXPR              
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 29: 
         {N,         N,          N,          A,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 30:  
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 31: 

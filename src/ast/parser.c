@@ -18,6 +18,7 @@ void transfer_node_buffer(table_iterator* iterator){
         push(iterator->node_stack, iterator->new_node_buffer, false);
     }
     iterator->new_node_buffer_set_flag = false;
+    printf("Transferring\n");
 }
 
 statement_list* parse(token** scan_token){

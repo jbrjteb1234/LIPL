@@ -44,10 +44,6 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
 
                     return resword_index_lookup[FUNC];
 
-                case GLOBAL:
-                case CONST:
-
-                    return N;
                 case IF: {
 
                     CREATE_NEW_AST_NODE;
@@ -91,8 +87,13 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
                     new_node->value.reserved_word_value = RETURN_NODE;
 
                     return resword_index_lookup[RETURN];
+                
+                }case GLOBAL:
+                case CONST:
+    
+                        if(iterator->node_stack);
 
-                }default:
+                default:
                     break;
             }
 
