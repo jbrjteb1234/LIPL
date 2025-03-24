@@ -22,21 +22,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
     uint32_t new_index = convert_token(iterator,  current_lookahead);
     uint32_t new_state = N;
     
-    switch(new_index){
-
-        case C_ADVANCE:
-            return ADVANCE;
-        
-        case C_ADVANCE_ADD_ALTERNATE:
-            return ADVANCE_ADD_ALTERNATE;
-
-        case C_ERROR:
-            return ERROR;
-        
-        default:
-            new_state = iterator->table[iterator->state][new_index];
-            break;
-    }
+    new_state = iterator->table[iterator->state][new_index];
 
     printf("The next state is %u, pointed to by index %u, on current state %u\n",new_state, new_index, iterator->state);
     uint32_t new_state_type = new_state & general_mask;

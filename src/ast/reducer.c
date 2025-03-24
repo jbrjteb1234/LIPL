@@ -104,7 +104,6 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             ASTNode* rhs = *(ASTNode**)pop(node_stack);
 
             lhs->data.conditional_block_node.condition = rhs;
-            lhs->data.conditional_block_node.alternate = NULL;
 
             lhs->block_flag = true;
             lhs->reduced = true;

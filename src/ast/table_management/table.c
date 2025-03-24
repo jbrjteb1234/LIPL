@@ -31,7 +31,7 @@ state_table* get_state_table(void){
         {16,        N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 15: CON_S 
         {N,         N,          N,          R(3),       N,          N,          N,          N,          N,          N,          R(3),       N,          N},             //STATE 16: CON_S EXPR
 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 17: ELSE
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          OB,          N,          N},            //STATE 17: ELSE
         
         {N,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 18: RETURN
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 19: RETURN EXPR

@@ -91,7 +91,6 @@ struct ASTNode{
 
         struct {
             struct ASTNode* condition;
-            struct ASTNode* alternate;
         } conditional_block_node;
 
         struct {
