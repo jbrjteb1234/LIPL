@@ -33,8 +33,8 @@ state_table* get_state_table(void){
 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          OB,          N,          N},            //STATE 17: ELSE
         
-        {N,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 18: RETURN
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 19: RETURN EXPR
+        {19,        N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 18: RETURN
+        {N,         N,          S(6),       R(4),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 19: RETURN EXPR
 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          21},            //STATE 20: FDEC 
         {22,        N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 21: FDEC FUNC
