@@ -45,7 +45,7 @@ state_table* get_state_table(void){
         {25,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 25: VAR EXPR = 
         {N,         N,          N,          R(6),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 26: VAR EXPR = EXPR
 
-        {28,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 27: EXPR =
+        {28,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 27: EXPR =
         {N,         N,          N,          R(0),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 28: EXPR = EXPR              
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 29: 
         {N,         N,          N,          A,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 30:  
