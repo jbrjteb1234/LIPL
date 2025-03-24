@@ -66,7 +66,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             if(return_state != NULL && *return_state != O && iterator->return_stack->top > -1){
                 //check if there is states to return to. if there is a state to return to, apply virtual shift to handle that state with the reduced node
                 return_to_previous_state(iterator);
-                if(iterator->state == VS){
+                if(iterator->state == save_with_vs_mask){
                     return_to_previous_state(iterator);
                     apply_virtual_shift(iterator);
                 }
