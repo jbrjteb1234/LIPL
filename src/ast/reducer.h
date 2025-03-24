@@ -9,4 +9,6 @@
 
 uint32_t reduce(table_iterator* iterator, uint32_t reduction);
 
+void transfer_specifier(table_iterator* iterator, ASTNode* node);
+
 #endif

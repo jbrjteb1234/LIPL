@@ -2,11 +2,11 @@
 #include "stdio.h"
 state_table* get_state_table(void){
     //  R(1) = reduce binary operator (like 1+1 or 1*1)
-    //  0 expr      1 +-(4)     2 */ (6)    3 eos       4 . (10)    5 = (27)    6 , (13)    7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 VAR      14 IF/WH/EI 15 ELSE     16 RETURN   17 FDEC
+    //  0 expr      1 +-(4)     2 */ (6)    3 eos       4 . (10)    5 = (27)    6 , (13)    7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 VAR      14 IF/WH/EI 15 ELSE     16 RETURN   17 FDEC     18 GLOBAL       19 CONST
     static state_table table = {
-        {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          CB,         2,          23,         15,         17,         18,         20},             //STATE 0: INIT
+        {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          CB,         2,          23,         15,         17,         18,         20,         40,             41},             //STATE 0: INIT
 
-        {N,         4,          6,          A,          10,         27,         12,         N,          C,          8,          N,          N,          N},             //STATE 1: EXPR
+        {N,         4,          6,          A,          10,         27,         12,         N,          C,          8,          N,          N,          N,},             //STATE 1: EXPR
 
         {3,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 2: FUNC
         {N,         R(2),       R(2),       R(2),       N,          N,          R(2),       N,          R(2),       R(2),       N,          N,          N},             //STATE 3: FUNC EXPR
@@ -31,7 +31,7 @@ state_table* get_state_table(void){
         {16,        N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 15: CON_S 
         {N,         N,          N,          R(3),       N,          N,          N,          N,          N,          N,          R(3),       N,          N},             //STATE 16: CON_S EXPR
 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          OB,          N,          N},            //STATE 17: ELSE
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          OB,         N,          N},             //STATE 17: ELSE
         
         {19,        N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 18: RETURN
         {N,         N,          S(6),       R(4),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 19: RETURN EXPR
@@ -52,6 +52,19 @@ state_table* get_state_table(void){
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 31: 
         {N,         N,          N,          A,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 32: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 33:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 34:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 35:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 36:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 37:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 38:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 39:
+
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          23,         N,          N,          N,          20,         N,          41},            //STATE 40:  
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          23,         N,          N,          N,          20,         40,         N},             //STATE 41:
+
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 42:
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 43:
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 44:
     };
     return &table;
 }

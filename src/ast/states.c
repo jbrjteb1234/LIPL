@@ -50,7 +50,7 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             uint32_t* return_state = (uint32_t*)peek(iterator->return_stack);
 
             if(return_state != NULL && *return_state != O && iterator->return_stack->top > -1){
-                //check if there is states to return to. if there is a state to return to, apply virtual shift to handle that state with the reduced node
+                //check if there is states to return to. if there is a state to return to, return to it. if necessary, apply virtual shift
                 return_to_previous_state(iterator);
                 if(iterator->state == save_with_vs_mask){
                     return_to_previous_state(iterator);
@@ -58,8 +58,6 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
                 }
                 return HOLD;
             }
-            //REMOVE RETURN STATE FOR REDUCTION CALLS AND MAKE IT DEFAULT TO EXPRESSION STATE
-            //the reduction rule gives a new state to return to, then call again to push the lookahead
             if (new_state != N){
                 iterator->state = new_state;
                 return HOLD;

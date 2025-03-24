@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 
+typedef uint16_t specifiers;
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
 
@@ -107,8 +108,7 @@ struct ASTNode{
     bool block_flag;
     statement_list* block;
 
-    bool const_flag;
-    bool global_flag;
+    specifiers node_specifiers;
 };
 
 struct statement_list{

@@ -3,7 +3,14 @@
 #include <stdint.h>
 #include "reducer.h"
 #include "ast_utility/slist_functions.h"
+#include "../utility/safe_memory.h"
 #include "table_management/table.h"
+#include "table_management/token_converter.h"
+
+void transfer_specifier(table_iterator* iterator, ASTNode* node){
+    safe_memcpy(&(node->node_specifiers), &(iterator->iterator_specifiers), sizeof(specifiers));
+    safe_memset(&(iterator->iterator_specifiers), 0, sizeof(specifiers));
+}
 
 uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
@@ -133,6 +140,8 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             func_node->value.func_node_value = FUNC_DEC_NODE; 
             func_node->block_flag = 1; 
 
+            transfer_specifier(iterator, func_node);
+
             printf("Reduction 2 modified by reduction 5\n");
 
             return BLOCK_CONTROL_STATE;
@@ -147,6 +156,8 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             ASTNode* dec_node = *(ASTNode**)peek(node_stack);
 
             dec_node->value.leaf_node_value = DEC_NODE;
+
+            transfer_specifier(iterator, dec_node);
 
             printf("Reudction 0 modified by reduction 6\n");
 

@@ -12,7 +12,7 @@ const uint32_t delimiter_index_lookup[20] = {
 };
 
 const uint32_t resword_index_lookup[20] = {
-    13, 17, 14, 14, 15, 14, 16
+    13, 17, 14, 14, 15, 14, 16, 18, 19
 };
 
 #define CREATE_NEW_AST_NODE \
@@ -21,6 +21,9 @@ const uint32_t resword_index_lookup[20] = {
     (new_node)->reduced = false; \
     iterator->new_node_buffer = new_node; \
     iterator->new_node_buffer_set_flag = true
+
+#define SET_ITERATOR_SPECIFIER(value) \
+    iterator->iterator_specifiers = (iterator->iterator_specifiers | (0x1 << value))
 
 /** Returns the index of the table based on the token, acquired from the tables
  * 
@@ -88,12 +91,19 @@ uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr)
 
                     return resword_index_lookup[RETURN];
                 
-                }case GLOBAL:
-                case CONST:
-    
-                        if(iterator->node_stack);
+                }case GLOBAL: {
 
-                default:
+                    SET_ITERATOR_SPECIFIER(GLOBAL);
+
+                    return resword_index_lookup[GLOBAL];
+
+                }case CONST: {
+
+                    SET_ITERATOR_SPECIFIER(CONST);
+
+                    return resword_index_lookup[CONST];
+
+                }default:
                     break;
             }
 

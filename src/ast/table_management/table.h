@@ -52,6 +52,8 @@ typedef struct{
     stack* return_stack;
     data_pool* node_pool;
 
+    specifiers iterator_specifiers;
+
     uint32_t    (*table)[WIDTH];
 
 } table_iterator;
