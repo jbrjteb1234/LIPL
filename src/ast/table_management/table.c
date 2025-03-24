@@ -2,7 +2,7 @@
 #include "stdio.h"
 state_table* get_state_table(void){
     //  R(1) = reduce binary operator (like 1+1 or 1*1)
-    //  0 expr      1 +-        2 */        3 eos       4 .         5 =         6 ,         7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 VAR      14 IF/WH/EI 15 ELSE     16 RETURN   17 FDEC
+    //  0 expr      1 +-(4)     2 */ (6)    3 eos       4 . (10)    5 = (27)    6 , (13)    7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 VAR      14 IF/WH/EI 15 ELSE     16 RETURN   17 FDEC
     static state_table table = {
         {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          CB,         2,          23,         15,         17,         18,         20},             //STATE 0: INIT
 
@@ -40,13 +40,13 @@ state_table* get_state_table(void){
         {22,        N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 21: FDEC FUNC
         {N,         N,          N,          R(5),       N,          N,          N,          N,          N,          N,          R(5),       N,          N},             //STATE 22: FDEC FUNC (EXPR)
 
-        {23,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 23: VAR
-        {N,         N,          N,          N,          N,          24,         N,          N,          N,          N,          N,          N,          N},             //STATE 24: VAR EXPR
-        {25,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 25: VAR EXPR = 
-        {N,         N,          N,          R(6),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 26: VAR EXPR = EXPR
+        {24,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 23: VAR
+        {N,         N,          N,          N,          N,          25,         N,          N,          N,          N,          N,          N,          N},             //STATE 24: VAR EXPR
+        {26,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 25: VAR EXPR = 
+        {N,         S(4),       S(6),       R(6),       S(4),       N,          S(13),      N,          N,          N,          N,          N,          N},             //STATE 26: VAR EXPR = EXPR
 
         {28,        N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 27: EXPR =
-        {N,         N,          N,          R(0),       N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 28: EXPR = EXPR              
+        {N,         S(4),       S(6),       R(0),       S(4),       N,          S(13),      N,          R(0),       N,          N,          N,          N},             //STATE 28: EXPR = EXPR              
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 29: 
         {N,         N,          N,          A,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 30:  
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 31: 
