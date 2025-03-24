@@ -11,7 +11,7 @@
     X("==",             EQUIVALENT,         operator_token_value,       OPERATOR)   \
     X("<",              LESS_THAN,          operator_token_value,       OPERATOR)   \
     X(">",              GREATER_THAN,       operator_token_value,       OPERATOR)   \
-    X(">=",             LESS_OR_EQUAL,      operator_token_value,       OPERATOR)   \
+    X("<=",             LESS_OR_EQUAL,      operator_token_value,       OPERATOR)   \
     X(">=",             GREATER_OR_EQUAL,   operator_token_value,       OPERATOR)   \
     X("+",              ADDITION,           operator_token_value,       OPERATOR)   \
     X("-",              SUBTRACTION,        operator_token_value,       OPERATOR)   \
