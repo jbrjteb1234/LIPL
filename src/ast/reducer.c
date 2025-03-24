@@ -8,7 +8,6 @@
 uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
     uint32_t rule = reduction & 0x000fffff;
-    uint32_t return_state = (reduction & 0x0ff00000) >> reduction_return_state_shift_count;
     stack* node_stack = iterator->node_stack;
     
     switch(rule){
@@ -24,7 +23,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             push(node_stack, operator, false);
             printf("Reduction 0\n");
 
-            return return_state;
+            return EXPR_STATE;
         }
         
 
@@ -53,7 +52,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             }
             
             printf("Reduction 1\n");
-            return return_state;
+            return EXPR_STATE;
         }
 
         case 2: {
@@ -96,7 +95,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             push(node_stack, lhs, false);
             
             printf("Reduction 2\n");
-            return return_state;
+            return EXPR_STATE;
         }
 
         case 3: {
@@ -111,7 +110,7 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             lhs->reduced = true;
 
             printf("Reduction 3\n");
-            return return_state;
+            return BLOCK_CONTROL_STATE;
         }
 
         case 4: {
@@ -122,35 +121,37 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
             lhs->data.return_block_node.value = rhs;
 
             printf("Reduction 4\n");
-            return return_state;
+            return EXPR_STATE;
         }
 
         case 5: {
             //reduction for function decleration
 
-            reduce(iterator, R(2,0));
+            reduce(iterator, R(2));
 
             ASTNode* func_node = *(ASTNode**)peek(node_stack);
 
             func_node->value.func_node_value = FUNC_DEC_NODE; 
             func_node->block_flag = 1; 
 
-            printf("Reduction 2 modified by reduction 5");
+            printf("Reduction 2 modified by reduction 5\n");
 
-            return return_state;
+            return BLOCK_CONTROL_STATE;
 
         }
 
         case 6 : {
             //reduction for variable decleration
 
-            reduce(iterator, R(0,0));
+            reduce(iterator, R(0));
 
             ASTNode* dec_node = *(ASTNode**)peek(node_stack);
 
             dec_node->value.leaf_node_value = DEC_NODE;
 
-            printf("Reudction 0 modified by reduction 6");
+            printf("Reudction 0 modified by reduction 6\n");
+
+            return EXPR_STATE;
         }
     }
 

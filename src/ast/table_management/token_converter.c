@@ -4,11 +4,15 @@
 #include <stdio.h>
 
 const uint32_t operator_index_lookup[20] = {
-    1,1,2,2,5,9,9,9,9,9,9,4,         //var table
+    1,1,2,2,5,9,9,9,9,9,9,4,         
 };
 
 const uint32_t delimiter_index_lookup[20] = {
-    3,7,8,10,11,6    //var table
+    3,7,8,10,11,6    
+};
+
+const uint32_t resword_index_lookup[20] = {
+    13, 17, 14, 14, 15, 14, 16
 };
 
 #define CREATE_NEW_AST_NODE \
@@ -33,7 +37,13 @@ token_conversion_results convert_token(table_iterator* iterator, token** current
             //todo IMPLEMENT RESERVED WORDS
             switch(current_lookahead->token_value.reserved_word_token_value){
                 case VAR:
+
+                    return resword_index_lookup[VAR];
+
                 case FUNC:
+
+                    return resword_index_lookup[FUNC];
+
                 case GLOBAL:
                 case CONST:
 

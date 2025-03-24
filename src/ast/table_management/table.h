@@ -11,6 +11,8 @@
 #define HEIGHT 50
 
 #define INIT_STATE 0
+#define EXPR_STATE 1
+#define BLOCK_CONTROL_STATE 14
 
 #define EXPR_INDEX 0
 
@@ -18,9 +20,8 @@
 
 #define general_mask (uint32_t) 0xf0000000
 
-#define reduction_mask  (uint32_t) 0x20000000  //indicates that this is a reduction call
-#define reduction_return_state_shift_count 20
-#define R(reduction_rule,return_state) ((reduction_mask | reduction_rule) | (return_state<<reduction_return_state_shift_count))
+#define reduction_mask  (uint32_t) 0x20000000 
+#define R(reduction_rule) (reduction_mask | reduction_rule)
 
 #define save_mask (uint32_t) 0x30000000
 #define S(save_new_state) (save_mask | save_new_state)
