@@ -36,7 +36,6 @@
 #define A (uint32_t) 0xa0000000
 
 #define save_with_vs_mask (uint32_t) 0xb0000000
-#define VS save_with_vs_mask
 #define SV(save_new_state) (save_with_vs_mask | save_new_state)
 
 // Iterates the state tables and shifts/reduces individual tokens

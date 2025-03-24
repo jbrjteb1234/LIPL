@@ -89,13 +89,13 @@ shift_results shift(table_iterator* iterator, token** current_lookahead){
             iterator->state = new_state & 0x000fffff;
             return ADVANCE;
         
-        }case(VS): {
+        }case(save_with_vs_mask): {
 
             //save a non-reducable state, will require a virtual shift (push expr) to move to intended state
             //save a reducable state
             printf("Saving state: %d and marking a virtual shift\n", iterator->state);
             push(iterator->return_stack, &iterator->state, true);
-            uint32_t vs_state = VS;
+            uint32_t vs_state = save_with_vs_mask;
             push(iterator->return_stack, &vs_state, true);
             iterator->state = new_state & 0x000fffff;
             return ADVANCE;
