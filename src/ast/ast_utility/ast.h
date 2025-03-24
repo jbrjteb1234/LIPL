@@ -102,8 +102,8 @@ struct ASTNode{
         // other node-specific data
     } data;
 
-    struct ASTNode* parent;
     bool reduced;
+
     bool block_flag;
     statement_list* block;
 };
