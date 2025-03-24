@@ -2,14 +2,14 @@
 #include "stdio.h"
 state_table* get_state_table(void){
     //  R(1) = reduce binary operator (like 1+1 or 1*1)
-    //  0 expr      1 +-        2 */        3 eos       4 .         5 =         6 ,         7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 IF/WH/EI 14 ELSE     16 RETURN   
+    //  0 expr      1 +-        2 */        3 eos       4 .         5 =         6 ,         7 (         8 )         9 COMP      10 {        11 }        12 FUNC     13 IF/WH/EI 14 ELSE     16 RETURN   17 FDEC
     static state_table table = {
-        {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          2,          14,         16,         17},             //STATE 0: INIT
+        {1,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          2,          14,         16,         17,         19},             //STATE 0: INIT
 
         {N,         4,          6,          A,          10,         N,          12,         N,          C,          N,          N,          N,          N},             //STATE 1: EXPR
 
         {3,         N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 2: FUNC
-        {N,         R(2,1),     R(2,1),     R(2,1),     N,          N,          R(2,1),     N,          R(2,1),     R(2,1),     N,          N,          N},             //STATE 3: FUNC (EXPR)
+        {N,         R(2,1),     R(2,1),     R(2,1),     N,          N,          R(2,1),     N,          R(2,1),     R(2,1),     N,          N,          N},             //STATE 3: FUNC EXPR
 
         {5,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          SV(2)},         //STATE 4: EXPR +-
         {N,         R(0,1),     S(6),       R(0,1),     S(10),      N,          R(0,1),     N,          R(0,1),     R(0,1),     N,          N,          N},             //STATE 5: EXPR +- EXPR
@@ -34,8 +34,8 @@ state_table* get_state_table(void){
         {N,         N,          N,          N,          N,          N,          N,          O,          N,          N,          N,          N,          N},             //STATE 17: RETURN
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 18: RETURN EXPR
 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 19: 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 20: 
+        {20,        N,          N,          N,          N,          N,          N,          O,          C,          N,          N,          N,          N},             //STATE 19: FDEC
+        {N,         N,          N,          R(6,0),     N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 20: FDEC EXPR
 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 21: 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 22: 

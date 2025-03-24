@@ -93,10 +93,6 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
             lhs->reduced = true;
 
-            if(node_stack->top > -1){
-
-            }
-
             push(node_stack, lhs, false);
             
             printf("Reduction 2\n");
@@ -131,12 +127,30 @@ uint32_t reduce(table_iterator* iterator, uint32_t reduction){
 
         case 5: {
             //reduction for function decleration
+
             reduce(iterator, R(2,0));
 
             ASTNode* func_node = *(ASTNode**)peek(node_stack);
 
             func_node->value.func_node_value = FUNC_DEC_NODE; 
             func_node->block_flag = 1; 
+
+            printf("Reduction 2 modified by reduction 5");
+
+            return return_state;
+
+        }
+
+        case 6 : {
+            //reduction for variable decleration
+
+            reduce(iterator, R(0,0));
+
+            ASTNode* dec_node = *(ASTNode**)peek(node_stack);
+
+            dec_node->value.leaf_node_value = DEC_NODE;
+
+            printf("Reudction 0 modified by reduction 6");
         }
     }
 
