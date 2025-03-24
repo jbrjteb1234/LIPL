@@ -106,6 +106,9 @@ struct ASTNode{
 
     bool block_flag;
     statement_list* block;
+
+    bool const_flag;
+    bool global_flag;
 };
 
 struct statement_list{
