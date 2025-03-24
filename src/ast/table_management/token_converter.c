@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 const uint32_t operator_index_lookup[20] = {
-    1,1,2,2,5,9,9,9,9,9,9,4,         
+    1,1,2,2,5,9,9,9,9,9,9,4,2,2         
 };
 
 const uint32_t delimiter_index_lookup[20] = {

@@ -46,6 +46,8 @@ typedef enum{
     GREATER_OR_EQUAL_NODE   =   GREATER_OR_EQUAL,
     LESS_OR_EQUAL_NODE      =   LESS_OR_EQUAL,
     DOT_NODE                =   DOT,
+    POWER_NODE              =   POWER,
+    ROOT_NODE               =   ROOT,
 }binary_op_node;
 
 typedef enum{
