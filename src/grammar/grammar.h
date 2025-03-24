@@ -18,6 +18,8 @@
     X("*",              MULTIPLICATION,     operator_token_value,       OPERATOR)   \
     X(".",              DOT,                operator_token_value,       OPERATOR)   \
     X("/",              DIVISION,           operator_token_value,       OPERATOR)   \
+    X("^",              POWER,              operator_token_value,       OPERATOR)   \
+    X("_",              ROOT,               operator_token_value,       OPERATOR)   \
     X(",",              COMMA,              delimiter_token_value,      DELIMITER)  \
     X("{",              OPEN_CBRACKET,      delimiter_token_value,      DELIMITER)  \
     X("}",              CLOSE_CBRACKET,     delimiter_token_value,      DELIMITER)  \

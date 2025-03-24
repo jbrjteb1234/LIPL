@@ -14,7 +14,9 @@ typedef enum{
     GREATER_THAN    =8,
     GREATER_OR_EQUAL=9,
     LESS_OR_EQUAL   =10,
-    DOT             =11
+    DOT             =11,
+    POWER           =12,
+    ROOT            =13,
 } operator_token;
 
 //different types of reserved word commands
