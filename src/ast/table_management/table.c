@@ -59,8 +59,8 @@ state_table* get_state_table(void){
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 38:  
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 39:
 
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          23,         N,          N,          N,          20,         N,          41},            //STATE 40:  
-        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          23,         N,          N,          N,          20,         40,         N},             //STATE 41:
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          23,         N,          N,          N,          20,         N,          41},            //STATE 40:  GLOBAL
+        {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          23,         N,          N,          N,          20,         40,         N},             //STATE 41:  CONST
 
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 42:
         {N,         N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N,          N},             //STATE 43:
