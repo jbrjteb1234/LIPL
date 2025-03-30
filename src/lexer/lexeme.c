@@ -23,7 +23,7 @@ character_buffer* create_character_buffer(void){
  */
 void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
     if (buf->index == buf->length){
-        uint32_t new_length = buf->length + 10;
+        uint32_t new_length = buf->length*2;
         buf->buffer = safe_realloc(buf->buffer, (size_t)new_length);
     }
     buf->buffer[buf->index] = lexeme_char;
