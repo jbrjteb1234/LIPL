@@ -40,14 +40,20 @@ void reset_pool(data_pool* pool){
     pool->remaining = pool->max;
 }
 
-void expand_data_pool(data_pool* pool){
-    pool->max *= 2;
-    pool->data = safe_realloc(pool->data,  (size_t) pool->max * pool->element_size);
-    pool->remaining = pool->max/2;
-    for(uint32_t i=0; i<pool->max; i++){
-        push(pool->free_list, (uint8_t*)pool->data + i * pool->element_size, false);
+void expand_data_pool(data_pool* pool)
+{
+    uint32_t old_max = pool->max;
+    pool->max = old_max * 2;
+
+    pool->data = safe_realloc(pool->data, (size_t)pool->max * pool->element_size);
+
+    for (uint32_t i = old_max; i < pool->max; i++) {
+        void *block_addr = (uint8_t *)pool->data + i * pool->element_size;
+        push(pool->free_list, block_addr, false);
+        pool->remaining++;
     }
 }
+
 
 void* acquire_from_pool(data_pool* pool){
     if(pool->remaining == 0){

@@ -31,7 +31,7 @@ token* tokenize(FILE* source_code){
     token* first = NULL;
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
 
-    data_pool* token_pool = init_data_pool(sizeof(token), 200);
+    data_pool* token_pool = init_data_pool(sizeof(token), 50);
 
     while (!eof_flag) {
         //prevents EOF (int) getting inserted to char buffer
