@@ -6,6 +6,7 @@
 
 #include "token.h"
 #include "lexeme.h"
+#include "../utility/data_pool.h"
 
 #include <stdint.h>
 
@@ -26,7 +27,7 @@ typedef struct{
     tokentype_dictionary_entry** dictionary;
 } tokentype_dictionary;
 
-token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme);
+token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* lexeme, data_pool* token_pool);
 
 void expand_dictionary(tokentype_dictionary* dictionary);
 

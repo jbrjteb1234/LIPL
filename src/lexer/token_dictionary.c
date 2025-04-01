@@ -88,8 +88,8 @@ tokentype_dictionary_entry* tokentype_lookup(tokentype_dictionary* dictionary, c
 /** Produces token - either searches dictionary and acquires pre-existing token details (Like operator type from its associated lexeme, or identifier)
  * 
  */
-token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* target_lexeme){
-    token* new_token = (token*)safe_malloc((size_t)sizeof(token));
+token* produce_token(token* prev, tokentype_dictionary* dictionary, lexeme* target_lexeme, data_pool* token_pool){
+    token* new_token = (token*)acquire_from_pool(token_pool);
     new_token->next = NULL;
     new_token->leaf = false;
     if(prev != NULL){

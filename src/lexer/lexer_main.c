@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../utility/safe_memory.h"
+#include "../utility/data_pool.h"
 #include "lexer_main.h"
 #include "lexeme.h"
 #include "token_type.h"
@@ -30,12 +31,14 @@ token* tokenize(FILE* source_code){
     token* first = NULL;
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
 
+    data_pool* token_pool = init_data_pool(sizeof(token), 200);
+
     while (!eof_flag) {
         //prevents EOF (int) getting inserted to char buffer
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
         if (produce_lexeme(buf, lexeme_buffer, c) == true){
 
-            token* temp_new_token = produce_token(current, dictionary, lexeme_buffer);
+            token* temp_new_token = produce_token(current, dictionary, lexeme_buffer, token_pool);
             if (temp_new_token != NULL){
                 current = temp_new_token;
                 //set the head of the tokenstream
