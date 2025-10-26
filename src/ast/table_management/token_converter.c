@@ -3,168 +3,235 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-const uint32_t operator_index_lookup[20] = {
-    1,1,2,2,5,9,9,9,9,9,9,4,2,2         
-};
+/* ---- specifier bits (apply to next declaration) ---------------------- */
+#ifndef SPEC_GLOBAL_BIT
+#define SPEC_GLOBAL_BIT ((specifiers)0x0001u)
+#endif
+#ifndef SPEC_CONST_BIT
+#define SPEC_CONST_BIT  ((specifiers)0x0002u)
+#endif
 
-const uint32_t delimiter_index_lookup[20] = {
-    3,7,8,10,11,6    
-};
+/* ---- small AST helpers ------------------------------------------------ */
 
-const uint32_t resword_index_lookup[20] = {
-    13, 17, 14, 14, 15, 14, 16, 18, 19
-};
+static ASTNode* new_ast(table_iterator* it){
+    ASTNode* n = (ASTNode*)acquire_from_pool(it->node_pool);
+    /* defensive init */
+    safe_memset(n, 0, sizeof(*n));
+    return n;
+}
 
-#define CREATE_NEW_AST_NODE \
-    ASTNode* new_node = acquire_from_pool((iterator)->node_pool); \
-    (new_node)->block_flag = false; \
-    (new_node)->reduced = false; \
-    iterator->new_node_buffer = new_node; \
-    iterator->new_node_buffer_set_flag = true
+static void stage_node(table_iterator* it, ASTNode* n){
+    it->new_node_buffer      = n;
+    it->new_node_buffer_set_flag = true;
+}
 
-#define SET_ITERATOR_SPECIFIER(value) \
-    iterator->iterator_specifiers = (iterator->iterator_specifiers | (0x1 << value))
+/* ---- column mapping --------------------------------------------------- */
 
-/** Returns the index of the table based on the token, acquired from the tables
- * 
- */
-uint32_t convert_token(table_iterator* iterator, token** current_lookahead_addr){
-    
-    token* current_lookahead = *current_lookahead_addr;
-    token_types next_type = (*current_lookahead_addr)->token_type;
-    iterator->new_node_buffer_set_flag = false;
+static uint32_t map_operator_col(operator_token op){
+    switch (op){
+        case ADDITION:
+        case SUBTRACTION:     return COL_ADD_SUB;
+        case MULTIPLICATION:
+        case DIVISION:
+        case POWER:
+        case ROOT:            return COL_MUL_DIV;
+        case ASSIGNMENT:      return COL_ASSIGN;
+        case DOT:             return COL_DOT;
+        case EQUIVALENT:
+        case NOT_EQUIVALENT:
+        case LESS_THAN:
+        case GREATER_THAN:
+        case GREATER_OR_EQUAL:
+        case LESS_OR_EQUAL:   return COL_COMP;
+        default:              return COL_EXPR; /* safe fallback */
+    }
+}
 
-    switch(next_type){
-        case(RESERVED_WORD):
+uint32_t token_to_column(const token* t, const token* next){
+    if (!t) return COL_EOS; /* treat missing as end of statement to unwind */
+    switch (t->token_type){
+        case STRING_LITERAL:
+        case INT_VALUE:
+            return COL_EXPR;
 
-            //todo IMPLEMENT RESERVED WORDS
-            switch(current_lookahead->token_value.reserved_word_token_value){
+        case IDENTIFIER: {
+            /* Look-ahead: identifier + '(' -> function call head (COL_FUNC).
+               else regular expression atom (COL_EXPR). */
+            if (next && next->token_type == DELIMITER &&
+                next->token_value.delimiter_token_value == OPEN_BRACKET){
+                return COL_FUNC;
+            }
+            return COL_EXPR;
+        }
+
+        case OPERATOR:
+            return map_operator_col(t->token_value.operator_token_value);
+
+        case DELIMITER: {
+            switch (t->token_value.delimiter_token_value){
+                case EOS:            return COL_EOS;
+                case COMMA:          return COL_COMMA;
+                case OPEN_BRACKET:   return COL_OPEN_BRACKET;
+                case CLOSE_BRACKET:  return COL_CLOSE_BRACKET;
+                case OPEN_CBRACKET:  return COL_OPEN_CBRACKET;
+                case CLOSE_CBRACKET: return COL_CLOSE_CBRACKET;
+                default:             return COL_EXPR;
+            }
+        }
+
+        case RESERVED_WORD: {
+            switch (t->token_value.reserved_word_token_value){
+                case VAR:    return COL_VAR;
+                case FUNC:   return COL_FDEC;      /* declaration keyword */
+                case IF:
+                case WHILE:
+                case ELIF:   return COL_IF_WH_ELI;
+                case ELSE:   return COL_ELSE;
+                case RETURN: return COL_RETURN;
+                case GLOBAL: return COL_GLOBAL;
+                case CONST:  return COL_CONST;
+                default:     return COL_EXPR;
+            }
+        }
+        default:
+            return COL_EXPR;
+    }
+}
+
+/* ---- state stack pop for states.c ------------------------------------ */
+
+void return_to_previous_state(table_iterator* it){
+    if (!it || !it->return_stack) return;
+    uint32_t* s = (uint32_t*)pop(it->return_stack);
+    if (!s){
+        /* nothing to return to; leave state as-is */
+        return;
+    }
+    it->state = *s;
+}
+
+/* ---- convert_token: stage AST node & return column ------------------- */
+
+uint32_t convert_token(table_iterator* it, token** lookahead){
+    token* t = (lookahead && *lookahead) ? *lookahead : NULL;
+    token* nxt = t ? (token*)t->next : NULL;
+
+    /* default: nothing staged */
+    it->new_node_buffer_set_flag = false;
+    it->new_node_buffer = NULL;
+
+    uint32_t col = token_to_column(t, nxt);
+
+    if (!t) {
+        return COL_EOS;
+    }
+
+    switch (t->token_type){
+        case STRING_LITERAL: {
+            ASTNode* n = new_ast(it);
+            n->type = LEAF_NODE;
+            n->value.leaf_node_value = STR_NODE;
+            n->data.value_node.value = t->token_value.variable_value; /* borrow; tokens own payload */
+            stage_node(it, n);
+            break;
+        }
+        case INT_VALUE: {
+            ASTNode* n = new_ast(it);
+            n->type = LEAF_NODE;
+            n->value.leaf_node_value = INT_NODE;
+            n->data.value_node.value = t->token_value.variable_value; /* borrow; tokens own payload */
+            stage_node(it, n);
+            break;
+        }
+        case IDENTIFIER: {
+            if (col == COL_FUNC){
+                /* function call head: build FUNC_NODE carrying identifier id */
+                ASTNode* n = new_ast(it);
+                n->type = FUNC_NODE;
+                n->value.func_node_value = FUNC_CALL_NODE; /* may be changed to DEC in reduction 5 */
+                n->data.function_node.identifier = t->token_value.identifier_token_value;
+                n->data.function_node.arguments_count = 0;
+                n->data.function_node.arguments_list = NULL;
+                n->reduced = false;
+                n->block_flag = false;
+                stage_node(it, n);
+            } else {
+                /* plain identifier as expression */
+                ASTNode* n = new_ast(it);
+                n->type = LEAF_NODE;
+                n->value.leaf_node_value = ID_NODE;
+                n->data.value_node.identifier = t->token_value.identifier_token_value;
+                stage_node(it, n);
+            }
+            break;
+        }
+        case OPERATOR: {
+            operator_token op = t->token_value.operator_token_value;
+            ASTNode* n = new_ast(it);
+            n->type = BINARY_OP_NODE;
+            n->value.binary_op_node_value = (binary_op_node)op;
+            n->data.binary_op_node.lhs = NULL;
+            n->data.binary_op_node.rhs = NULL;
+            stage_node(it, n);
+            break;
+        }
+        case RESERVED_WORD: {
+            switch (t->token_value.reserved_word_token_value){
                 case VAR:
-
-                    return resword_index_lookup[VAR];
-
                 case FUNC:
-
-                    return resword_index_lookup[FUNC];
-
-                case IF: {
-
-                    CREATE_NEW_AST_NODE;
-                    new_node->type = CONDITIONAL_BLOCK_NODE;
-                    new_node->value.conditional_block_node_value = IF_NODE;
-                    new_node->block_flag = true;
-
-                    return resword_index_lookup[IF];
-                    
-                }case WHILE: {
-
-                    CREATE_NEW_AST_NODE;
-                    new_node->type = CONDITIONAL_BLOCK_NODE;
-                    new_node->value.conditional_block_node_value = WHILE_NODE;
-                    new_node->block_flag = true;
-                    
-                    return resword_index_lookup[WHILE];
-                
-                }case ELSE: {
-
-                    CREATE_NEW_AST_NODE;
-                    new_node->type = CONDITIONAL_BLOCK_NODE;
-                    new_node->value.conditional_block_node_value = ELSE_NODE;
-                    new_node->block_flag = true;
-
-                    return resword_index_lookup[ELSE];
-
-                }case ELIF: {
-
-                    CREATE_NEW_AST_NODE;
-                    new_node->type = CONDITIONAL_BLOCK_NODE;
-                    new_node->value.conditional_block_node_value = ELIF_NODE;
-                    new_node->block_flag = true;
-
-                    return resword_index_lookup[ELIF];
-
-                }case RETURN: {
-
-                    CREATE_NEW_AST_NODE;
-                    new_node->type = RES_WORD_NODE;
-                    new_node->value.reserved_word_value = RETURN_NODE;
-
-                    return resword_index_lookup[RETURN];
-                
-                }case GLOBAL: {
-
-                    SET_ITERATOR_SPECIFIER(GLOBAL);
-
-                    return resword_index_lookup[GLOBAL];
-
-                }case CONST: {
-
-                    SET_ITERATOR_SPECIFIER(CONST);
-
-                    return resword_index_lookup[CONST];
-
-                }default:
+                    /* Declaration keywords: no node, grammar uses COL_VAR/COL_FDEC */
+                    break;
+                case GLOBAL:
+                    it->iterator_specifiers |= SPEC_GLOBAL_BIT;
+                    break;
+                case CONST:
+                    it->iterator_specifiers |= SPEC_CONST_BIT;
+                    break;
+                case RETURN: {
+                    ASTNode* n = new_ast(it);
+                    n->type = RES_WORD_NODE;
+                    n->value.reserved_word_value = RETURN_NODE;
+                    stage_node(it, n);
+                    break;
+                }
+                case IF:
+                case WHILE:
+                case ELIF: {
+                    ASTNode* n = new_ast(it);
+                    n->type = CONDITIONAL_BLOCK_NODE;
+                    if (t->token_value.reserved_word_token_value == IF)      n->value.conditional_block_node_value = IF_NODE;
+                    else if (t->token_value.reserved_word_token_value == WHILE) n->value.conditional_block_node_value = WHILE_NODE;
+                    else                                                     n->value.conditional_block_node_value = ELIF_NODE;
+                    n->block_flag = false; /* will become true after rule 3 */
+                    n->reduced    = false;
+                    stage_node(it, n);
+                    break;
+                }
+                case ELSE: {
+                    /* else has no condition; it still produces a block node */
+                    ASTNode* n = new_ast(it);
+                    n->type = CONDITIONAL_BLOCK_NODE;
+                    n->value.conditional_block_node_value = ELSE_NODE;
+                    n->block_flag = true;  /* block follows immediately */
+                    n->reduced    = true;  /* no further reduction needed before block */
+                    stage_node(it, n);
+                    break;
+                }
+                default:
+                    /* ignore */
                     break;
             }
-
-            return N;
-
-        case(OPERATOR):
-
-            CREATE_NEW_AST_NODE;
-
-            new_node->type = BINARY_OP_NODE;
-            new_node->value.binary_op_node_value = (binary_op_node)current_lookahead->token_value.operator_token_value;
-
-            return operator_index_lookup[current_lookahead->token_value.operator_token_value];
-
             break;
-        case(DELIMITER):
-
-            return delimiter_index_lookup[current_lookahead->token_value.delimiter_token_value];
-
+        }
+        case DELIMITER:
+            /* punctuation (comma, brackets, braces, semicolon): no node */
             break;
-
-        case(STRING_LITERAL): {
-
-            CREATE_NEW_AST_NODE;
-
-            new_node->type = LEAF_NODE;
-            new_node->value.leaf_node_value = STR_NODE;
-
-            return EXPR_INDEX;
-        }
-
-        case(INT_VALUE): {
-
-            CREATE_NEW_AST_NODE;
-
-            new_node->type = LEAF_NODE;
-            new_node->value.leaf_node_value = INT_NODE;
-
-            return EXPR_INDEX;
-        }
-
-        case(IDENTIFIER): {
-
-            CREATE_NEW_AST_NODE;
-
-            token* next = lookahead(current_lookahead_addr);
-
-            if( next->token_type == DELIMITER && next->token_value.delimiter_token_value == OPEN_BRACKET ){
-                new_node->type = FUNC_NODE;
-                return FUNC_INDEX;
-            }
-            new_node->type = LEAF_NODE;
-            new_node->value.leaf_node_value = ID_NODE;
-            return EXPR_INDEX;
-            
-        }
 
         default:
-            break;
+            /* Unrecognized; do not stage a node, keep as expression column to avoid OOB */
+            fprintf(stderr, "convert_token: unexpected token type %d\n", t->token_type);
+            return COL_EXPR;
     }
-    //unrecognised symbol (erronoeus token-type)
-    perror("Unrecognised token-type\n");
-    return N;
+
+    return col;
 }

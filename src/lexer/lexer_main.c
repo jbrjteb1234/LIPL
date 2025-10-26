@@ -1,5 +1,7 @@
+// lexer/lexer_main.c
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "../utility/safe_memory.h"
 #include "../utility/data_pool.h"
 #include "lexer_main.h"
@@ -8,54 +10,82 @@
 #include "token_dictionary.h"
 #include "token.h"
 
+static data_pool* g_token_pool = NULL; /* the pool backing token nodes */
+
 void print_token_stream(token* head) {
-    token* current = head;
-    while (current != NULL) {
-        printf("Token: %d\n", current->token_type);
-        current = (token*)current->previous;
+    for (token* t = head; t != NULL; t = (token*)t->next) {
+        printf("Token: %d\n", t->token_type);
     }
 }
-/** Turns source file into a linked list of tokens
- *  @return the head token - first command
- */
+
+/* NOTE: tokenize() creates and destroys the dictionary internally;
+         tokens do NOT keep any pointers into the dictionary. */
 token* tokenize(FILE* source_code){
     int c;
     bool eof_flag = false;
 
-    //character buffer - feeds characters from source file one by one into buffer 
     character_buffer* buf = create_character_buffer();
-    //lexeme_buffer - holds complete lexeme to be turned into token
-    lexeme* lexeme_buffer = safe_malloc((size_t)sizeof(lexeme));
+    lexeme* lexeme_buffer = (lexeme*)safe_malloc(sizeof(lexeme));
+    lexeme_buffer->value = NULL;
+    lexeme_buffer->type = (token_types)-1;
 
     token* current = NULL;
     token* first = NULL;
+
     tokentype_dictionary* dictionary = initialize_tokentype_dictionary();
 
-    data_pool* token_pool = init_data_pool(sizeof(token), 50);
+    g_token_pool = init_data_pool((uint32_t)sizeof(token), 50u);
 
     while (!eof_flag) {
-        //prevents EOF (int) getting inserted to char buffer
         if((c = fgetc(source_code))==EOF){eof_flag = true;}
-        if (produce_lexeme(buf, lexeme_buffer, c) == true){
+        if (produce_lexeme(buf, lexeme_buffer, c)){
 
-            token* temp_new_token = produce_token(current, dictionary, lexeme_buffer, token_pool);
+            token* temp_new_token = produce_token(current, dictionary, lexeme_buffer, g_token_pool);
             if (temp_new_token != NULL){
                 current = temp_new_token;
-                //set the head of the tokenstream
                 if(first == NULL){
                     first = current;
                 }
-                printf("New token created at address: %p, from lexeme %s\n", (void*)current, lexeme_buffer->value);
-            }    
+                /* optional trace */
+                /* printf("New token created at %p from lexeme %s\n", (void*)current, lexeme_buffer->value); */
+            }
+
+            /* transfer of ownership rules:
+               - STRING_LITERAL / INT_VALUE: token made a deep copy; free the lexeme buffer here.
+               - IDENTIFIER / operators / reserved words: dictionary copied strings internally;
+                 free the lexeme buffer here as well. */
+            if (lexeme_buffer->value){
+                safe_free((void**)&lexeme_buffer->value);
+            }
         }
-        insert_to_character_buffer(buf, (char)c);
+        if (!eof_flag){
+            insert_to_character_buffer(buf, (char)c);
+        }
     }
 
-    safe_free( (void**) &(lexeme_buffer->value) );
-    safe_free( (void**) &lexeme_buffer );
-    safe_free( (void**) &(buf->buffer));
-    safe_free( (void**) &buf);
-    //print_token_stream(current);
+    destroy_tokentype_dictionary(dictionary);
+
+    /* cleanup temporary buffers */
+    if (lexeme_buffer->value) safe_free((void**)&lexeme_buffer->value);
+    safe_free((void**)&lexeme_buffer);
+    safe_free((void**)&buf->buffer);
+    safe_free((void**)&buf);
 
     return first;
+}
+
+void destroy_token_stream(token* head){
+    /* free per-token owned payloads */
+    for (token* t = head; t; t = (token*)t->next){
+        if (t->leaf && (t->token_type == STRING_LITERAL || t->token_type == INT_VALUE)){
+            if (t->token_value.variable_value){
+                safe_free((void**)&t->token_value.variable_value);
+            }
+        }
+    }
+    /* release the token node pool */
+    if (g_token_pool){
+        shutdown_data_pool(g_token_pool);
+        g_token_pool = NULL;
+    }
 }

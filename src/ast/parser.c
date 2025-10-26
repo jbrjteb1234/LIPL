@@ -8,11 +8,9 @@
 #include "../utility/stack.h"
 #include "ast_utility/slist_functions.h"
 #include "ast_utility/routines.h"
+#include "table_management/token_converter.h" 
 
-/** parses the token stream (entry point for the parser)
- *  returns statement list of all global nodes
- */
-
+/** push staged node (from convert_token) if present */
 void transfer_node_buffer(table_iterator* iterator){
     if(iterator->new_node_buffer_set_flag){
         push(iterator->node_stack, iterator->new_node_buffer, false);
@@ -20,10 +18,17 @@ void transfer_node_buffer(table_iterator* iterator){
     iterator->new_node_buffer_set_flag = false;
 }
 
+static void set_block_pool(statement_list* sl, table_iterator* it){
+    if (sl) sl->backing_pool = it->node_pool;
+}
+
 statement_list* parse(token** scan_token){
-    
+
     statement_list* global_slist = create_new_slist();
+
     table_iterator* iterator = initialize_table_iterator(global_slist);
+    set_block_pool(global_slist, iterator);
+
     stack* working_list_stack = create_stack(sizeof(statement_list*));
 
     shift_results result;
@@ -33,61 +38,91 @@ statement_list* parse(token** scan_token){
         result = shift(iterator, scan_token);
         switch(result){
             case ERROR:
-                perror("Error in parsing");
+                fprintf(stderr, "Error in parsing\n");
                 return NULL;
+
             case HOLD:
-                //hold same token, shift again
+                // hold same token, shift again
                 break;
+
             case ADVANCE:
                 transfer_node_buffer(iterator);
                 advance_token(scan_token);
                 break;
+
             case FINISH: {
                 ASTNode* new_statement = close_iterator(iterator);
                 append_to_slist(iterator->working_list, new_statement);
-                printf("Completed statement\n");
 
                 if((*scan_token)->next == NULL){
                     final_token = true;
                 }else{
                     advance_token(scan_token);
                 }
-
                 break;
-            }case OPEN_BLOCK: {
+            }
+
+            case OPEN_BLOCK: {
                 ASTNode* control_statement = close_iterator(iterator);
                 if(control_statement->block_flag == false){
-                    perror("Tried to open block on non-block node\n");
+                    fprintf(stderr, "Tried to open block on non-block node\n");
                     return NULL;
                 }
 
                 append_to_slist(iterator->working_list, control_statement);
                 statement_list* new_block = create_new_slist();
+                set_block_pool(new_block, iterator);
+
                 push(working_list_stack, iterator->working_list, false);
                 control_statement->block = new_block;
                 iterator->working_list = new_block;
 
                 advance_token(scan_token);
-
                 break;
-            }case CLOSE_BLOCK: {
-                           
+            }
+
+            case CLOSE_BLOCK: {
                 if((*scan_token)->next == NULL){
                     final_token = true;
                 }else{
                     advance_token(scan_token);
                 }
                 if(working_list_stack->top == -1){
-                    perror("Tried to close block without opening one\n");
+                    fprintf(stderr, "Tried to close block without opening one\n");
                     return NULL;
                 }
-                printf("Climbing working list stack\n");
                 iterator->working_list = *(statement_list**)pop(working_list_stack);
                 break;
-
             }
         }
     }
 
     return global_slist;
+}
+
+/* free only the statement_list containers; nodes come from a pool */
+static void destroy_ast_internal(statement_list* root){
+    if (!root) return;
+
+    for (uint32_t i = 0; i < root->index; ++i){
+        ASTNode* n = root->list[i];
+        if (n && n->block){
+            destroy_ast_internal(n->block);
+        }
+    }
+
+    if (root->list) safe_free((void**)&root->list);
+    safe_free((void**)&root);
+}
+
+void destroy_ast(statement_list* root){
+    if (!root) return;
+
+    data_pool* pool = root->backing_pool;   // now the typedef matches the tag
+
+    destroy_ast_internal(root);
+
+    if (pool){
+        shutdown_data_pool(pool);
+    }
 }

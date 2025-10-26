@@ -1,3 +1,4 @@
+// lexer/lexeme.c
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -7,133 +8,145 @@
 #include "../utility/safe_memory.h"
 #include "../grammar/grammar.h"
 
-/** creates and initialises character buffer - characters are fed from source file here
- *  @return character_buffer* 
- */
+/* helper: is an unescaped quote at buffer[index-1]? */
+static bool last_quote_is_unescaped(const character_buffer* buf){
+    if (buf->index == 0) return false;
+    if (buf->buffer[buf->index - 1] != '"') return false;
+    /* count trailing backslashes before the quote */
+    size_t k = 0;
+    for (int64_t i = (int64_t)buf->index - 2; i >= 0 && buf->buffer[i] == '\\'; --i) {
+        ++k;
+    }
+    return (k % 2u) == 0u; /* even count => quote not escaped */
+}
+
+/** creates and initialises character buffer - characters are fed from source file here */
 character_buffer* create_character_buffer(void){
-    character_buffer* new_character_buffer = safe_malloc((size_t)sizeof(character_buffer));
-    new_character_buffer->index = 0;
-    new_character_buffer->length = 20;
-    new_character_buffer->buffer = safe_malloc((size_t)new_character_buffer->length);
-    return new_character_buffer;
+    character_buffer* b = (character_buffer*)safe_malloc(sizeof(*b));
+    b->index = 0;
+    b->length = 20;
+    b->al_flag = 0;
+    b->num_flag = 0;
+    b->string_flag = 0;
+    b->buffer = (char*)safe_malloc(b->length);
+    return b;
 }
 
-/** inserts singular character into character buffer
- *  
- */
-void insert_to_character_buffer(character_buffer* buf, char lexeme_char){
+/** inserts singular character into character buffer */
+void insert_to_character_buffer(character_buffer* buf, char ch){
     if (buf->index == buf->length){
-        uint32_t new_length = buf->length*2;
-        buf->buffer = safe_realloc(buf->buffer, (size_t)new_length);
+        uint32_t new_length = buf->length * 2u;
+        buf->buffer = (char*)safe_realloc(buf->buffer, (size_t)new_length);
+        buf->length = new_length; /* FIX: keep capacity in sync */
     }
-    buf->buffer[buf->index] = lexeme_char;
-    ++buf->index;
+    buf->buffer[buf->index++] = ch;
 }
 
-/** copy the contents of character buffer into lexeme
- * 
- */
-void copy_buffer(character_buffer* buf, lexeme* target_lexeme){
-
-    char** out_p = &(target_lexeme->value);
-
-    if(*out_p != NULL){
-        safe_free((void**)&(*out_p));
+/** copy the contents of character buffer into lexeme */
+void copy_buffer(character_buffer* buf, lexeme* out){
+    char** dst = &out->value;
+    if (*dst) {
+        safe_free((void**)dst);
     }
-    *out_p = (char*)safe_malloc( (size_t) buf ->index );
-    safe_memcpy(*out_p, buf->buffer, (size_t) buf->index);
-    (*out_p)[buf->index] = '\0';
+    /* allocate space for NUL */
+    *dst = (char*)safe_malloc((size_t)buf->index + 1u);
+    safe_memcpy(*dst, buf->buffer, (size_t)buf->index);
+    (*dst)[buf->index] = '\0';
 
-    if(buf->al_flag){
-        //alpha, identifier
-        target_lexeme->type = IDENTIFIER;
-        return;
-    }else if (buf->num_flag){
-        //numbers, no alpha (int)
-        target_lexeme->type = INT_VALUE;
-        return;
-    }else{
-        target_lexeme->type = -1;
+    if (buf->al_flag) {
+        out->type = IDENTIFIER;
+    } else if (buf->num_flag) {
+        out->type = INT_VALUE;
+    } else {
+        out->type = (token_types)-1;
     }
 }
 
-/** empty contents of buffer (resets index to 0)
- * 
- */
+/** empty contents of buffer (resets flags) */
 void empty_buffer(character_buffer* buf){
-    buf->index=0;
+    buf->index = 0;
     buf->al_flag = 0;
     buf->num_flag = 0;
     buf->string_flag = 0;
 }
 
-/** Produces a lexeme, given a buffer filled with character straight from the source code
- *  @return boolean - whether or not a lexeme was produced
+/** Produce a lexeme from buffered chars given next input char (as int).
+ * Returns true iff a lexeme is ready in `out` (caller must read it).
  */
 bool produce_lexeme(character_buffer* buf, lexeme* out, int next_int){
-
-    char next;
-    if(next_int==EOF){
-        copy_buffer(buf, out);
-        empty_buffer(buf);
-        return true;
-    }
-    next = (char)next_int;
-
-    //the next char is alphanum, keep filling buffer
-    if (buf->index == 0){
+    if (next_int == EOF){
+        if (buf->index > 0){
+            /* If we were inside a string, complain about unterminated string */
+            if (buf->buffer[0] == '"' && !last_quote_is_unescaped(buf)){
+                fprintf(stderr, "Unterminated string literal at EOF\n");
+            }
+            copy_buffer(buf, out);
+            empty_buffer(buf);
+            return true;
+        }
         return false;
     }
 
-    char last_val = buf->buffer[buf->index-1];
-    char first_val = buf->buffer[0];
+    char next = (char)next_int;
 
-    //check if a alpha or number has been passed into the buffer - useful later for determining what type token the lexeme should form
-    if(isalpha(last_val)){
+    if (buf->index == 0){
+        /* nothing to decide yet */
+        return false;
+    }
+
+    char last = buf->buffer[buf->index - 1];
+    char first = buf->buffer[0];
+
+    if (isalpha((unsigned char)last)) {
         buf->al_flag = 1;
-    }else if (isdigit(last_val)){
+    } else if (isdigit((unsigned char)last)) {
         buf->num_flag = 1;
     }
-    
 
-    //string literal - ignore all until closed
-    if (first_val == '"'){
-        if (last_val == '"' && buf->index>1){
+    /* STRING MODE */
+    if (first == '"'){
+        if (last_quote_is_unescaped(buf)){
+            /* we just closed the string with the last char */
             copy_buffer(buf, out);
             empty_buffer(buf);
             out->type = STRING_LITERAL;
             return true;
         }
-        //open string literal - keep filling buffer
+        /* still inside string: keep accumulating regardless of next */
         return false;
+    }
 
-    //space or new-line in the buffer. ignore
-    }else if (isspace(last_val) || last_val == '\n'){
+    /* if we are building whitespace, discard */
+    if (isspace((unsigned char)last) || last == '\n'){
         empty_buffer(buf);
         return false;
+    }
 
-    //the next char is a space, newline, or EOF.
-    } else if (isspace(next) || next == '\n'){
-        copy_buffer(buf, out);
-        empty_buffer(buf);
-        return true;
-
-    //the next char is a symbol. check for multi-symbol
-    }else if (ispunct(next)){
-        if (ispunct(last_val) && next == '='){
-            return false;
-        }
-        copy_buffer(buf, out);
-        empty_buffer(buf);
-        return true;
-
-    //the next char is alphanum, but buffer holds symbols
-    }else if (isalnum(next) && ispunct(last_val)){
+    /* If next is whitespace or newline, current lexeme ends */
+    if (isspace((unsigned char)next) || next == '\n'){
         copy_buffer(buf, out);
         empty_buffer(buf);
         return true;
     }
 
-    //undefined case
+    /* Multi-char operators: if last is one-char punct and next is '=' -> defer split */
+    if (ispunct((unsigned char)next)){
+        if (ispunct((unsigned char)last) && next == '='){
+            return false; /* allow <=, >=, == to complete */
+        }
+        /* end current token before consuming this punctuation */
+        copy_buffer(buf, out);
+        empty_buffer(buf);
+        return true;
+    }
+
+    /* If current lexeme is punctuation but next is alnum -> end current */
+    if (isalnum((unsigned char)next) && ispunct((unsigned char)last)){
+        copy_buffer(buf, out);
+        empty_buffer(buf);
+        return true;
+    }
+
+    /* otherwise, keep accumulating */
     return false;
 }

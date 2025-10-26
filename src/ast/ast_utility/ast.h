@@ -6,6 +6,9 @@
 
 #include <stdint.h>
 
+/* Forward-declare data_pool to avoid heavy includes here. */
+typedef struct data_pool data_pool;
+
 typedef uint16_t specifiers;
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
@@ -71,14 +74,14 @@ typedef union{
 } ASTNodeValue;
 
 struct ASTNode{
-    
+
     ASTNodeType type;
     ASTNodeValue value;
 
     union {
         union{
-            void*   value;
-            int     identifier;
+            void*   value;      /* for STR/INT tokens if carried through */
+            int     identifier; /* stable ID assigned by dictionary */
         } value_node;
 
         struct {
@@ -99,10 +102,8 @@ struct ASTNode{
         struct {
             struct ASTNode* value;
         } return_block_node;
-                   
-        statement_list* list_node;
 
-        // other node-specific data
+        statement_list* list_node;
     } data;
 
     bool reduced;
@@ -117,6 +118,10 @@ struct statement_list{
     uint32_t max;
     uint32_t index;
     ASTNode** list;
+
+    /* NEW: record the backing pool used for ASTNode allocation so callers
+       can destroy the whole forest via destroy_ast(root). */
+    data_pool* backing_pool;
 };
 
-#endif
+#endif /* AST */
