@@ -48,7 +48,6 @@ void copy_buffer(character_buffer* buf, lexeme* out){
     if (*dst) {
         safe_free((void**)dst);
     }
-    /* allocate space for NUL */
     *dst = (char*)safe_malloc((size_t)buf->index + 1u);
     safe_memcpy(*dst, buf->buffer, (size_t)buf->index);
     (*dst)[buf->index] = '\0';

@@ -123,10 +123,18 @@ void* acquire_from_pool(data_pool* pool){
     return (uint8_t*)pool->data + (size_t)idx * pool->element_size;
 }
 
+void destroy_stack(stack* s) {
+    if (!s) return;
+    if (s->data) {
+        safe_free((void**)&s->data);
+    }
+    safe_free((void**)&s);
+}
+
+
 void shutdown_data_pool(data_pool* pool){
     if (!pool) return;
     safe_free((void**)&pool->data);
-    safe_free((void**)&pool->free_list->data);
-    safe_free((void**)&pool->free_list);
+    destroy_stack(pool->free_list);
     safe_free((void**)&pool);
 }

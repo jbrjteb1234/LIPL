@@ -20,11 +20,12 @@ void* safe_malloc(size_t size) {
 }
 
 void* safe_realloc(void* ptr, size_t size) {
-    void* new_ptr = NULL;
-    if(size <= 0){
-        fprintf(stderr, "Invalid size passed to safe_realloc\n");
-        return NULL;
+    if (size == 0) {
+        fprintf(stderr, "Invalid size (0) passed to safe_realloc\n");
+        exit(EXIT_FAILURE);
     }
+
+    void* new_ptr = NULL;
     for (int i = 0; i < MAX_RETRIES; ++i) {
         new_ptr = realloc(ptr, size);
         if (new_ptr != NULL) {
