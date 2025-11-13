@@ -35,15 +35,11 @@ typedef enum {
 */
 uint32_t convert_token(table_iterator* it, token** lookahead);
 
-/* advance the lookahead one token (guarding NULL) */
-static inline void advance_token(token** t) {
-    if (t && *t) *t = (token*)(*t)->next;
-}
-
-/* pop one saved state into iterator->state (used by states.c) */
+/* pop one saved state into iterator->state (used by states.c).
+   Implemented in ast_utility/routines.c. */
 void return_to_previous_state(table_iterator* it);
 
 /* Map a token to a parse column without creating nodes (exported for tests) */
 uint32_t token_to_column(const token* t, const token* next);
 
-#endif /* TOKEN_CONVERTER_H */
+#endif /* TOKEN_CONVERTER */
