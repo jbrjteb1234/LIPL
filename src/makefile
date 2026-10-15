@@ -1,47 +1,20 @@
-CC=gcc
-CFLAGS = -std=c17 -I. -Wall -Wextra -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition 
-
-# Directories
-SRC_DIR = .
-OBJ_DIR = ./obj
-
-# Find all .c files and corresponding .o files
-SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
-OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
-
-# Output executable
-TARGET = program
-
-# Default rule: build the target
-all: $(TARGET)
-
-# Link .o files into the final executable
-$(TARGET): $(OBJ_FILES)
-	$(CC) $(CFLAGS) -o $@ $^
-
-# Rule for compiling .c files into .o files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Create the object directory if it doesn't exist
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
-# Clean up build artifacts
-clean:
-	rm -rf $(OBJ_DIR) $(TARGET)
-
-# Phony targets
-.PHONY: all clean# Compiler and flags
+# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g
+CFLAGS = -std=c11 -g -Wall -Wextra -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wshadow
+# -MMD -MP: also write .d files so editing a header rebuilds everything that includes it
+DEPFLAGS = -MMD -MP
+
+# `make SANITIZE=1` builds with AddressSanitizer and UBSan (Linux/WSL; MinGW has no ASan)
+ifdef SANITIZE
+CFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer
+endif
 
 # Directories
 SRC_DIR = .
 OBJ_DIR = ./obj
 
 # Find all .c files recursively and corresponding .o files
-SRC_FILES = $(shell find $(SRC_DIR) -type f -name '*.c')
+SRC_FILES = $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '$(OBJ_DIR)/*')
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
 # Output executable
@@ -55,17 +28,19 @@ $(TARGET): $(OBJ_FILES)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Rule for compiling .c files into .o files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	@mkdir -p $(@D)  # Ensure subdirectory exists
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
 
-# Create the object directory if it doesn't exist
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+# Run the test suite in ../tests
+test: $(TARGET)
+	bash ../tests/run_tests.sh ./$(TARGET)
 
 # Clean up build artifacts
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET)
+	rm -rf $(OBJ_DIR) $(TARGET) $(TARGET).exe
+
+-include $(OBJ_FILES:.o=.d)
 
 # Phony targets
-.PHONY: all clean
+.PHONY: all clean test
