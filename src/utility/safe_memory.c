@@ -1,55 +1,59 @@
-
+// utility/safe_memory.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "safe_memory.h"
 
-#define MAX_RETRIES 3
+static void out_of_memory(void) {
+    fprintf(stderr, "fatal: out of memory\n");
+    exit(EXIT_FAILURE);
+}
 
 void* safe_malloc(size_t size) {
-    void* ptr = NULL;
-    for (int i = 0; i < MAX_RETRIES; ++i) {
-        ptr = malloc(size);
-        if (ptr != NULL) {
-            return ptr;
-        }
-        fprintf(stderr, "malloc failed, retrying %d/%d...\n", i + 1, MAX_RETRIES);
+    /* malloc(0) is allowed to return NULL, which would look like a failure */
+    void* ptr = malloc(size ? size : 1u);
+    if (ptr == NULL) {
+        out_of_memory();
     }
-    exit(EXIT_FAILURE);
+    return ptr;
 }
 
 void* safe_realloc(void* ptr, size_t size) {
-    if (size == 0) {
-        fprintf(stderr, "Invalid size (0) passed to safe_realloc\n");
-        exit(EXIT_FAILURE);
+    void* new_ptr = realloc(ptr, size ? size : 1u);
+    if (new_ptr == NULL) {
+        out_of_memory();
     }
+    return new_ptr;
+}
 
-    void* new_ptr = NULL;
-    for (int i = 0; i < MAX_RETRIES; ++i) {
-        new_ptr = realloc(ptr, size);
-        if (new_ptr != NULL) {
-            return new_ptr;
-        }
-    }
-    fprintf(stderr, "Failed to reallocate memory after %d retries, exiting.\n", MAX_RETRIES);
-    exit(EXIT_FAILURE);
+char* safe_strndup(const char* source, size_t length) {
+    char* copy = safe_malloc(length + 1u);
+    safe_memcpy(copy, source, length);
+    copy[length] = '\0';
+    return copy;
 }
 
 void safe_memcpy(void* dest, const void* src, size_t count) {
+    if (count == 0) {
+        return;
+    }
     if (dest == NULL || src == NULL) {
-        fprintf(stderr, "Null pointer passed to safe_memcpy\n");
+        fprintf(stderr, "fatal: null pointer passed to safe_memcpy\n");
         exit(EXIT_FAILURE);
     }
     memcpy(dest, src, count);
 }
 
-void safe_memset(void* ptr, int value, size_t num) {
+void safe_memset(void* ptr, int value, size_t count) {
+    if (count == 0) {
+        return;
+    }
     if (ptr == NULL) {
-        fprintf(stderr, "Null pointer passed to safe_memset\n");
+        fprintf(stderr, "fatal: null pointer passed to safe_memset\n");
         exit(EXIT_FAILURE);
     }
-    memset(ptr, value, num);
+    memset(ptr, value, count);
 }
 
 void safe_free(void **ptr) {

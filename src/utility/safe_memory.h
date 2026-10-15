@@ -1,14 +1,22 @@
-#ifndef SAFE_MALLOC
-#define SAFE_MALLOC
+#ifndef LIPL_UTILITY_SAFE_MEMORY_H
+#define LIPL_UTILITY_SAFE_MEMORY_H
 
-void* safe_malloc(size_t);
+#include <stddef.h>
 
-void* safe_realloc(void*, size_t);
+/* Allocation helpers that never return NULL: running out of memory prints a
+   message and exits, so callers don't have to check results. */
+void* safe_malloc(size_t size);
+
+void* safe_realloc(void* ptr, size_t size);
+
+/* Copies the first `length` bytes of `source` into a new NUL-terminated string. */
+char* safe_strndup(const char* source, size_t length);
 
 void safe_memcpy(void* dest, const void* src, size_t count);
 
-void safe_memset(void*, int, size_t );
+void safe_memset(void* ptr, int value, size_t count);
 
+/* Frees *ptr and sets it to NULL. */
 void safe_free(void** ptr);
 
-#endif
+#endif /* LIPL_UTILITY_SAFE_MEMORY_H */

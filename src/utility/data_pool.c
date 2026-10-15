@@ -2,139 +2,122 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <limits.h>
+#include <stddef.h>
+#include <string.h>
 #include "safe_memory.h"
 #include "data_pool.h"
 
-/* Small helper to guard size_t multiplication overflow */
-static int mul_overflow_size_t(size_t a, size_t b, size_t* out) {
-    if (a == 0 || b == 0) { *out = 0; return 0; }
-    if (a > SIZE_MAX / b)  { return 1; }
-    *out = a * b;
-    return 0;
+struct data_pool_chunk {
+    data_pool_chunk* next;
+    uint32_t         capacity;
+    unsigned char*   elements;
+};
+
+/* Every element must be aligned for any type that might be stored in it */
+static size_t round_up_to_alignment(size_t size){
+    const size_t alignment = _Alignof(max_align_t);
+    return (size + alignment - 1u) / alignment * alignment;
 }
 
-/** init new data pool: pre-mallocs a block of contiguous data */
-data_pool* init_data_pool(uint32_t element_size, uint32_t initial_size){
+/* push in reverse so elements are handed out in address order */
+static void push_chunk_elements(data_pool* pool, data_pool_chunk* chunk){
+    for (uint32_t i = chunk->capacity; i > 0; --i){
+        push(pool->free_list, chunk->elements + (size_t)(i - 1u) * pool->element_size, false);
+    }
+}
+
+static void add_chunk(data_pool* pool, uint32_t capacity){
+    if (capacity > UINT32_MAX - pool->max || (size_t)capacity > SIZE_MAX / pool->element_size) {
+        fprintf(stderr, "fatal: data pool capacity overflow\n");
+        exit(EXIT_FAILURE);
+    }
+
+    data_pool_chunk* chunk = (data_pool_chunk*)safe_malloc(sizeof(data_pool_chunk));
+    chunk->capacity = capacity;
+    chunk->elements = (unsigned char*)safe_malloc((size_t)capacity * pool->element_size);
+    chunk->next = pool->chunks;
+    pool->chunks = chunk;
+
+    push_chunk_elements(pool, chunk);
+    pool->max += capacity;
+    pool->remaining += capacity;
+}
+
+/** init new data pool: pre-mallocs a first chunk of initial_size elements */
+data_pool* init_data_pool(size_t element_size, uint32_t initial_size){
     if (element_size == 0 || initial_size == 0) {
         fprintf(stderr, "init_data_pool: invalid args (element_size=%u, initial_size=%u)\n",
-                element_size, initial_size);
+                (unsigned)element_size, (unsigned)initial_size);
         exit(EXIT_FAILURE);
     }
 
     data_pool* new_pool = (data_pool*)safe_malloc(sizeof(data_pool));
-    new_pool->element_size = element_size;
-    new_pool->max          = initial_size;
-    new_pool->remaining    = initial_size;
+    new_pool->element_size = round_up_to_alignment(element_size);
+    new_pool->max          = 0;
+    new_pool->remaining    = 0;
+    new_pool->chunks       = NULL;
+    new_pool->free_list    = create_stack(sizeof(void*));
 
-    size_t bytes = 0;
-    if (mul_overflow_size_t((size_t)element_size, (size_t)initial_size, &bytes)) {
-        fprintf(stderr, "init_data_pool: size overflow\n");
-        exit(EXIT_FAILURE);
-    }
-    new_pool->data = safe_malloc(bytes);
-
-    // Free list stores indices (uint32_t)
-    new_pool->free_list = create_stack(sizeof(uint32_t));
-
-    // Push indices 0..initial_size-1
-    for(uint32_t i = 0; i < initial_size; ++i){
-        push(new_pool->free_list, &i, true); // copy by value
-    }
+    add_chunk(new_pool, initial_size);
     return new_pool;
 }
 
-/** returns pointer to the data pool and pushes to free list */
+void* acquire_from_pool(data_pool* pool){
+    if (pool->remaining == 0){
+        // double the total capacity with a new chunk; existing chunks stay where they are
+        add_chunk(pool, pool->max);
+    }
+
+    void* element;
+    memcpy(&element, pop(pool->free_list), sizeof(void*));
+    pool->remaining--;
+
+    memset(element, 0, pool->element_size);
+    return element;
+}
+
+static bool pool_owns(const data_pool* pool, const void* data){
+    uintptr_t address = (uintptr_t)data;
+    for (const data_pool_chunk* chunk = pool->chunks; chunk != NULL; chunk = chunk->next){
+        uintptr_t start = (uintptr_t)chunk->elements;
+        uintptr_t end   = start + (uintptr_t)chunk->capacity * pool->element_size;
+        if (address >= start && address < end){
+            return (address - start) % pool->element_size == 0;
+        }
+    }
+    return false;
+}
+
 void return_to_pool(data_pool* pool, void* data){
-    if (pool == NULL || data == NULL || pool->data == NULL) {
+    if (pool == NULL || data == NULL) {
         return;
     }
-    // Compute offset from base and validate alignment
-    uintptr_t base = (uintptr_t)pool->data;
-    uintptr_t ptr  = (uintptr_t)data;
-
-    if (ptr < base) return;
-
-    size_t off = (size_t)(ptr - base);
-    if (pool->element_size == 0) return; // should never happen
-    if (off % pool->element_size != 0) return;
-
-    uint32_t idx = (uint32_t)(off / pool->element_size);
-    if (idx >= pool->max) return;
-
-    push(pool->free_list, &idx, true);
+    if (!pool_owns(pool, data)) {
+        fprintf(stderr, "return_to_pool: %p is not an element of this pool\n", data);
+        return;
+    }
+    push(pool->free_list, data, false);
     pool->remaining++;
 }
 
 void reset_pool(data_pool* pool){
     if (!pool) return;
-    // Reset free list to contain all indices 0..max-1
     pool->free_list->top = -1;
-    for (uint32_t i = 0; i < pool->max; ++i) {
-        push(pool->free_list, &i, true);
+    for (data_pool_chunk* chunk = pool->chunks; chunk != NULL; chunk = chunk->next){
+        push_chunk_elements(pool, chunk);
     }
     pool->remaining = pool->max;
 }
 
-void expand_data_pool(data_pool* pool)
-{
-    if (!pool) return;
-
-    // Prevent 32-bit overflow on max doubling
-    if (pool->max > (UINT32_MAX / 2u)) {
-        fprintf(stderr, "expand_data_pool: capacity overflow\n");
-        exit(EXIT_FAILURE);
-    }
-
-    uint32_t old_max = pool->max;
-    uint32_t new_max = old_max * 2u;
-
-    // Realloc contiguous memory
-    size_t bytes = 0;
-    if (mul_overflow_size_t((size_t)new_max, (size_t)pool->element_size, &bytes)) {
-        fprintf(stderr, "expand_data_pool: size overflow\n");
-        exit(EXIT_FAILURE);
-    }
-    pool->data = safe_realloc(pool->data, bytes);
-
-    // Push new indices [old_max, new_max)
-    for (uint32_t i = old_max; i < new_max; i++) {
-        push(pool->free_list, &i, true);
-    }
-
-    pool->remaining += (new_max - old_max);
-    pool->max        = new_max;
-}
-
-void* acquire_from_pool(data_pool* pool){
-    if (!pool) return NULL;
-    if (pool->remaining == 0){
-        expand_data_pool(pool);
-    }
-    pool->remaining--;
-
-    void* top = pop(pool->free_list);
-    if (!top) {
-        fprintf(stderr, "acquire_from_pool: free_list underflow\n");
-        exit(EXIT_FAILURE);
-    }
-    uint32_t idx = *(uint32_t*)top;
-
-    return (uint8_t*)pool->data + (size_t)idx * pool->element_size;
-}
-
-void destroy_stack(stack* s) {
-    if (!s) return;
-    if (s->data) {
-        safe_free((void**)&s->data);
-    }
-    safe_free((void**)&s);
-}
-
-
 void shutdown_data_pool(data_pool* pool){
     if (!pool) return;
-    safe_free((void**)&pool->data);
+    data_pool_chunk* chunk = pool->chunks;
+    while (chunk != NULL){
+        data_pool_chunk* next = chunk->next;
+        safe_free((void**)&chunk->elements);
+        safe_free((void**)&chunk);
+        chunk = next;
+    }
     destroy_stack(pool->free_list);
     safe_free((void**)&pool);
 }

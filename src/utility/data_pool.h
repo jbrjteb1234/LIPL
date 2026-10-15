@@ -1,41 +1,42 @@
 // utility/data_pool.h
-#ifndef DATA_POOL
-#define DATA_POOL
+#ifndef LIPL_UTILITY_DATA_POOL_H
+#define LIPL_UTILITY_DATA_POOL_H
 
+#include <stddef.h>
 #include <stdint.h>
 #include "stack.h"
 
 /*
- * Data pool of fixed-size elements.
+ * Pool of fixed-size elements.
  *
- * IMPORTANT:
- * - Free-list stores INDICES (uint32_t), not raw pointers. This makes the pool
- *   robust to base pointer moves during realloc().
- * - acquire_from_pool() returns a pointer computed as base + idx*elem_size.
- * - return_to_pool() validates that the pointer belongs to the pool and is aligned.
+ * Storage grows by adding new chunks. Existing chunks are never moved or
+ * reallocated, so a pointer returned by acquire_from_pool() stays valid until
+ * the pool is reset or shut down. (Growing one block with realloc() would move
+ * every element and leave callers holding dangling pointers.)
  */
+typedef struct data_pool_chunk data_pool_chunk;
 
-typedef struct data_pool {          /* <-- give the struct a tag to match forward decls */
-    uint32_t element_size;   // size (bytes) of each element
-    uint32_t max;            // current capacity (#elements)
-    uint32_t remaining;      // #free elements available
-    stack*   free_list;      // stack of uint32_t indices (0..max-1)
-    void*    data;           // base pointer of contiguous storage
+typedef struct data_pool {
+    size_t           element_size;  // bytes per element, rounded up for alignment
+    uint32_t         max;           // total elements across all chunks
+    uint32_t         remaining;     // elements currently on the free list
+    stack*           free_list;     // stack of pointers to free elements
+    data_pool_chunk* chunks;        // newest chunk first
 } data_pool;
 
-data_pool* init_data_pool(uint32_t element_size, uint32_t initial_size);
+data_pool* init_data_pool(size_t element_size, uint32_t initial_size);
 
-/** returns pointer to the data pool and pushes to free list
- *  checks if the pointer is aligned and in-range for this pool
+/** returns a zero-filled element; never returns NULL */
+void* acquire_from_pool(data_pool* pool);
+
+/** hands an element back for reuse. Pointers that don't belong to this pool
+ *  are reported and ignored.
  */
 void return_to_pool(data_pool* pool, void* data);
 
-void* acquire_from_pool(data_pool* pool);
-
+/** marks every element free again; pointers handed out earlier must not be used afterwards */
 void reset_pool(data_pool* pool);
-
-void expand_data_pool(data_pool* pool);
 
 void shutdown_data_pool(data_pool* pool);
 
-#endif /* DATA_POOL */
+#endif /* LIPL_UTILITY_DATA_POOL_H */
