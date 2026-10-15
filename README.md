@@ -61,6 +61,8 @@ for var i = 0; i < 10; i = i + 1 {     // brackets around the header are optiona
 }
 
 object.field = object.method(1, 2);
+
+var nothing = nil;
 ```
 
 Operators, loosest to tightest:
@@ -80,7 +82,7 @@ Operators, loosest to tightest:
 
 `_` is the root operator, but inside a word it's part of the name (`my_var`), so put spaces around it when you mean root: `27 _ 3`.
 
-Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `\\` escapes, `true`, `false`.
+Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `\\` escapes, `true`, `false`, `nil`.
 
 ## Layout
 

@@ -32,6 +32,7 @@ typedef enum{
     INT_NODE,
     FLOAT_NODE,
     BOOL_NODE,
+    NIL_NODE,
 }leaf_node;
 
 typedef enum{

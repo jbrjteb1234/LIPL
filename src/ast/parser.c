@@ -273,6 +273,12 @@ static ASTNode* parse_prefix(parser* p){
                 node->data.value_node.boolean = is_word(t, BOOL_TRUE);
                 return node;
             }
+            if (is_word(t, NIL)){
+                advance(p);
+                ASTNode* node = make_node(p, LEAF_NODE, t);
+                node->value.leaf_node_value = NIL_NODE;
+                return node;
+            }
             break;
 
         case OPERATOR:
@@ -684,6 +690,7 @@ static ASTNode* parse_statement(parser* p){
                 return NULL;
             case BOOL_TRUE:
             case BOOL_FALSE:
+            case NIL:
                 break;      /* an expression statement */
         }
     }

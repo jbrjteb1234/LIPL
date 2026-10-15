@@ -1,0 +1,20 @@
+BINOP =
+  ID x
+  NIL
+VAR_DECL empty
+  NIL
+BINOP =
+  ID missing
+  BINOP ==
+    ID y
+    NIL
+CALL f (2 arguments)
+  NIL
+  INT 1
+NIL
+BINOP =
+  ID nil_count
+  INT 0
+--- stderr ---
+
+--- exit: 0 ---

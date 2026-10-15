@@ -47,6 +47,7 @@
     X("global",         GLOBAL,             reserved_word_token_value,  RESERVED_WORD)  \
     X("const",          CONST,              reserved_word_token_value,  RESERVED_WORD)  \
     X("true",           BOOL_TRUE,          reserved_word_token_value,  RESERVED_WORD)  \
-    X("false",          BOOL_FALSE,         reserved_word_token_value,  RESERVED_WORD)
+    X("false",          BOOL_FALSE,         reserved_word_token_value,  RESERVED_WORD)  \
+    X("nil",            NIL,                reserved_word_token_value,  RESERVED_WORD)
 
 #endif /* LIPL_GRAMMAR_H */

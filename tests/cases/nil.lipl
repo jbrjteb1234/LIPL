@@ -1,0 +1,6 @@
+x = nil;
+var empty = nil;
+missing = y == nil;
+f(nil, 1);
+nil;
+nil_count = 0;

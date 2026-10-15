@@ -41,6 +41,7 @@ typedef enum{
     BOOL_FALSE = 11,
     BREAK = 12,
     CONTINUE = 13,
+    NIL = 14,
 } reserved_word_token;
 
 typedef enum{

@@ -71,6 +71,9 @@ static void print_leaf(FILE* out, const ASTNode* node, const symbol_table* symbo
         case BOOL_NODE:
             fprintf(out, "BOOL %s\n", node->data.value_node.boolean ? "true" : "false");
             break;
+        case NIL_NODE:
+            fputs("NIL\n", out);
+            break;
         case STR_NODE:
             fputs("STR ", out);
             print_string_literal(out, node->data.value_node.string);
