@@ -1,0 +1,9 @@
+a = b = c;
+flag = !done || (x <= 3 && y >= 4);
+neg = -x * -y;
+cmp = a != b;
+member = a.b * c;
+calls = f(1) + g();
+no_spaces = (a)==b;
+chained = a.b.c(d).e;
+obj.field = 5;

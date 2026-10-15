@@ -1,0 +1,33 @@
+// long enough that the token and AST pools both have to grow several times
+func fib(n) {
+    if n < 2 {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}
+
+func sum_to(limit) {
+    var total = 0;
+    for var i = 1; i <= limit; i = i + 1 {
+        total = total + i;
+    }
+    return total;
+}
+
+func classify(n) {
+    if n < 0 {
+        return "negative";
+    } elif n == 0 {
+        return "zero";
+    } else {
+        return "positive";
+    }
+}
+
+global var results = 0;
+var i = 0;
+while i < 20 {
+    results = results + fib(i) * sum_to(i) - i ^ 2;
+    print(classify(i), results);
+    i = i + 1;
+}

@@ -1,0 +1,7 @@
+
+--- stderr ---
+error_recovery.lipl:1:5: error: expected a variable name after 'var', found '='
+error_recovery.lipl:2:11: error: expected ')' to close the '(' at 2:5, found ';'
+error_recovery.lipl:3:6: error: expected a function name after 'func', found '('
+error_recovery.lipl:5:12: error: expected an expression, found ';'
+--- exit: 1 ---

@@ -1,0 +1,6 @@
+var x = 5;
+var empty;
+global var counter = 0;
+const var pi = 3.14159;
+global const var limit = 100;
+const global var name = "lipl";

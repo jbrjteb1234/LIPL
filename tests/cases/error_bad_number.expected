@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_bad_number.lipl:1:5: error: invalid number '12abc'
+--- exit: 1 ---

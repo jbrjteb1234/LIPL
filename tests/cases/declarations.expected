@@ -1,0 +1,14 @@
+VAR_DECL x
+  INT 5
+VAR_DECL empty
+VAR_DECL counter [global]
+  INT 0
+VAR_DECL pi [const]
+  FLOAT 3.14159
+VAR_DECL limit [global const]
+  INT 100
+VAR_DECL name [global const]
+  STR "lipl"
+--- stderr ---
+
+--- exit: 0 ---

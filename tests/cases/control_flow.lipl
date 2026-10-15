@@ -1,0 +1,28 @@
+if x > 1 {
+    y = 1;
+} elif (x == 1) {
+    y = 2;
+} elif x < 0 && !negative_allowed {
+    y = 3;
+} else {
+    y = 4;
+}
+
+if ready {
+    go();
+}
+
+while i < 10 {
+    i = i + 1;
+}
+
+for var i = 0; i < 10; i = i + 1 {
+    print(i);
+}
+
+for (j = 0; j != 5; j = j + 1) {
+}
+
+for ;; {
+    spin();
+}

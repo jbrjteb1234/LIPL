@@ -1,0 +1,56 @@
+BINOP =
+  ID x
+  BINOP +
+    INT 1
+    BINOP *
+      INT 2
+      INT 3
+BINOP =
+  ID y
+  BINOP *
+    BINOP +
+      INT 1
+      INT 2
+    INT 3
+BINOP =
+  ID z
+  BINOP -
+    BINOP -
+      INT 10
+      INT 4
+    INT 3
+BINOP =
+  ID w
+  BINOP ^
+    INT 2
+    BINOP ^
+      INT 3
+      INT 2
+BINOP =
+  ID v
+  UNARY -
+    BINOP ^
+      INT 2
+      INT 2
+BINOP =
+  ID u
+  BINOP *
+    INT 2
+    BINOP ^
+      INT 3
+      INT 2
+BINOP =
+  ID r
+  BINOP _
+    INT 27
+    INT 3
+BINOP =
+  ID q
+  BINOP /
+    BINOP /
+      INT 8
+      INT 2
+    INT 2
+--- stderr ---
+
+--- exit: 0 ---

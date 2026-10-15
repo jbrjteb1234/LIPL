@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_integer_too_large.lipl:1:5: error: integer '9223372036854775808' is too large
+--- exit: 1 ---

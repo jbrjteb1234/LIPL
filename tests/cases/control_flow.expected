@@ -1,0 +1,96 @@
+IF
+  BINOP >
+    ID x
+    INT 1
+  {
+    BINOP =
+      ID y
+      INT 1
+  }
+ELIF
+  BINOP ==
+    ID x
+    INT 1
+  {
+    BINOP =
+      ID y
+      INT 2
+  }
+ELIF
+  BINOP &&
+    BINOP <
+      ID x
+      INT 0
+    UNARY !
+      ID negative_allowed
+  {
+    BINOP =
+      ID y
+      INT 3
+  }
+ELSE
+  {
+    BINOP =
+      ID y
+      INT 4
+  }
+IF
+  ID ready
+  {
+    CALL go (no arguments)
+  }
+WHILE
+  BINOP <
+    ID i
+    INT 10
+  {
+    BINOP =
+      ID i
+      BINOP +
+        ID i
+        INT 1
+  }
+FOR
+  init:
+    VAR_DECL i
+      INT 0
+  cond:
+    BINOP <
+      ID i
+      INT 10
+  step:
+    BINOP =
+      ID i
+      BINOP +
+        ID i
+        INT 1
+  {
+    CALL print (1 argument)
+      ID i
+  }
+FOR
+  init:
+    BINOP =
+      ID j
+      INT 0
+  cond:
+    BINOP !=
+      ID j
+      INT 5
+  step:
+    BINOP =
+      ID j
+      BINOP +
+        ID j
+        INT 1
+  { }
+FOR
+  init: (none)
+  cond: (none)
+  step: (none)
+  {
+    CALL spin (no arguments)
+  }
+--- stderr ---
+
+--- exit: 0 ---

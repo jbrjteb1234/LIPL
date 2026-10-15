@@ -1,0 +1,6 @@
+BINOP =
+  ID x
+  INT 1
+--- stderr ---
+
+--- exit: 0 ---

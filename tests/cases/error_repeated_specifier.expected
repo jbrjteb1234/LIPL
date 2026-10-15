@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_repeated_specifier.lipl:1:8: error: 'global' is repeated
+--- exit: 1 ---

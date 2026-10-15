@@ -1,0 +1,21 @@
+func add(a, b) {
+    return a + b;
+}
+
+func greet() {
+    print("hello");
+    return;
+}
+
+global func twice(x) {
+    return x * 2;
+}
+
+func nothing() {
+}
+
+result = add(1, 2);
+total = add(add(1, 2), twice(3)) * 2;
+greet();
+object.method(1, 2);
+value = object.field.inner;

@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_unterminated_string.lipl:1:5: error: unterminated string literal
+--- exit: 1 ---

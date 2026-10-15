@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_else_if.lipl:2:8: error: write 'elif' instead of 'else if'
+--- exit: 1 ---

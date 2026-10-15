@@ -1,0 +1,108 @@
+FUNC_DECL fib(n)
+  {
+    IF
+      BINOP <
+        ID n
+        INT 2
+      {
+        RETURN
+          ID n
+      }
+    RETURN
+      BINOP +
+        CALL fib (1 argument)
+          BINOP -
+            ID n
+            INT 1
+        CALL fib (1 argument)
+          BINOP -
+            ID n
+            INT 2
+  }
+FUNC_DECL sum_to(limit)
+  {
+    VAR_DECL total
+      INT 0
+    FOR
+      init:
+        VAR_DECL i
+          INT 1
+      cond:
+        BINOP <=
+          ID i
+          ID limit
+      step:
+        BINOP =
+          ID i
+          BINOP +
+            ID i
+            INT 1
+      {
+        BINOP =
+          ID total
+          BINOP +
+            ID total
+            ID i
+      }
+    RETURN
+      ID total
+  }
+FUNC_DECL classify(n)
+  {
+    IF
+      BINOP <
+        ID n
+        INT 0
+      {
+        RETURN
+          STR "negative"
+      }
+    ELIF
+      BINOP ==
+        ID n
+        INT 0
+      {
+        RETURN
+          STR "zero"
+      }
+    ELSE
+      {
+        RETURN
+          STR "positive"
+      }
+  }
+VAR_DECL results [global]
+  INT 0
+VAR_DECL i
+  INT 0
+WHILE
+  BINOP <
+    ID i
+    INT 20
+  {
+    BINOP =
+      ID results
+      BINOP -
+        BINOP +
+          ID results
+          BINOP *
+            CALL fib (1 argument)
+              ID i
+            CALL sum_to (1 argument)
+              ID i
+        BINOP ^
+          ID i
+          INT 2
+    CALL print (2 arguments)
+      CALL classify (1 argument)
+        ID i
+      ID results
+    BINOP =
+      ID i
+      BINOP +
+        ID i
+        INT 1
+  }
+--- stderr ---
+
+--- exit: 0 ---

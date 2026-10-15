@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_unclosed_block.lipl:3:1: error: expected '}' to close the block opened at 1:10, found end of file
+--- exit: 1 ---

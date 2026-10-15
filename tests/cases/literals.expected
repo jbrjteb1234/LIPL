@@ -1,0 +1,36 @@
+BINOP =
+  ID s
+  STR "hello"
+BINOP =
+  ID escaped
+  STR "line\nbreak \"quoted\" back\\slash\ttab"
+BINOP =
+  ID empty
+  STR ""
+BINOP =
+  ID i
+  INT 42
+BINOP =
+  ID f
+  FLOAT 3.14
+BINOP =
+  ID whole
+  FLOAT 2.0
+BINOP =
+  ID t
+  BOOL true
+BINOP =
+  ID no
+  BOOL false
+BINOP =
+  ID my_var
+  INT 1
+BINOP =
+  ID _private
+  INT 2
+BINOP =
+  ID big
+  INT 9223372036854775807
+--- stderr ---
+
+--- exit: 0 ---

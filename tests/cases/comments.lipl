@@ -1,0 +1,4 @@
+// a whole-line comment
+x = 1; // a trailing comment
+// y = 2;
+z = 3 / 4; // division still works

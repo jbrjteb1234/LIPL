@@ -1,0 +1,65 @@
+BINOP =
+  ID a
+  BINOP =
+    ID b
+    ID c
+BINOP =
+  ID flag
+  BINOP ||
+    UNARY !
+      ID done
+    BINOP &&
+      BINOP <=
+        ID x
+        INT 3
+      BINOP >=
+        ID y
+        INT 4
+BINOP =
+  ID neg
+  BINOP *
+    UNARY -
+      ID x
+    UNARY -
+      ID y
+BINOP =
+  ID cmp
+  BINOP !=
+    ID a
+    ID b
+BINOP =
+  ID member
+  BINOP *
+    BINOP .
+      ID a
+      ID b
+    ID c
+BINOP =
+  ID calls
+  BINOP +
+    CALL f (1 argument)
+      INT 1
+    CALL g (no arguments)
+BINOP =
+  ID no_spaces
+  BINOP ==
+    ID a
+    ID b
+BINOP =
+  ID chained
+  BINOP .
+    BINOP .
+      BINOP .
+        ID a
+        ID b
+      CALL c (1 argument)
+        ID d
+    ID e
+BINOP =
+  BINOP .
+    ID obj
+    ID field
+  INT 5
+--- stderr ---
+
+--- exit: 0 ---

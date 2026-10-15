@@ -1,0 +1,11 @@
+BINOP =
+  ID x
+  INT 1
+BINOP =
+  ID z
+  BINOP /
+    INT 3
+    INT 4
+--- stderr ---
+
+--- exit: 0 ---

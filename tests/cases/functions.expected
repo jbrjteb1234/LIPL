@@ -1,0 +1,53 @@
+FUNC_DECL add(a, b)
+  {
+    RETURN
+      BINOP +
+        ID a
+        ID b
+  }
+FUNC_DECL greet()
+  {
+    CALL print (1 argument)
+      STR "hello"
+    RETURN
+  }
+FUNC_DECL twice(x) [global]
+  {
+    RETURN
+      BINOP *
+        ID x
+        INT 2
+  }
+FUNC_DECL nothing()
+  { }
+BINOP =
+  ID result
+  CALL add (2 arguments)
+    INT 1
+    INT 2
+BINOP =
+  ID total
+  BINOP *
+    CALL add (2 arguments)
+      CALL add (2 arguments)
+        INT 1
+        INT 2
+      CALL twice (1 argument)
+        INT 3
+    INT 2
+CALL greet (no arguments)
+BINOP .
+  ID object
+  CALL method (2 arguments)
+    INT 1
+    INT 2
+BINOP =
+  ID value
+  BINOP .
+    BINOP .
+      ID object
+      ID field
+    ID inner
+--- stderr ---
+
+--- exit: 0 ---

@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_stray_close_brace.lipl:1:1: error: unexpected '}' with no block to close
+--- exit: 1 ---
