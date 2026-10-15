@@ -1,0 +1,7 @@
+# bash and make in WSL choke on CRLF
+*.sh        text eol=lf
+makefile    text eol=lf
+
+# test inputs are stored byte-for-byte (crlf_line_endings.lipl must keep its CRLFs)
+tests/cases/*.lipl      -text
+tests/cases/*.expected  text eol=lf
