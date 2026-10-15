@@ -1,0 +1,57 @@
+WHILE
+  BOOL true
+  {
+    IF
+      ID done
+      {
+        BREAK
+      }
+    CONTINUE
+  }
+FOR
+  init:
+    VAR_DECL i
+      INT 0
+  cond:
+    BINOP <
+      ID i
+      INT 10
+  step:
+    BINOP =
+      ID i
+      BINOP +
+        ID i
+        INT 1
+  {
+    WHILE
+      ID inner
+      {
+        BREAK
+      }
+    CONTINUE
+  }
+WHILE
+  ID outer
+  {
+    FUNC_DECL helper(x)
+      {
+        FOR
+          init: (none)
+          cond: (none)
+          step: (none)
+          {
+            IF
+              ID x
+              {
+                BREAK
+              }
+            CONTINUE
+          }
+        RETURN
+          ID x
+      }
+    BREAK
+  }
+--- stderr ---
+
+--- exit: 0 ---

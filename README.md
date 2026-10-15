@@ -48,6 +48,12 @@ if x > 10 && !done {
 
 while x > 0 {
     x = x - 1;
+    if x % 2 == 0 {
+        continue;                       // break and continue only work inside a loop body,
+    }                                   // and not from a func declared inside one
+    if x < 3 {
+        break;
+    }
 }
 
 for var i = 0; i < 10; i = i + 1 {     // brackets around the header are optional

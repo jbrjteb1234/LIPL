@@ -1,0 +1,25 @@
+while true {
+    if done {
+        break;
+    }
+    continue;
+}
+
+for var i = 0; i < 10; i = i + 1 {
+    while inner {
+        break;
+    }
+    continue;
+}
+
+// a loop inside a function body is fine, even when the function is inside a loop
+while outer {
+    func helper(x) {
+        for ;; {
+            if x { break; }
+            continue;
+        }
+        return x;
+    }
+    break;  // back in the while once the function body ends
+}

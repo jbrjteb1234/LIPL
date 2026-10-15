@@ -156,9 +156,19 @@ static void print_node(FILE* out, const ASTNode* node, int depth, const symbol_t
             break;
 
         case RES_WORD_NODE:
-            fputs("RETURN\n", out);
-            if (node->data.return_block_node.value != NULL){
-                print_node(out, node->data.return_block_node.value, depth + 1, symbols);
+            switch (node->value.reserved_word_value){
+                case RETURN_NODE:
+                    fputs("RETURN\n", out);
+                    if (node->data.return_block_node.value != NULL){
+                        print_node(out, node->data.return_block_node.value, depth + 1, symbols);
+                    }
+                    break;
+                case BREAK_NODE:
+                    fputs("BREAK\n", out);
+                    break;
+                case CONTINUE_NODE:
+                    fputs("CONTINUE\n", out);
+                    break;
             }
             break;
 

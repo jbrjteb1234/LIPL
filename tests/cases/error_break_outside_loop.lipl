@@ -1,0 +1,10 @@
+break;
+x = 1;
+if x {
+    continue;
+}
+while x { }
+break;
+func f() {
+    break;
+}

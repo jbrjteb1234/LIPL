@@ -6,13 +6,15 @@
  * keeps folding in infix operators that bind at least as tightly as `min`.
  *
  *   program     := statement* EOF
- *   statement   := declaration | if | while | for | return | expression ';'
+ *   statement   := declaration | if | while | for | return | break | continue | expression ';'
  *   declaration := ('global' | 'const')* ( 'var' IDENT ('=' expression)? ';'
  *                                        | 'func' IDENT '(' params? ')' block )
  *   if          := 'if' expression block ('elif' expression block)* ('else' block)?
  *   while       := 'while' expression block
  *   for         := 'for' ['('] init? ';' expression? ';' expression? [')'] block
  *   return      := 'return' expression? ';'
+ *   break       := 'break' ';'         both only inside a while/for body,
+ *   continue    := 'continue' ';'      and not across a func boundary
  *   block       := '{' statement* '}'
  */
 #include <stdarg.h>
@@ -34,6 +36,8 @@ typedef struct{
     const char*         source_name;
     uint32_t            error_count;
     uint32_t            depth;
+    uint32_t            loop_depth;     /* while/for bodies around us; 0 again inside a func body */
+    bool                loop_outside_function;  /* a func body we're in sits inside a loop */
     bool                panic_mode;     /* suppresses follow-on errors until we resynchronise */
 } parser;
 
@@ -129,7 +133,7 @@ static bool starts_statement(const token* t){
     if (t->token_type != RESERVED_WORD) return false;
     switch (t->token_value.reserved_word_token_value){
         case VAR: case FUNC: case IF: case WHILE: case FOR:
-        case RETURN: case GLOBAL: case CONST:
+        case RETURN: case BREAK: case CONTINUE: case GLOBAL: case CONST:
             return true;
         default:
             return false;
@@ -492,7 +496,16 @@ static ASTNode* parse_function_declaration(parser* p, specifiers flags, const to
 
     char owner[80];
     snprintf(owner, sizeof owner, "function '%s'", name_of(p, name));
+
+    /* break/continue in the body can't reach a loop the function is declared in */
+    uint32_t enclosing_loops = p->loop_depth;
+    bool enclosing_loop_outside = p->loop_outside_function;
+    p->loop_outside_function = enclosing_loop_outside || enclosing_loops > 0;
+    p->loop_depth = 0;
     function->block = parse_block(p, owner);
+    p->loop_depth = enclosing_loops;
+    p->loop_outside_function = enclosing_loop_outside;
+
     if (!function->block) return NULL;
     return function;
 }
@@ -517,6 +530,14 @@ static ASTNode* parse_declaration(parser* p){
     return NULL;
 }
 
+/* the body of a while or for, where break and continue are allowed */
+static statement_list* parse_loop_body(parser* p, const char* owner){
+    p->loop_depth++;
+    statement_list* body = parse_block(p, owner);
+    p->loop_depth--;
+    return body;
+}
+
 /* condition and block of an if / elif / while; the keyword has been consumed */
 static ASTNode* parse_conditional_branch(parser* p, const token* keyword, conditional_block_node kind){
     ASTNode* node = make_node(p, CONDITIONAL_BLOCK_NODE, keyword);
@@ -527,7 +548,7 @@ static ASTNode* parse_conditional_branch(parser* p, const token* keyword, condit
 
     char owner[16];
     snprintf(owner, sizeof owner, "'%s'", fixed_lexeme(keyword->token_type, keyword->token_value));
-    node->block = parse_block(p, owner);
+    node->block = kind == WHILE_NODE ? parse_loop_body(p, owner) : parse_block(p, owner);
     if (!node->block) return NULL;
     return node;
 }
@@ -597,7 +618,7 @@ static ASTNode* parse_for(parser* p){
     }
     if (bracketed && !expect_delimiter(p, CLOSE_BRACKET, "')' to close the for-loop header")) return NULL;
 
-    loop->block = parse_block(p, "'for'");
+    loop->block = parse_loop_body(p, "'for'");
     if (!loop->block) return NULL;
     return loop;
 }
@@ -617,6 +638,31 @@ static ASTNode* parse_return(parser* p){
     return node;
 }
 
+/* break; or continue; */
+static ASTNode* parse_loop_jump(parser* p){
+    token* keyword = p->current;
+    advance(p);
+    const char* word = fixed_lexeme(keyword->token_type, keyword->token_value);
+
+    /* reported with the keyword already consumed, so synchronize() only has the ';' to skip */
+    if (p->loop_depth == 0){
+        if (p->loop_outside_function){
+            error_at(p, keyword, "'%s' can't reach a loop outside the function it's in", word);
+        }else{
+            error_at(p, keyword, "'%s' outside of a loop", word);
+        }
+        return NULL;
+    }
+
+    ASTNode* node = make_node(p, RES_WORD_NODE, keyword);
+    node->value.reserved_word_value = is_word(keyword, BREAK) ? BREAK_NODE : CONTINUE_NODE;
+
+    char what[32];
+    snprintf(what, sizeof what, "';' after '%s'", word);
+    if (!expect_delimiter(p, EOS, what)) return NULL;
+    return node;
+}
+
 static ASTNode* parse_statement(parser* p){
     token* t = p->current;
 
@@ -630,6 +676,8 @@ static ASTNode* parse_statement(parser* p){
             case WHILE:     return parse_while(p);
             case FOR:       return parse_for(p);
             case RETURN:    return parse_return(p);
+            case BREAK:
+            case CONTINUE:  return parse_loop_jump(p);
             case ELIF:
             case ELSE:
                 error_at(p, t, "'%s' without a matching 'if'", fixed_lexeme(t->token_type, t->token_value));
@@ -665,6 +713,8 @@ ast_root* parse(const token_stream* tokens, const symbol_table* symbols){
         .source_name = tokens->source_name,
         .error_count = 0,
         .depth = 0,
+        .loop_depth = 0,
+        .loop_outside_function = false,
         .panic_mode = false,
     };
 

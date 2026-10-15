@@ -40,6 +40,8 @@
     X("while",          WHILE,              reserved_word_token_value,  RESERVED_WORD)  \
     X("for",            FOR,                reserved_word_token_value,  RESERVED_WORD)  \
     X("return",         RETURN,             reserved_word_token_value,  RESERVED_WORD)  \
+    X("break",          BREAK,              reserved_word_token_value,  RESERVED_WORD)  \
+    X("continue",       CONTINUE,           reserved_word_token_value,  RESERVED_WORD)  \
     X("func",           FUNC,               reserved_word_token_value,  RESERVED_WORD)  \
     X("var",            VAR,                reserved_word_token_value,  RESERVED_WORD)  \
     X("global",         GLOBAL,             reserved_word_token_value,  RESERVED_WORD)  \

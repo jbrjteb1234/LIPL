@@ -74,6 +74,8 @@ typedef enum{
 
 typedef enum{
     RETURN_NODE,
+    BREAK_NODE,
+    CONTINUE_NODE,
 } res_word_node;
 
 typedef union{
@@ -132,7 +134,7 @@ struct ASTNode{
         } for_node;
 
         struct {
-            struct ASTNode* value;  /* NULL for a bare `return;` */
+            struct ASTNode* value;  /* NULL for a bare `return;` (and always NULL for break/continue) */
         } return_block_node;
 
         struct {

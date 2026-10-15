@@ -39,6 +39,8 @@ typedef enum{
     FOR = 9,
     BOOL_TRUE = 10,
     BOOL_FALSE = 11,
+    BREAK = 12,
+    CONTINUE = 13,
 } reserved_word_token;
 
 typedef enum{
