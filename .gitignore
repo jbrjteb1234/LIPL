@@ -1,0 +1,4 @@
+# build output
+src/obj/
+src/program
+src/program.exe
