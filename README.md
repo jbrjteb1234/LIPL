@@ -67,7 +67,7 @@ Operators, loosest to tightest:
 | `==` `!=` | left |
 | `<` `>` `<=` `>=` | left |
 | `+` `-` | left |
-| `*` `/` | left |
+| `*` `/` `%` | left |
 | prefix `-` `!` | |
 | `^` (power) `_` (root) | right |
 | `.` (member access, method calls) | left |

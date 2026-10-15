@@ -56,6 +56,7 @@ typedef enum{
     ROOT_NODE               =   ROOT,
     AND_NODE                =   AND,
     OR_NODE                 =   OR,
+    MODULO_NODE             =   MODULO,
 }binary_op_node;
 
 typedef enum{

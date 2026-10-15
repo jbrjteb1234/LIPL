@@ -46,7 +46,7 @@ typedef enum{
     PREC_EQUALITY,      /* == !=                         */
     PREC_COMPARISON,    /* < > <= >=                     */
     PREC_TERM,          /* + -                           */
-    PREC_FACTOR,        /* * /                           */
+    PREC_FACTOR,        /* * / %                         */
     PREC_UNARY,         /* prefix - !                    */
     PREC_POWER,         /* ^ _         right-associative */
     PREC_MEMBER,        /* .                             */
@@ -198,7 +198,8 @@ static precedence infix_precedence(const token* t){
         case ADDITION:
         case SUBTRACTION:       return PREC_TERM;
         case MULTIPLICATION:
-        case DIVISION:          return PREC_FACTOR;
+        case DIVISION:
+        case MODULO:            return PREC_FACTOR;
         case POWER:
         case ROOT:              return PREC_POWER;
         case DOT:               return PREC_MEMBER;

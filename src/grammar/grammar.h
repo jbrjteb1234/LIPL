@@ -22,6 +22,7 @@
     X("*",              MULTIPLICATION,     operator_token_value,       OPERATOR)   \
     X(".",              DOT,                operator_token_value,       OPERATOR)   \
     X("/",              DIVISION,           operator_token_value,       OPERATOR)   \
+    X("%",              MODULO,             operator_token_value,       OPERATOR)   \
     X("^",              POWER,              operator_token_value,       OPERATOR)   \
     X("_",              ROOT,               operator_token_value,       OPERATOR)   \
     X("&&",             AND,                operator_token_value,       OPERATOR)   \

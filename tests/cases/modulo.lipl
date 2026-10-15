@@ -1,0 +1,7 @@
+r = a % b;
+chain = a * b % c / d;
+mixed = a + b % c - d;
+neg = -a % b;
+pow = a % b ^ c;
+even = n % 2 == 0;
+no_spaces = 10%3;

@@ -22,6 +22,7 @@ typedef enum{
     AND             =14,
     OR              =15,
     NOT             =16,
+    MODULO          =17,
 } operator_token;
 
 //different types of reserved word commands

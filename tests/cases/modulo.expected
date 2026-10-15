@@ -1,0 +1,51 @@
+BINOP =
+  ID r
+  BINOP %
+    ID a
+    ID b
+BINOP =
+  ID chain
+  BINOP /
+    BINOP %
+      BINOP *
+        ID a
+        ID b
+      ID c
+    ID d
+BINOP =
+  ID mixed
+  BINOP -
+    BINOP +
+      ID a
+      BINOP %
+        ID b
+        ID c
+    ID d
+BINOP =
+  ID neg
+  BINOP %
+    UNARY -
+      ID a
+    ID b
+BINOP =
+  ID pow
+  BINOP %
+    ID a
+    BINOP ^
+      ID b
+      ID c
+BINOP =
+  ID even
+  BINOP ==
+    BINOP %
+      ID n
+      INT 2
+    INT 0
+BINOP =
+  ID no_spaces
+  BINOP %
+    INT 10
+    INT 3
+--- stderr ---
+
+--- exit: 0 ---
