@@ -1,21 +1,16 @@
-#ifndef PARSER
-#define PARSER
+#ifndef LIPL_AST_PARSER_H
+#define LIPL_AST_PARSER_H
 
 #include "ast_utility/ast.h"
-#include "table_management/table.h"
+#include "../lexer/lexer_main.h"
+#include "../lexer/symbol_table.h"
 
-/* Parse a token stream and return the root statement list.
-   Ownership:
-   - The returned AST nodes live in a pool recorded in root->backing_pool.
-   - Call destroy_ast(root) when done. */
-statement_list* parse(token** token_head);
+/* Parses a token stream into an AST.
+   Syntax errors are printed to stderr as file:line:column; the parser recovers
+   and keeps going so one run reports as many as it can. If there were any
+   errors, NULL is returned. Otherwise the caller owns the tree and frees it
+   with destroy_ast(). The tree doesn't point into the token stream, so the
+   tokens can be destroyed straight after parsing. */
+ast_root* parse(const token_stream* tokens, const symbol_table* symbols);
 
-/* Internal helper used by the state machine; exposed for tests. */
-void transfer_node_buffer(table_iterator* iterator);
-
-/* Destroy the AST forest rooted at 'root':
-   - Frees all statement_list containers (and their arrays) recursively.
-   - Shuts down the AST node pool exactly once (root->backing_pool). */
-void destroy_ast(statement_list* root);
-
-#endif /* PARSER */
+#endif /* LIPL_AST_PARSER_H */

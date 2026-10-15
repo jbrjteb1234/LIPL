@@ -1,18 +1,20 @@
-#ifndef lexer_info
-#define lexer_info
-#include "../grammar/grammar.h"
-#include <stdbool.h>
+#ifndef LIPL_LEXER_TOKEN_H
+#define LIPL_LEXER_TOKEN_H
+
+#include <stdint.h>
+#include "token_type.h"
 
 //token structure - one command
 typedef struct token{
     struct token* previous;
     struct token* next;
 
-    //Used later by the AST
-    bool leaf;
-    
     token_types     token_type;
     token_values    token_value;
+
+    /* 1-based position of the token's first character, for error messages */
+    uint32_t line;
+    uint32_t column;
 } token;
 
-#endif
+#endif /* LIPL_LEXER_TOKEN_H */

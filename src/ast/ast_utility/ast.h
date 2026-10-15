@@ -1,15 +1,17 @@
-#ifndef AST
-#define AST
+#ifndef LIPL_AST_H
+#define LIPL_AST_H
 
-#include "../../grammar/grammar.h"
-#include "../../lexer/token.h"
-
+#include <stdbool.h>
 #include <stdint.h>
 
-/* Forward-declare data_pool to avoid heavy includes here. */
-typedef struct data_pool data_pool;
+#include "../../lexer/token_type.h"
+#include "../../utility/data_pool.h"
+#include "../../utility/stack.h"
 
 typedef uint16_t specifiers;
+#define SPEC_GLOBAL ((specifiers)0x0001u)
+#define SPEC_CONST  ((specifiers)0x0002u)
+
 typedef struct ASTNode ASTNode;
 typedef struct statement_list statement_list;
 
@@ -17,18 +19,19 @@ typedef enum{
     NONE_AST_TYPE,
     LEAF_NODE,
     BINARY_OP_NODE,
+    UNARY_OP_NODE,
     RES_WORD_NODE,
     FUNC_NODE,
-    LIST_NODE,
-    PARENTHESES_NODE,
+    DECLARATION_NODE,
     CONDITIONAL_BLOCK_NODE,
 }ASTNodeType;
 
 typedef enum{
     ID_NODE,
-    DEC_NODE,
     STR_NODE,
     INT_NODE,
+    FLOAT_NODE,
+    BOOL_NODE,
 }leaf_node;
 
 typedef enum{
@@ -51,7 +54,14 @@ typedef enum{
     DOT_NODE                =   DOT,
     POWER_NODE              =   POWER,
     ROOT_NODE               =   ROOT,
+    AND_NODE                =   AND,
+    OR_NODE                 =   OR,
 }binary_op_node;
+
+typedef enum{
+    NEGATE_NODE,
+    NOT_NODE,
+} unary_op_node;
 
 typedef enum{
     IF_NODE,
@@ -68,6 +78,7 @@ typedef enum{
 typedef union{
     leaf_node leaf_node_value;
     binary_op_node binary_op_node_value;
+    unary_op_node unary_op_node_value;
     conditional_block_node conditional_block_node_value;
     func_node func_node_value;
     res_word_node reserved_word_value;
@@ -76,12 +87,19 @@ typedef union{
 struct ASTNode{
 
     ASTNodeType type;
-    ASTNodeValue value;
+    ASTNodeValue value;     /* subtype; which member is valid depends on `type` */
+
+    /* where the node starts in the source, for error messages in later passes */
+    uint32_t line;
+    uint32_t column;
 
     union {
         union{
-            void*   value;      /* for STR/INT tokens if carried through */
-            int     identifier; /* stable ID assigned by dictionary */
+            int      identifier;    /* ID_NODE: symbol table id */
+            char*    string;        /* STR_NODE: owned by the ast_root */
+            int64_t  integer;       /* INT_NODE */
+            double   floating;      /* FLOAT_NODE */
+            bool     boolean;       /* BOOL_NODE */
         } value_node;
 
         struct {
@@ -90,38 +108,69 @@ struct ASTNode{
         } binary_op_node;
 
         struct {
+            struct ASTNode* operand;
+        } unary_op_node;
+
+        /* call: arguments are expressions. declaration: arguments are ID leaves (parameters) */
+        struct {
             int identifier;
-            uint32_t arguments_count;
-            struct ASTNode* arguments_list;
+            statement_list* arguments;
         } function_node;
 
+        /* if / elif / while. else_branch links an if chain: IF -> ELIF -> ... -> ELSE */
         struct {
             struct ASTNode* condition;
+            struct ASTNode* else_branch;
         } conditional_block_node;
 
+        /* FOR_NODE; any part may be NULL */
         struct {
-            struct ASTNode* value;
+            struct ASTNode* initialiser;
+            struct ASTNode* condition;
+            struct ASTNode* step;
+        } for_node;
+
+        struct {
+            struct ASTNode* value;  /* NULL for a bare `return;` */
         } return_block_node;
 
-        statement_list* list_node;
+        struct {
+            int identifier;
+            struct ASTNode* initialiser;    /* NULL for `var x;` */
+        } declaration_node;
     } data;
 
-    bool reduced;
-
-    bool block_flag;
+    /* body of a function declaration, if/elif/else, while or for */
     statement_list* block;
 
     specifiers node_specifiers;
 };
 
 struct statement_list{
+    uint32_t count;
     uint32_t max;
-    uint32_t index;
     ASTNode** list;
-
-    /* NEW: record the backing pool used for ASTNode allocation so callers
-       can destroy the whole forest via destroy_ast(root). */
-    data_pool* backing_pool;
 };
 
-#endif /* AST */
+/* A whole parsed program. Every node, list and string in the tree is owned
+   here, so destroy_ast() frees it all without walking the tree. */
+typedef struct ast_root{
+    statement_list* statements;     /* top-level statements */
+    data_pool*      node_pool;      /* every ASTNode */
+    stack*          owned_lists;    /* every statement_list */
+    stack*          owned_strings;  /* string literal contents */
+} ast_root;
+
+ast_root* create_ast_root(void);
+
+/* Returns a zero-filled node of the given type. */
+ASTNode* new_ast_node(ast_root* root, ASTNodeType type, uint32_t line, uint32_t column);
+
+statement_list* new_ast_list(ast_root* root);
+
+/* Copies `text` into storage owned by the tree. */
+char* copy_ast_string(ast_root* root, const char* text);
+
+void destroy_ast(ast_root* root);
+
+#endif /* LIPL_AST_H */

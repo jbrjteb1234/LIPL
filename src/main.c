@@ -1,34 +1,74 @@
 // main.c
-#include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+
 #include "lexer/lexer_main.h"
+#include "lexer/symbol_table.h"
 #include "ast/parser.h"
+#include "ast/ast_utility/ast_printer.h"
+
+/* Exit codes: 0 = parsed fine, 1 = errors in the source (or unreadable file), 2 = bad command line */
+
+static void print_usage(const char* program_name){
+    fprintf(stderr, "usage: %s [--tokens] <source-file>\n", program_name);
+}
 
 int main(int arg_count, char *args[]){
+    const char* program_name = arg_count > 0 ? args[0] : "program";
+    bool show_tokens = false;
+    const char* filename = NULL;
 
-    if (arg_count != 2){
-        fprintf(stderr, "Invalid arguments\n");
-        return 1;
+    for (int i = 1; i < arg_count; ++i){
+        if (strcmp(args[i], "--tokens") == 0){
+            show_tokens = true;
+        }else if (args[i][0] == '-' || filename != NULL){
+            print_usage(program_name);
+            return 2;
+        }else{
+            filename = args[i];
+        }
+    }
+    if (filename == NULL){
+        print_usage(program_name);
+        return 2;
     }
 
-    const char *filename = args[1];
-    FILE *source_code = fopen(filename,"r");
+    FILE *source_code = fopen(filename, "rb");
     if (source_code == NULL){
-        perror("Could not open file");
+        perror(filename);
         return 1;
     }
 
-    token* first_token = tokenize(source_code);
+    symbol_table* symbols = create_symbol_table();
+    token_stream* tokens = tokenize(source_code, filename, symbols);
+    fclose(source_code);
+    if (tokens == NULL){
+        fprintf(stderr, "%s: could not read file\n", filename);
+        destroy_symbol_table(symbols);
+        return 1;
+    }
 
-    /* parsing consumes token stream via pointer-to-pointer */
-    token** first_token_address = &first_token;
-    statement_list* ast_roots = parse(first_token_address);
-    printf("AST: %p\n", (void*)ast_roots);
+    if (show_tokens){
+        print_token_stream(stdout, tokens, symbols);
+    }
+
+    int status = 0;
+    if (tokens->error_count > 0){
+        /* already reported; parsing broken tokens would only add noise */
+        status = 1;
+    }else{
+        ast_root* ast = parse(tokens, symbols);
+        if (ast == NULL){
+            status = 1;
+        }else{
+            print_ast(stdout, ast, symbols);
+            destroy_ast(ast);
+        }
+    }
 
     /* cleanup */
-    destroy_ast(ast_roots);
-    destroy_token_stream(first_token);
-    fclose(source_code);
-
-    return 0;
+    destroy_token_stream(tokens);
+    destroy_symbol_table(symbols);
+    return status;
 }

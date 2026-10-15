@@ -1,14 +1,17 @@
-#ifndef SLIST_FUNCTIONS
-#define SLIST_FUNCTIONS
+#ifndef LIPL_AST_SLIST_FUNCTIONS_H
+#define LIPL_AST_SLIST_FUNCTIONS_H
 
 #include "ast.h"
 
+/* Growable array of AST node pointers. Lists inside a tree should be made
+   with new_ast_list() so the tree owns them; these are the raw operations. */
 statement_list* create_new_slist(void);
 
-void expand_slist(statement_list* slist);
+void destroy_slist(statement_list* slist);
 
-void append_to_slist(statement_list*, ASTNode*);
+void append_to_slist(statement_list* slist, ASTNode* new_node);
 
-ASTNode* get_from_slist(statement_list* slist, uint32_t index);
+/* Returns NULL (and reports it) for an out-of-range index. */
+ASTNode* get_from_slist(const statement_list* slist, uint32_t index);
 
-#endif
+#endif /* LIPL_AST_SLIST_FUNCTIONS_H */
