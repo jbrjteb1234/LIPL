@@ -1,0 +1,25 @@
+empty = [];
+one = [1];
+mixed = [1, "two", 3.0, true, nil, [4, 5]];
+exprs = [a + b, f(x), -c];
+lines = [
+    "abc",
+    "def"
+];
+
+first = a[0];
+member_index = a.b[0];
+call_index = f(x)[1];
+grid_cell = a[0][1];
+index_member = a[0].b;
+method_index = a.items()[i + 1];
+literal_index = [1, 2, 3][2];
+nested_index = a[b[c]];
+neg = -a[0];
+power = a[i] ^ 2;
+
+a[i] = x;
+a.b[0] = 1;
+grid[y][x] = "#";
+f(x)[1] = 2;
+a[i] = b[j] = 0;

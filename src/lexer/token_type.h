@@ -51,6 +51,8 @@ typedef enum{
     OPEN_CBRACKET = 3,
     CLOSE_CBRACKET = 4,
     COMMA = 5,
+    OPEN_SBRACKET = 6,
+    CLOSE_SBRACKET = 7,
 } delimiter_token;
 
 //The token value - which member is valid depends on the token type

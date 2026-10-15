@@ -1,0 +1,6 @@
+
+--- stderr ---
+error_invalid_list_assignment.lipl:1:8: error: can only assign to a variable or a member (x = ..., a.b = ...)
+error_invalid_list_assignment.lipl:2:5: error: can only assign to a variable or a member (x = ..., a.b = ...)
+error_invalid_list_assignment.lipl:3:10: error: can only assign to a variable or a member (x = ..., a.b = ...)
+--- exit: 1 ---

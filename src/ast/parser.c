@@ -16,6 +16,9 @@
  *   break       := 'break' ';'         both only inside a while/for body,
  *   continue    := 'continue' ';'      and not across a func boundary
  *   block       := '{' statement* '}'
+ *
+ *   list        := '[' (expression (',' expression)*)? ']'
+ *   index       := expression '[' expression ']'      binds like '.'
  */
 #include <stdarg.h>
 #include <stdbool.h>
@@ -53,7 +56,7 @@ typedef enum{
     PREC_FACTOR,        /* * / %                         */
     PREC_UNARY,         /* prefix - !                    */
     PREC_POWER,         /* ^ _         right-associative */
-    PREC_MEMBER,        /* .                             */
+    PREC_MEMBER,        /* . and indexing a[i]           */
 } precedence;
 
 static ASTNode* parse_statement(parser* p);
@@ -129,6 +132,18 @@ static bool expect_delimiter(parser* p, delimiter_token delimiter, const char* w
     return false;
 }
 
+/* the ')' or ']' that pairs with `open`: "expected ')' to close the '(' at 1:5, found ';'" */
+static bool expect_closing(parser* p, const token* open, delimiter_token close){
+    if (match_delimiter(p, close)) return true;
+    token_values close_value = { .delimiter_token_value = close };
+    char found[96];
+    describe_token(p->current, p->symbols, found, sizeof found);
+    error_at(p, p->current, "expected '%s' to close the '%s' at %u:%u, found %s",
+             fixed_lexeme(DELIMITER, close_value), fixed_lexeme(open->token_type, open->token_value),
+             (unsigned)open->line, (unsigned)open->column, found);
+    return false;
+}
+
 static bool starts_statement(const token* t){
     if (t->token_type != RESERVED_WORD) return false;
     switch (t->token_value.reserved_word_token_value){
@@ -188,6 +203,7 @@ static ASTNode* make_identifier(parser* p, const token* identifier){
 /* ---- expressions ---------------------------------------------------------- */
 
 static precedence infix_precedence(const token* t){
+    if (is_delimiter(t, OPEN_SBRACKET)) return PREC_MEMBER;    /* a[i] */
     if (t->token_type != OPERATOR) return PREC_NONE;
     switch (t->token_value.operator_token_value){
         case ASSIGNMENT:        return PREC_ASSIGNMENT;
@@ -231,6 +247,26 @@ static ASTNode* parse_call(parser* p, const token* name){
 
     if (!expect_delimiter(p, CLOSE_BRACKET, "',' or ')' in argument list")) return NULL;
     return call;
+}
+
+/* [a, b, c] - the current token is the '['. Like argument lists, no trailing comma. */
+static ASTNode* parse_list(parser* p){
+    token* open = p->current;
+    advance(p);
+
+    ASTNode* list = make_node(p, LIST_NODE, open);
+    list->data.list_node.elements = new_ast_list(p->ast);
+
+    if (!is_delimiter(p->current, CLOSE_SBRACKET)){
+        do {
+            ASTNode* element = parse_expression(p);
+            if (!element) return NULL;
+            append_to_slist(list->data.list_node.elements, element);
+        } while (match_delimiter(p, COMMA));
+    }
+
+    if (!expect_closing(p, open, CLOSE_SBRACKET)) return NULL;
+    return list;
 }
 
 static ASTNode* parse_prefix(parser* p){
@@ -298,15 +334,11 @@ static ASTNode* parse_prefix(parser* p){
                 advance(p);
                 ASTNode* inner = parse_expression(p);
                 if (!inner) return NULL;
-                if (!is_delimiter(p->current, CLOSE_BRACKET)){
-                    char found[96];
-                    describe_token(p->current, p->symbols, found, sizeof found);
-                    error_at(p, p->current, "expected ')' to close the '(' at %u:%u, found %s",
-                             (unsigned)t->line, (unsigned)t->column, found);
-                    return NULL;
-                }
-                advance(p);
+                if (!expect_closing(p, t, CLOSE_BRACKET)) return NULL;
                 return inner;
+            }
+            if (is_delimiter(t, OPEN_SBRACKET)){
+                return parse_list(p);
             }
             break;
 
@@ -332,8 +364,21 @@ static ASTNode* parse_member(parser* p){
     return make_identifier(p, name);
 }
 
+/* target[index] - the '[' (`open`) has been consumed */
+static ASTNode* parse_index(parser* p, ASTNode* target, const token* open){
+    ASTNode* index = parse_expression(p);
+    if (!index) return NULL;
+    if (!expect_closing(p, open, CLOSE_SBRACKET)) return NULL;
+
+    ASTNode* node = make_node(p, INDEX_NODE, open);
+    node->data.index_node.target = target;
+    node->data.index_node.index = index;
+    return node;
+}
+
 static bool is_assignment_target(const ASTNode* node){
     if (node->type == LEAF_NODE && node->value.leaf_node_value == ID_NODE) return true;
+    if (node->type == INDEX_NODE) return true;     /* a[i] = ..., f()[i] = ... */
     /* a.b = ... but not a.f() = ... */
     if (node->type == BINARY_OP_NODE && node->value.binary_op_node_value == DOT_NODE){
         const ASTNode* member = node->data.binary_op_node.rhs;
@@ -353,6 +398,12 @@ static ASTNode* parse_precedence_inner(parser* p, precedence min_precedence){
             break;
         }
         advance(p);
+
+        if (is_delimiter(op, OPEN_SBRACKET)){
+            left = parse_index(p, left, op);
+            if (!left) return NULL;
+            continue;
+        }
 
         ASTNode* right;
         if (is_operator(op, DOT)){

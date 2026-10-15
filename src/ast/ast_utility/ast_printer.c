@@ -192,6 +192,23 @@ static void print_node(FILE* out, const ASTNode* node, int depth, const symbol_t
             print_conditional(out, node, depth, symbols);
             break;
 
+        case LIST_NODE: {
+            const statement_list* elements = node->data.list_node.elements;
+            if (elements->count == 0){
+                fputs("LIST (no elements)\n", out);
+            }else{
+                fprintf(out, "LIST (%u element%s)\n", (unsigned)elements->count, elements->count == 1 ? "" : "s");
+            }
+            print_list(out, elements, depth + 1, symbols);
+            break;
+        }
+
+        case INDEX_NODE:
+            fputs("INDEX\n", out);
+            print_node(out, node->data.index_node.target, depth + 1, symbols);
+            print_node(out, node->data.index_node.index, depth + 1, symbols);
+            break;
+
         case NONE_AST_TYPE:
             fputs("(empty node)\n", out);
             break;

@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_list_too_deeply_nested.lipl:1:260: error: code is nested too deeply (the limit is 256 levels)
+--- exit: 1 ---

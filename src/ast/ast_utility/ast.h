@@ -24,6 +24,8 @@ typedef enum{
     FUNC_NODE,
     DECLARATION_NODE,
     CONDITIONAL_BLOCK_NODE,
+    LIST_NODE,
+    INDEX_NODE,
 }ASTNodeType;
 
 typedef enum{
@@ -137,6 +139,17 @@ struct ASTNode{
         struct {
             struct ASTNode* value;  /* NULL for a bare `return;` (and always NULL for break/continue) */
         } return_block_node;
+
+        /* [a, b, c]; elements is empty for [] */
+        struct {
+            statement_list* elements;
+        } list_node;
+
+        /* target[index] */
+        struct {
+            struct ASTNode* target;
+            struct ASTNode* index;
+        } index_node;
 
         struct {
             int identifier;

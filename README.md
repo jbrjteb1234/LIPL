@@ -62,6 +62,8 @@ for var i = 0; i < 10; i = i + 1 {     // brackets around the header are optiona
 
 object.field = object.method(1, 2);
 
+var grid = [[1, 2], [3, 4], []];        // lists; no trailing comma
+grid[0][1] = grid[1][0] + lines()[0];   // indexing chains like '.'
 var nothing = nil;
 ```
 
@@ -78,11 +80,11 @@ Operators, loosest to tightest:
 | `*` `/` `%` | left |
 | prefix `-` `!` | |
 | `^` (power) `_` (root) | right |
-| `.` (member access, method calls) | left |
+| `.` (member access, method calls), `[ ]` (indexing) | left |
 
 `_` is the root operator, but inside a word it's part of the name (`my_var`), so put spaces around it when you mean root: `27 _ 3`.
 
-Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `\\` escapes, `true`, `false`, `nil`.
+Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `\\` escapes, `true`, `false`, `nil`, and lists (`[1, "two", [3]]`, `[]`).
 
 ## Layout
 

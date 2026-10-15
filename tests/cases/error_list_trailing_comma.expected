@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_list_trailing_comma.lipl:1:11: error: expected an expression, found ']'
+--- exit: 1 ---

@@ -33,6 +33,8 @@
     X("}",              CLOSE_CBRACKET,     delimiter_token_value,      DELIMITER)  \
     X("(",              OPEN_BRACKET,       delimiter_token_value,      DELIMITER)  \
     X(")",              CLOSE_BRACKET,      delimiter_token_value,      DELIMITER)  \
+    X("[",              OPEN_SBRACKET,      delimiter_token_value,      DELIMITER)  \
+    X("]",              CLOSE_SBRACKET,     delimiter_token_value,      DELIMITER)  \
     X(";",              EOS,                delimiter_token_value,      DELIMITER)  \
     X("if",             IF,                 reserved_word_token_value,  RESERVED_WORD)  \
     X("else",           ELSE,               reserved_word_token_value,  RESERVED_WORD)  \

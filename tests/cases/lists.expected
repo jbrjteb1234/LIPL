@@ -1,0 +1,139 @@
+BINOP =
+  ID empty
+  LIST (no elements)
+BINOP =
+  ID one
+  LIST (1 element)
+    INT 1
+BINOP =
+  ID mixed
+  LIST (6 elements)
+    INT 1
+    STR "two"
+    FLOAT 3.0
+    BOOL true
+    NIL
+    LIST (2 elements)
+      INT 4
+      INT 5
+BINOP =
+  ID exprs
+  LIST (3 elements)
+    BINOP +
+      ID a
+      ID b
+    CALL f (1 argument)
+      ID x
+    UNARY -
+      ID c
+BINOP =
+  ID lines
+  LIST (2 elements)
+    STR "abc"
+    STR "def"
+BINOP =
+  ID first
+  INDEX
+    ID a
+    INT 0
+BINOP =
+  ID member_index
+  INDEX
+    BINOP .
+      ID a
+      ID b
+    INT 0
+BINOP =
+  ID call_index
+  INDEX
+    CALL f (1 argument)
+      ID x
+    INT 1
+BINOP =
+  ID grid_cell
+  INDEX
+    INDEX
+      ID a
+      INT 0
+    INT 1
+BINOP =
+  ID index_member
+  BINOP .
+    INDEX
+      ID a
+      INT 0
+    ID b
+BINOP =
+  ID method_index
+  INDEX
+    BINOP .
+      ID a
+      CALL items (no arguments)
+    BINOP +
+      ID i
+      INT 1
+BINOP =
+  ID literal_index
+  INDEX
+    LIST (3 elements)
+      INT 1
+      INT 2
+      INT 3
+    INT 2
+BINOP =
+  ID nested_index
+  INDEX
+    ID a
+    INDEX
+      ID b
+      ID c
+BINOP =
+  ID neg
+  UNARY -
+    INDEX
+      ID a
+      INT 0
+BINOP =
+  ID power
+  BINOP ^
+    INDEX
+      ID a
+      ID i
+    INT 2
+BINOP =
+  INDEX
+    ID a
+    ID i
+  ID x
+BINOP =
+  INDEX
+    BINOP .
+      ID a
+      ID b
+    INT 0
+  INT 1
+BINOP =
+  INDEX
+    INDEX
+      ID grid
+      ID y
+    ID x
+  STR "#"
+BINOP =
+  INDEX
+    CALL f (1 argument)
+      ID x
+    INT 1
+  INT 2
+BINOP =
+  INDEX
+    ID a
+    ID i
+  BINOP =
+    INDEX
+      ID b
+      ID j
+    INT 0
+--- stderr ---
+
+--- exit: 0 ---

@@ -1,0 +1,5 @@
+
+--- stderr ---
+error_unclosed_square_bracket.lipl:1:10: error: expected ']' to close the '[' at 1:5, found ';'
+error_unclosed_square_bracket.lipl:2:8: error: expected ']' to close the '[' at 2:6, found ';'
+--- exit: 1 ---
