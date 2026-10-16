@@ -1,4 +1,4 @@
 # build output
 src/obj/
-src/program
-src/program.exe
+src/lipl
+src/lipl.exe

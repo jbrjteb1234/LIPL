@@ -13,35 +13,48 @@
 /* Exit codes: 0 = ran (or parsed) fine, 1 = an error in the program (or an unreadable file),
    2 = bad command line */
 
-static void print_usage(const char* program_name){
-    fprintf(stderr,
-            "usage: %s [--tokens] [--ast] <source-file>\n"
-            "  with no options, runs the program\n"
-            "  --tokens   print the tokens instead of running\n"
-            "  --ast      print the syntax tree instead of running\n",
-            program_name);
+#define LIPL_VERSION "1.0.0"
+
+static void print_usage(FILE* out){
+    fputs("usage: lipl [--tokens] [--ast] <source-file>\n"
+          "  with no options, runs the program\n"
+          "  --tokens    print the tokens instead of running\n"
+          "  --ast       print the syntax tree instead of running\n"
+          "  --help      show this message\n"
+          "  --version   show the version number\n",
+          out);
 }
 
 int main(int arg_count, char *args[]){
-    const char* program_name = arg_count > 0 ? args[0] : "program";
     bool show_tokens = false;
     bool show_ast = false;
     const char* filename = NULL;
 
     for (int i = 1; i < arg_count; ++i){
-        if (strcmp(args[i], "--tokens") == 0){
+        if (strcmp(args[i], "--help") == 0){
+            print_usage(stdout);
+            return 0;
+        }else if (strcmp(args[i], "--version") == 0){
+            puts("lipl " LIPL_VERSION);
+            return 0;
+        }else if (strcmp(args[i], "--tokens") == 0){
             show_tokens = true;
         }else if (strcmp(args[i], "--ast") == 0){
             show_ast = true;
-        }else if (args[i][0] == '-' || filename != NULL){
-            print_usage(program_name);
+        }else if (args[i][0] == '-'){
+            fprintf(stderr, "lipl: unknown option '%s'\n", args[i]);
+            print_usage(stderr);
+            return 2;
+        }else if (filename != NULL){
+            fprintf(stderr, "lipl: one source file at a time ('%s' and '%s' were given)\n", filename, args[i]);
+            print_usage(stderr);
             return 2;
         }else{
             filename = args[i];
         }
     }
     if (filename == NULL){
-        print_usage(program_name);
+        print_usage(stderr);
         return 2;
     }
 

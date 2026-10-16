@@ -25,7 +25,7 @@ SRC_FILES = $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '$(OBJ_DIR)/*
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
 # Output executable
-TARGET = program
+TARGET = lipl
 
 # Default rule: build the target
 all: $(TARGET)

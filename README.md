@@ -7,20 +7,21 @@ A hand-written lexer and recursive-descent parser build a syntax tree, and a tre
 
 ```bash
 cd src
-make                # builds ./program
+make                # builds ./lipl
 make test           # runs everything in tests/
 make SANITIZE=1     # AddressSanitizer + UBSan build (Linux/WSL)
 make clean
 ```
 
-Without make: `cd src && gcc -std=c11 -I. $(find . -name '*.c' -not -path './obj/*') -o program -lm`
+Without make: `cd src && gcc -std=c11 -I. $(find . -name '*.c' -not -path './obj/*') -o lipl -lm`
 
-On WSL with a 6.x kernel, GCC 11's sanitizer runtime randomly hangs printing `AddressSanitizer:DEADLYSIGNAL`. That's the toolchain, not the code: run sanitized builds with address randomisation off, e.g. `setarch $(uname -m) -R ./program file.lipl`.
+On WSL with a 6.x kernel, GCC 11's sanitizer runtime randomly hangs printing `AddressSanitizer:DEADLYSIGNAL`. That's the toolchain, not the code: run sanitized builds with address randomisation off, e.g. `setarch $(uname -m) -R ./lipl file.lipl`.
 
 ```bash
-./program file.lipl            # run a program
-./program --ast file.lipl      # print its syntax tree instead
-./program --tokens file.lipl   # print its tokens instead
+./lipl file.lipl            # run a program
+./lipl --ast file.lipl      # print its syntax tree instead
+./lipl --tokens file.lipl   # print its tokens instead
+./lipl --help               # options
 ```
 
 Exit codes: `0` ran fine, `1` an error in the program (printed as `file:line:column: error: ...` with the line quoted and a caret under the column), `2` bad command line.
