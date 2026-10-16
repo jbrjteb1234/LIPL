@@ -1,30 +1,88 @@
 # LIPL
-Light Interpreted Programming Language: a small interpreted language written in C.
 
-A hand-written lexer and recursive-descent parser build a syntax tree, and a tree-walking interpreter runs it. Errors, whether syntax or runtime, point at the exact line and column.
+[![CI](https://github.com/jbrjteb1234/lipl/actions/workflows/ci.yml/badge.svg)](https://github.com/jbrjteb1234/lipl/actions/workflows/ci.yml)
+
+A small scripting language with closures, lists and clear error messages, run by a tree-walking interpreter in plain C with no dependencies.
+
+```
+func fib(n) {
+    if n < 2 {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}
+
+var row = [];
+for var i = 0; i < 12; i = i + 1 {
+    row.push(fib(i));
+}
+print("Fibonacci:", row);
+print("fib(25) =", fib(25));
+```
+
+```console
+$ ./lipl fib.lipl
+Fibonacci: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+fib(25) = 75025
+```
+
+Mistype `fib(25)` as `fibb(25)` and the error points at it:
+
+```console
+$ ./lipl fib.lipl
+Fibonacci: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+fib.lipl:13:20: error: 'fibb' is not defined
+   13 | print("fib(25) =", fibb(25));
+      |                    ^
+```
+
+## Quick start
+
+```bash
+git clone https://github.com/jbrjteb1234/lipl.git && cd lipl/src
+make
+./lipl ../examples/guess.lipl
+```
+
+You need gcc and make. On Windows, [MSYS2](https://www.msys2.org)'s UCRT64 environment has both.
+
+## Examples
+
+| Program | What it shows |
+|---|---|
+| [`examples/fizzbuzz.lipl`](examples/fizzbuzz.lipl) | loops, `%`, and building up strings |
+| [`examples/primes.lipl`](examples/primes.lipl) | the Sieve of Eratosthenes, with a list as an array of flags |
+| [`examples/hanoi.lipl`](examples/hanoi.lipl) | Towers of Hanoi, solved by recursion |
+| [`examples/word_count.lipl`](examples/word_count.lipl) | the most common words in a text file: `read_lines`, `split` and a sort |
+| [`examples/guess.lipl`](examples/guess.lipl) | a number-guessing game that reads your guesses with `input()` |
+
+`read_lines` opens paths relative to where you run `lipl`, so run the word counter from its own folder: `cd examples && ../src/lipl word_count.lipl`.
 
 ## Build, run, test
+
+LIPL (Light Interpreted Programming Language) is a hand-written lexer, recursive-descent parser and tree-walking interpreter with reference-counted values, in under 5,000 lines of C11.
 
 ```bash
 cd src
 make                # builds ./lipl
-make test           # runs everything in tests/
+make test           # runs everything in tests/, and checks the examples' output
 make SANITIZE=1     # AddressSanitizer + UBSan build (Linux/WSL)
 make clean
 ```
 
 Without make: `cd src && gcc -std=c11 -I. $(find . -name '*.c' -not -path './obj/*') -o lipl -lm`
 
-On WSL with a 6.x kernel, GCC 11's sanitizer runtime randomly hangs printing `AddressSanitizer:DEADLYSIGNAL`. That's the toolchain, not the code: run sanitized builds with address randomisation off, e.g. `setarch $(uname -m) -R ./lipl file.lipl`.
+CI builds and runs the tests on Linux, on Windows with MSYS2, and on Linux with the sanitizers. On WSL with a 6.x kernel, GCC 11's sanitizer runtime randomly hangs printing `AddressSanitizer:DEADLYSIGNAL`. That's the toolchain, not the code: run sanitized builds with address randomisation off, e.g. `setarch $(uname -m) -R ./lipl file.lipl`.
 
 ```bash
 ./lipl file.lipl            # run a program
 ./lipl --ast file.lipl      # print its syntax tree instead
 ./lipl --tokens file.lipl   # print its tokens instead
-./lipl --help               # options
+./lipl --help               # list the options
+./lipl --version            # lipl 1.0.0
 ```
 
-Exit codes: `0` ran fine, `1` an error in the program (printed as `file:line:column: error: ...` with the line quoted and a caret under the column), `2` bad command line.
+Exit codes: `0` ran fine, `1` an error in the program, `2` bad command line. Errors, whether lexical, syntax or runtime, print as `file:line:column: error: ...` with the line quoted and a caret under the column. They're in colour when written to a terminal, unless the `NO_COLOR` environment variable is set.
 
 ## The language
 
