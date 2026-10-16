@@ -92,12 +92,15 @@ static void lex_error(scanner* sc, uint32_t line, uint32_t column, const char* f
     sc->stream->error_count++;
 }
 
+/* Called once the token's text has been consumed, so the scanner is just past its end */
 static token* emit_token(scanner* sc, token_types type, uint32_t line, uint32_t column){
     token_stream* stream = sc->stream;
     token* new_token = (token*)acquire_from_pool(stream->pool);  /* zero-filled */
     new_token->token_type = type;
     new_token->line = line;
     new_token->column = column;
+    new_token->end_line = sc->line;
+    new_token->end_column = sc->column;
     new_token->previous = stream->tail;
     if (stream->tail){
         stream->tail->next = new_token;

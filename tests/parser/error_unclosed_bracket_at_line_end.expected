@@ -1,0 +1,6 @@
+
+--- stderr ---
+error_unclosed_bracket_at_line_end.lipl:1:19: error: expected ')' to close the '(' at 1:13, found identifier 'print'
+    1 | var total = (1 + 2
+      |                   ^
+--- exit: 1 ---

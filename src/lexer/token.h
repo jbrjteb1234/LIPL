@@ -15,6 +15,9 @@ typedef struct token{
     /* 1-based position of the token's first character, for error messages */
     uint32_t line;
     uint32_t column;
+    /* position just past its last character, for errors about what should follow it */
+    uint32_t end_line;
+    uint32_t end_column;
 } token;
 
 #endif /* LIPL_LEXER_TOKEN_H */

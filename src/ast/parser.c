@@ -107,14 +107,32 @@ static const char* name_of(const parser* p, const token* identifier){
 
 /* ---- errors --------------------------------------------------------------- */
 
-static void error_at(parser* p, const token* t, const char* format, ...){
+static void report_syntax_error(parser* p, uint32_t line, uint32_t column, const char* format, va_list args){
     if (p->panic_mode) return;
     p->panic_mode = true;
     p->error_count++;
+    report_error(p->source, line, column, format, args);
+}
 
+static void error_at(parser* p, const token* t, const char* format, ...){
     va_list args;
     va_start(args, format);
-    report_error(p->source, t->line, t->column, format, args);
+    report_syntax_error(p, t->line, t->column, format, args);
+    va_end(args);
+}
+
+/* For something missing before the current token. If the token before ends on
+   an earlier line, the error points just past it instead, so a forgotten ';'
+   is shown on the line that's missing it rather than at the start of the next. */
+static void error_missing(parser* p, const char* format, ...){
+    const token* before = p->previous;
+    va_list args;
+    va_start(args, format);
+    if (before != NULL && before->end_line < p->current->line){
+        report_syntax_error(p, before->end_line, before->end_column, format, args);
+    }else{
+        report_syntax_error(p, p->current->line, p->current->column, format, args);
+    }
     va_end(args);
 }
 
@@ -122,7 +140,7 @@ static void error_at(parser* p, const token* t, const char* format, ...){
 static void error_expected(parser* p, const char* what){
     char found[96];
     describe_token(p->current, p->symbols, found, sizeof found);
-    error_at(p, p->current, "expected %s, found %s", what, found);
+    error_missing(p, "expected %s, found %s", what, found);
 }
 
 static bool expect_delimiter(parser* p, delimiter_token delimiter, const char* what){
@@ -137,9 +155,9 @@ static bool expect_closing(parser* p, const token* open, delimiter_token close){
     token_values close_value = { .delimiter_token_value = close };
     char found[96];
     describe_token(p->current, p->symbols, found, sizeof found);
-    error_at(p, p->current, "expected '%s' to close the '%s' at %u:%u, found %s",
-             fixed_lexeme(DELIMITER, close_value), fixed_lexeme(open->token_type, open->token_value),
-             (unsigned)open->line, (unsigned)open->column, found);
+    error_missing(p, "expected '%s' to close the '%s' at %u:%u, found %s",
+                  fixed_lexeme(DELIMITER, close_value), fixed_lexeme(open->token_type, open->token_value),
+                  (unsigned)open->line, (unsigned)open->column, found);
     return false;
 }
 
@@ -480,8 +498,8 @@ static statement_list* parse_block(parser* p, const char* owner){
     if (!is_delimiter(p->current, CLOSE_CBRACKET)){
         char found[96];
         describe_token(p->current, p->symbols, found, sizeof found);
-        error_at(p, p->current, "expected '}' to close the block opened at %u:%u, found %s",
-                 (unsigned)open->line, (unsigned)open->column, found);
+        error_missing(p, "expected '}' to close the block opened at %u:%u, found %s",
+                      (unsigned)open->line, (unsigned)open->column, found);
         return NULL;
     }
     advance(p);
