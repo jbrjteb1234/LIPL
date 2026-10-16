@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_index_out_of_range.lipl:2:8: error: index 3 is out of range for length 3
+--- exit: 1 ---

@@ -1,0 +1,19 @@
+medium
+odd 1
+odd 3
+odd 5
+odd 7
+*
+**
+***
+3
+2
+1
+0 is true
+empty string is true
+empty list is true
+nil is false
+true false false true true
+--- stderr ---
+
+--- exit: 0 ---

@@ -1,0 +1,11 @@
+var name = input("What's your name? ");
+print("Hello, " + name + "!");
+
+// input() returns nil at the end of input
+var count = 0;
+var line = input();
+while line != nil {
+    count = count + 1;
+    line = input();
+}
+print("read", count, "more lines");

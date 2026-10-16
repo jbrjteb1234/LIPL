@@ -1,0 +1,26 @@
+var numbers = [3, 1, 4];
+numbers.push(1);
+push(numbers, 5);
+print(numbers, len(numbers), numbers[0], numbers[-1]);
+
+numbers[1] = 10;
+print(numbers);
+print(numbers.pop(), numbers);
+
+var grid = [[1, 2], [3, 4]];
+grid[1][0] = grid[0][1] * 10;
+print(grid, grid[1]);
+
+print([1, 2] + [3], [1, [2, 3]] == [1, [2, 3]], [1, 2] == [1, 2.0], [] == [], [1] == [2]);
+
+// lists are shared, not copied
+var alias = numbers;
+alias.push(99);
+print(numbers);
+
+// a list that contains itself prints without looping forever
+var self = [1];
+self.push(self);
+print(self);
+
+print([nil, true, "text", 1.5, [], print]);

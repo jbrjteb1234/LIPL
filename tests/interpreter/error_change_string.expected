@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_change_string.lipl:2:2: error: strings can't be changed in place: build a new one instead
+--- exit: 1 ---

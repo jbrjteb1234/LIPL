@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_missing_file.lipl:1:1: error: read_lines() can't open "no_such_file.txt": No such file or directory
+--- exit: 1 ---

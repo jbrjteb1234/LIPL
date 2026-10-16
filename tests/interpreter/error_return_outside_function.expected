@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_return_outside_function.lipl:1:1: error: 'return' outside a function
+--- exit: 1 ---

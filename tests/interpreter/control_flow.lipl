@@ -1,0 +1,38 @@
+var x = 5;
+if x > 10 {
+    print("big");
+} elif x > 3 {
+    print("medium");
+} else {
+    print("small");
+}
+
+var i = 0;
+while true {
+    i = i + 1;
+    if i % 2 == 0 { continue; }
+    if i > 7 { break; }
+    print("odd", i);
+}
+
+for var row = 1; row <= 3; row = row + 1 {
+    var line = "";
+    for (var col = 1; col <= row; col = col + 1) {
+        line = line + "*";
+    }
+    print(line);
+}
+
+var countdown = 3;
+for ;; {
+    if countdown == 0 { break; }
+    print(countdown);
+    countdown = countdown - 1;
+}
+
+// only false and nil are false
+if 0 { print("0 is true"); }
+if "" { print("empty string is true"); }
+if [] { print("empty list is true"); }
+if nil { print("never printed"); } else { print("nil is false"); }
+print(!nil, !0, true && nil, false || "yes", 1 < 2 && 2 < 3);

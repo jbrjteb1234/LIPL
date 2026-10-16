@@ -1,0 +1,4 @@
+printed before the error
+--- stderr ---
+error_division_by_zero.lipl:2:12: error: division by zero
+--- exit: 1 ---

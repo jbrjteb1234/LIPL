@@ -1,0 +1,11 @@
+0 1 55 6765
+hi there
+nil
+1 2 3 1
+42 5! 8 2
+global from a function
+3
+400
+--- stderr ---
+
+--- exit: 0 ---

@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_redeclare_local.lipl:3:5: error: 'x' is already declared in this scope
+--- exit: 1 ---

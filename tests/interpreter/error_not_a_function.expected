@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_not_a_function.lipl:2:1: error: can't call 'x': it's an int, not a function
+--- exit: 1 ---

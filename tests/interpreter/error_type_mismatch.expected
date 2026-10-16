@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_type_mismatch.lipl:1:11: error: can't use '+' on list and int
+--- exit: 1 ---

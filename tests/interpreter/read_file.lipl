@@ -1,0 +1,18 @@
+// read a file line by line, Advent of Code style
+var lines = read_lines("scores.txt");
+var total = 0;
+var best = nil;
+var best_score = -1;
+
+for var i = 0; i < len(lines); i = i + 1 {
+    var parts = lines[i].split();
+    var score = int(parts[1]);
+    total = total + score;
+    if score > best_score {
+        best = parts[0];
+        best_score = score;
+    }
+}
+
+print(len(lines), "players, total", total);
+print("best:", best, "with", best_score);

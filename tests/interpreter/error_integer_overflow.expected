@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_integer_overflow.lipl:1:27: error: integer overflow: the result doesn't fit in 64 bits
+--- exit: 1 ---

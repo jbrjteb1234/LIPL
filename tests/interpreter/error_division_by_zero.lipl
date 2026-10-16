@@ -1,0 +1,3 @@
+print("printed before the error");
+var x = 10 / (5 - 5);
+print("never printed");

@@ -1,0 +1,57 @@
+func fib(n) {
+    if n < 2 {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}
+print(fib(0), fib(1), fib(10), fib(20));
+
+func greet(name) {
+    print("hi " + name);
+}
+var result = greet("there");
+print(result);
+
+// functions remember the scope they were declared in
+func make_counter() {
+    var count = 0;
+    func next() {
+        count = count + 1;
+        return count;
+    }
+    return next;
+}
+var counter = make_counter();
+var other = make_counter();
+print(counter(), counter(), counter(), other());
+
+// functions are values; a.f(x) is f(a, x)
+func apply(f, x) {
+    return f(x);
+}
+func double(n) { return n * 2; }
+print(apply(double, 21), apply(str, 5) + "!", 4.double(), [1, 2].len());
+
+func outer() {
+    global var created_inside = "global from a function";
+}
+outer();
+print(created_inside);
+
+const var limit = 3;
+var total = 0;
+for var i = 0; i < 100; i = i + 1 {
+    if i >= limit { break; }
+    total = total + i;
+}
+print(total);
+
+// return leaves every loop it's inside
+func early(n) {
+    while true {
+        for var i = 0; i < 10; i = i + 1 {
+            if i == n { return i * 100; }
+        }
+    }
+}
+print(early(4));

@@ -1,0 +1,9 @@
+var name = "LIPL";
+print("Hello, " + name + "!");
+print("n = " + 42, 1.5 + " apples", "list: " + [1, "two"]);
+print("ab" * 3, "-" * 10);
+print(len(name), name[0], name[-1]);
+print("apple" < "banana", "a" == "a", "a" != "b", "abc" < "ab");
+print(split("  one two   three "), split("a,b,,c", ","));
+print(str(12) + str(3.0), int("42") + 1, int(" -7 "), int(3.9), float("2.5") * 2, int(true));
+print(type(1), type(1.0), type("s"), type([]), type(nil), type(true), type(print));

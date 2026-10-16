@@ -7,14 +7,17 @@
 #include "lexer/symbol_table.h"
 #include "ast/parser.h"
 #include "ast/ast_utility/ast_printer.h"
+#include "interpreter/interpreter.h"
 
-/* Exit codes: 0 = parsed fine, 1 = errors in the source (or unreadable file), 2 = bad command line */
+/* Exit codes: 0 = ran (or parsed) fine, 1 = an error in the program (or an unreadable file),
+   2 = bad command line */
 
 static void print_usage(const char* program_name){
     fprintf(stderr,
             "usage: %s [--tokens] [--ast] <source-file>\n"
-            "  --tokens   print the tokens\n"
-            "  --ast      print the syntax tree (the default, until there's an interpreter)\n",
+            "  with no options, runs the program\n"
+            "  --tokens   print the tokens instead of running\n"
+            "  --ast      print the syntax tree instead of running\n",
             program_name);
 }
 
@@ -69,7 +72,11 @@ int main(int arg_count, char *args[]){
         if (ast == NULL){
             status = 1;
         }else{
-            print_ast(stdout, ast, symbols);
+            if (show_ast){
+                print_ast(stdout, ast, symbols);
+            }else{
+                status = interpret(ast, symbols, filename);
+            }
             destroy_ast(ast);
         }
     }

@@ -1,0 +1,11 @@
+Hello, LIPL!
+n = 42 1.5 apples list: [1, "two"]
+ababab ----------
+4 L L
+true true true false
+["one", "two", "three"] ["a", "b", "", "c"]
+123.0 43 -7 3 5.0 1
+int float string list nil bool function
+--- stderr ---
+
+--- exit: 0 ---

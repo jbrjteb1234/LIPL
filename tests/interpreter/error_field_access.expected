@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_field_access.lipl:2:8: error: LIPL values don't have fields: did you mean '.size()'?
+--- exit: 1 ---

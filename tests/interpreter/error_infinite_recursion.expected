@@ -1,0 +1,4 @@
+
+--- stderr ---
+error_infinite_recursion.lipl:1:26: error: stack overflow: too much recursion
+--- exit: 1 ---

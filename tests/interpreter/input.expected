@@ -1,0 +1,5 @@
+What's your name? Hello, Ada!
+read 2 more lines
+--- stderr ---
+
+--- exit: 0 ---
