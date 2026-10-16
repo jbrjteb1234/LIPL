@@ -11,17 +11,24 @@
 /* Exit codes: 0 = parsed fine, 1 = errors in the source (or unreadable file), 2 = bad command line */
 
 static void print_usage(const char* program_name){
-    fprintf(stderr, "usage: %s [--tokens] <source-file>\n", program_name);
+    fprintf(stderr,
+            "usage: %s [--tokens] [--ast] <source-file>\n"
+            "  --tokens   print the tokens\n"
+            "  --ast      print the syntax tree (the default, until there's an interpreter)\n",
+            program_name);
 }
 
 int main(int arg_count, char *args[]){
     const char* program_name = arg_count > 0 ? args[0] : "program";
     bool show_tokens = false;
+    bool show_ast = false;
     const char* filename = NULL;
 
     for (int i = 1; i < arg_count; ++i){
         if (strcmp(args[i], "--tokens") == 0){
             show_tokens = true;
+        }else if (strcmp(args[i], "--ast") == 0){
+            show_ast = true;
         }else if (args[i][0] == '-' || filename != NULL){
             print_usage(program_name);
             return 2;
@@ -57,7 +64,7 @@ int main(int arg_count, char *args[]){
     if (tokens->error_count > 0){
         /* already reported; parsing broken tokens would only add noise */
         status = 1;
-    }else{
+    }else if (show_ast || !show_tokens){
         ast_root* ast = parse(tokens, symbols);
         if (ast == NULL){
             status = 1;
