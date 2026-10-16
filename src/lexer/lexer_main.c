@@ -10,10 +10,10 @@
 
 #include "lexer_main.h"
 #include "../grammar/grammar.h"
+#include "../utility/diagnostics.h"
 #include "../utility/safe_memory.h"
 
 #define INITIAL_TOKEN_POOL_SIZE 64u
-#define INITIAL_READ_BUFFER_SIZE 4096u
 
 /* One entry per fixed lexeme listed in grammar.h */
 typedef struct{
@@ -52,33 +52,6 @@ typedef struct{
     symbol_table*   symbols;
 } scanner;
 
-/* ---- reading -------------------------------------------------------------- */
-
-static char* read_whole_file(FILE* source, size_t* length_out){
-    size_t capacity = INITIAL_READ_BUFFER_SIZE;
-    size_t length = 0;
-    char* buffer = (char*)safe_malloc(capacity);
-
-    for (;;){
-        if (length == capacity){
-            capacity *= 2u;
-            buffer = (char*)safe_realloc(buffer, capacity);
-        }
-        size_t got = fread(buffer + length, 1, capacity - length, source);
-        length += got;
-        if (got == 0){
-            break;
-        }
-    }
-
-    if (ferror(source)){
-        safe_free((void**)&buffer);
-        return NULL;
-    }
-    *length_out = length;
-    return buffer;
-}
-
 /* ---- scanner primitives --------------------------------------------------- */
 
 /* Returns the character `offset` places ahead as an unsigned char, or EOF */
@@ -113,11 +86,9 @@ static bool is_word_char(int c){
 
 static void lex_error(scanner* sc, uint32_t line, uint32_t column, const char* format, ...){
     va_list args;
-    fprintf(stderr, "%s:%u:%u: error: ", sc->stream->source_name, (unsigned)line, (unsigned)column);
     va_start(args, format);
-    vfprintf(stderr, format, args);
+    report_error(sc->stream->source, line, column, format, args);
     va_end(args);
-    fputc('\n', stderr);
     sc->stream->error_count++;
 }
 
@@ -319,22 +290,16 @@ static void scan_symbol(scanner* sc, uint32_t line, uint32_t column){
 
 /* ---- public interface ----------------------------------------------------- */
 
-token_stream* tokenize(FILE* source_code, const char* source_name, symbol_table* symbols){
-    size_t length = 0;
-    char* text = read_whole_file(source_code, &length);
-    if (text == NULL){
-        return NULL;
-    }
-
+token_stream* tokenize(const source_file* source, symbol_table* symbols){
     token_stream* stream = (token_stream*)safe_malloc(sizeof(token_stream));
     stream->head = NULL;
     stream->tail = NULL;
     stream->pool = init_data_pool(sizeof(token), INITIAL_TOKEN_POOL_SIZE);
-    stream->source_name = source_name;
+    stream->source = source;
     stream->error_count = 0;
 
     scanner sc = {
-        .source = text, .length = length, .position = 0,
+        .source = source->text, .length = source->length, .position = 0,
         .line = 1, .column = 1,
         .stream = stream, .symbols = symbols,
     };
@@ -360,7 +325,6 @@ token_stream* tokenize(FILE* source_code, const char* source_name, symbol_table*
         }
     }
 
-    safe_free((void**)&text);
     return stream;
 }
 

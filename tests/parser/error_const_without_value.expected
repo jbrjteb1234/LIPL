@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_const_without_value.lipl:1:11: error: const variable 'x' needs an initial value
+    1 | const var x;
+      |           ^
 --- exit: 1 ---

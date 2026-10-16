@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_unclosed_bracket.lipl:1:11: error: expected ')' to close the '(' at 1:5, found ';'
+    1 | x = (1 + 2;
+      |           ^
 --- exit: 1 ---

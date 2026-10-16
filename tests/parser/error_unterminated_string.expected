@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_unterminated_string.lipl:1:5: error: unterminated string literal
+    1 | x = "hello;
+      |     ^
 --- exit: 1 ---

@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_repeated_specifier.lipl:1:8: error: 'global' is repeated
+    1 | global global var x = 1;
+      |        ^
 --- exit: 1 ---

@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_undeclared_assignment.lipl:1:7: error: 'count' isn't declared yet: use 'var count = ...' to create it
+    1 | count = 1;
+      |       ^
 --- exit: 1 ---

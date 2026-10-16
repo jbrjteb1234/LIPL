@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_infinite_recursion.lipl:1:26: error: stack overflow: too much recursion
+    1 | func forever(n) { return forever(n + 1); }
+      |                          ^
 --- exit: 1 ---

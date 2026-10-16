@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_redeclare_local.lipl:3:5: error: 'x' is already declared in this scope
+    3 |     var x = 2;
+      |     ^
 --- exit: 1 ---

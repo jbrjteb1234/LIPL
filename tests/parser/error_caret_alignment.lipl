@@ -1,0 +1,4 @@
+// the caret has to line up with the @ after tabs and multi-byte characters
+	x = 1 @ 2;
+		y =	3 @ 4;
+s = "naïve café" @ 5;

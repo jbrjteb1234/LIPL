@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_else_if.lipl:2:8: error: write 'elif' instead of 'else if'
+    2 | } else if y {
+      |        ^
 --- exit: 1 ---

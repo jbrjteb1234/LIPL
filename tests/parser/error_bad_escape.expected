@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_bad_escape.lipl:1:10: error: unknown escape sequence '\q'
+    1 | s = "bad \q escape";
+      |          ^
 --- exit: 1 ---

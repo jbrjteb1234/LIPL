@@ -6,6 +6,7 @@
 #include "token.h"
 #include "symbol_table.h"
 #include "../utility/data_pool.h"
+#include "../utility/source_file.h"
 
 /* The tokens of one source file: a doubly linked list that always ends with
    an END_OF_INPUT token, so the parser never has to check for NULL. */
@@ -13,15 +14,15 @@ typedef struct token_stream{
     token*      head;
     token*      tail;
     data_pool*  pool;           /* storage for every token node */
-    const char* source_name;    /* borrowed; used in error messages */
+    const source_file* source;  /* borrowed; quoted in error messages */
     uint32_t    error_count;    /* lexical errors reported while tokenizing */
 } token_stream;
 
-/* Reads all of `source` and tokenizes it. Identifier names are interned into
-   `symbols`. Lexical errors are printed to stderr as file:line:column and
-   counted in error_count; the stream is still returned so callers can decide
-   what to do. Returns NULL only if the file could not be read. */
-token_stream* tokenize(FILE* source, const char* source_name, symbol_table* symbols);
+/* Tokenizes all of `source`, which must outlive the stream. Identifier names
+   are interned into `symbols`. Lexical errors are printed to stderr as
+   file:line:column with the line quoted, and counted in error_count; the
+   stream is still returned so callers can decide what to do. */
+token_stream* tokenize(const source_file* source, symbol_table* symbols);
 
 void destroy_token_stream(token_stream* stream);
 

@@ -1,0 +1,12 @@
+
+--- stderr ---
+error_caret_alignment.lipl:2:8: error: unexpected character '@'
+    2 |     x = 1 @ 2;
+      |           ^
+error_caret_alignment.lipl:3:9: error: unexpected character '@'
+    3 |         y =    3 @ 4;
+      |                  ^
+error_caret_alignment.lipl:4:20: error: unexpected character '@'
+    4 | s = "naïve café" @ 5;
+      |                  ^
+--- exit: 1 ---

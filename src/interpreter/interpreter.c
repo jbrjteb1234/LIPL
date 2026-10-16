@@ -24,6 +24,7 @@
 #include "interpreter.h"
 #include "runtime.h"
 #include "../lexer/lexer_main.h"
+#include "../utility/diagnostics.h"
 #include "../utility/platform.h"
 #include "../utility/safe_memory.h"
 
@@ -50,11 +51,9 @@ static exec_status exec_block(interpreter* interp, const statement_list* block);
 _Noreturn void runtime_error(interpreter* interp, const ASTNode* at, const char* format, ...){
     fflush(stdout);     /* so output printed before the error appears before it */
     va_list args;
-    fprintf(stderr, "%s:%u:%u: error: ", interp->source_name, (unsigned)at->line, (unsigned)at->column);
     va_start(args, format);
-    vfprintf(stderr, format, args);
+    report_error(interp->source, at->line, at->column, format, args);
     va_end(args);
-    fputc('\n', stderr);
     longjmp(interp->error_jump, 1);
 }
 
@@ -772,13 +771,13 @@ static exec_status exec_block(interpreter* interp, const statement_list* block){
 
 /* ---- entry point ---------------------------------------------------------- */
 
-int interpret(const ast_root* ast, symbol_table* symbols, const char* source_name){
+int interpret(const ast_root* ast, symbol_table* symbols, const source_file* source){
     char stack_marker;
 
     /* on the heap: locals changed between setjmp and longjmp aren't reliable afterwards */
     interpreter* interp = (interpreter*)safe_malloc(sizeof(interpreter));
     interp->symbols = symbols;
-    interp->source_name = source_name;
+    interp->source = source;
 
     /* intern the builtin names first so the global tables cover them */
     int* builtin_ids = (int*)safe_malloc(sizeof(int) * builtin_count);

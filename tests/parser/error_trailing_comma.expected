@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_trailing_comma.lipl:1:5: error: expected an expression, found ')'
+    1 | f(1,);
+      |     ^
 --- exit: 1 ---

@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_bad_conversion.lipl:1:7: error: int() can't turn "12abc" into an integer
+    1 | print(int("12abc"));
+      |       ^
 --- exit: 1 ---

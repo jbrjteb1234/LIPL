@@ -1,7 +1,15 @@
 
 --- stderr ---
 error_recovery.lipl:1:5: error: expected a variable name after 'var', found '='
+    1 | var = 5;
+      |     ^
 error_recovery.lipl:2:11: error: expected ')' to close the '(' at 2:5, found ';'
+    2 | x = (1 + 2;
+      |           ^
 error_recovery.lipl:3:6: error: expected a function name after 'func', found '('
+    3 | func (a) { }
+      |      ^
 error_recovery.lipl:5:12: error: expected an expression, found ';'
+    5 | if x { z = ; }
+      |            ^
 --- exit: 1 ---

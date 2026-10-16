@@ -1,7 +1,15 @@
 
 --- stderr ---
 error_break_outside_loop.lipl:1:1: error: 'break' outside of a loop
+    1 | break;
+      | ^
 error_break_outside_loop.lipl:4:5: error: 'continue' outside of a loop
+    4 |     continue;
+      |     ^
 error_break_outside_loop.lipl:7:1: error: 'break' outside of a loop
+    7 | break;
+      | ^
 error_break_outside_loop.lipl:9:5: error: 'break' outside of a loop
+    9 |     break;
+      |     ^
 --- exit: 1 ---

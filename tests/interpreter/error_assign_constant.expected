@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_assign_constant.lipl:2:7: error: 'limit' is a constant and can't be changed
+    2 | limit = 4;
+      |       ^
 --- exit: 1 ---

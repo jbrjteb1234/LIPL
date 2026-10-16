@@ -8,6 +8,7 @@
 #include "ast/parser.h"
 #include "ast/ast_utility/ast_printer.h"
 #include "interpreter/interpreter.h"
+#include "utility/source_file.h"
 
 /* Exit codes: 0 = ran (or parsed) fine, 1 = an error in the program (or an unreadable file),
    2 = bad command line */
@@ -44,20 +45,23 @@ int main(int arg_count, char *args[]){
         return 2;
     }
 
-    FILE *source_code = fopen(filename, "rb");
-    if (source_code == NULL){
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL){
         perror(filename);
         return 1;
     }
 
-    symbol_table* symbols = create_symbol_table();
-    token_stream* tokens = tokenize(source_code, filename, symbols);
-    fclose(source_code);
-    if (tokens == NULL){
+    /* kept until the end so every stage's errors can quote the line they're about */
+    source_file source;
+    bool read_ok = read_source_file(file, filename, &source);
+    fclose(file);
+    if (!read_ok){
         fprintf(stderr, "%s: could not read file\n", filename);
-        destroy_symbol_table(symbols);
         return 1;
     }
+
+    symbol_table* symbols = create_symbol_table();
+    token_stream* tokens = tokenize(&source, symbols);
 
     if (show_tokens){
         print_token_stream(stdout, tokens, symbols);
@@ -75,7 +79,7 @@ int main(int arg_count, char *args[]){
             if (show_ast){
                 print_ast(stdout, ast, symbols);
             }else{
-                status = interpret(ast, symbols, filename);
+                status = interpret(ast, symbols, &source);
             }
             destroy_ast(ast);
         }
@@ -84,5 +88,6 @@ int main(int arg_count, char *args[]){
     /* cleanup */
     destroy_token_stream(tokens);
     destroy_symbol_table(symbols);
+    free_source_file(&source);
     return status;
 }

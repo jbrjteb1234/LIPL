@@ -6,7 +6,8 @@
 #include "../lexer/symbol_table.h"
 
 /* Parses a token stream into an AST.
-   Syntax errors are printed to stderr as file:line:column; the parser recovers
+   Syntax errors are printed to stderr as file:line:column with the line
+   quoted; the parser recovers
    and keeps going so one run reports as many as it can. If there were any
    errors, NULL is returned. Otherwise the caller owns the tree and frees it
    with destroy_ast(). The tree doesn't point into the token stream, so the

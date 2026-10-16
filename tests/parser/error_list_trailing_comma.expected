@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_list_trailing_comma.lipl:1:11: error: expected an expression, found ']'
+    1 | x = [1, 2,];
+      |           ^
 --- exit: 1 ---

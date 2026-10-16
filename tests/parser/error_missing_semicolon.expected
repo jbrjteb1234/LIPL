@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_missing_semicolon.lipl:2:1: error: expected ';' after expression, found identifier 'y'
+    2 | y = 2;
+      | ^
 --- exit: 1 ---

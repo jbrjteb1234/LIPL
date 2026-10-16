@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_wrong_argument_count.lipl:2:7: error: add() takes 2 arguments but was given 1
+    2 | print(add(1));
+      |       ^
 --- exit: 1 ---

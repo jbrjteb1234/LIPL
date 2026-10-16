@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_undefined_variable.lipl:1:7: error: 'missing' is not defined
+    1 | print(missing);
+      |       ^
 --- exit: 1 ---

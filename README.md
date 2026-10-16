@@ -23,7 +23,7 @@ On WSL with a 6.x kernel, GCC 11's sanitizer runtime randomly hangs printing `Ad
 ./program --tokens file.lipl   # print its tokens instead
 ```
 
-Exit codes: `0` ran fine, `1` an error in the program (printed as `file:line:column: error: ...`), `2` bad command line.
+Exit codes: `0` ran fine, `1` an error in the program (printed as `file:line:column: error: ...` with the line quoted and a caret under the column), `2` bad command line.
 
 ## The language
 
@@ -132,7 +132,7 @@ Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `
 | `src/ast/parser.c` | recursive-descent parser, precedence climbing for expressions |
 | `src/ast/ast_utility/` | AST node types, ownership, printer |
 | `src/interpreter/` | tree-walking evaluator, reference-counted runtime values, built-in functions |
-| `src/utility/` | allocation helpers, stack, pooled allocator, platform details |
+| `src/utility/` | error messages, source files, allocation helpers, stack, pooled allocator, platform details |
 | `tests/parser/` | programs and the syntax tree (or syntax error) each should produce |
 | `tests/interpreter/` | programs and the output (or runtime error) each should produce |
 

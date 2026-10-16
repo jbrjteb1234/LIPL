@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_else_without_if.lipl:2:1: error: 'else' without a matching 'if'
+    2 | else {
+      | ^
 --- exit: 1 ---

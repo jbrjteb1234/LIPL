@@ -1,4 +1,6 @@
 printed before the error
 --- stderr ---
 error_division_by_zero.lipl:2:12: error: division by zero
+    2 | var x = 10 / (5 - 5);
+      |            ^
 --- exit: 1 ---

@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_continue_in_function.lipl:3:9: error: 'continue' can't reach a loop outside the function it's in
+    3 |         continue;
+      |         ^
 --- exit: 1 ---

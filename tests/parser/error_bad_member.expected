@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_bad_member.lipl:1:7: error: expected a member name after '.', found number 5
+    1 | x = a.5;
+      |       ^
 --- exit: 1 ---

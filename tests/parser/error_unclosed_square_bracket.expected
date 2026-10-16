@@ -1,5 +1,9 @@
 
 --- stderr ---
 error_unclosed_square_bracket.lipl:1:10: error: expected ']' to close the '[' at 1:5, found ';'
+    1 | x = [1, 2;
+      |          ^
 error_unclosed_square_bracket.lipl:2:8: error: expected ']' to close the '[' at 2:6, found ';'
+    2 | y = a[0;
+      |        ^
 --- exit: 1 ---

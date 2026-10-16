@@ -23,6 +23,7 @@
 
 #include "../ast/ast_utility/ast.h"
 #include "../lexer/symbol_table.h"
+#include "../utility/source_file.h"
 #include "../utility/stack.h"
 
 typedef struct interpreter interpreter;
@@ -112,7 +113,7 @@ struct builtin{
 
 struct interpreter{
     symbol_table*   symbols;
-    const char*     source_name;
+    const source_file* source;      /* quoted in error messages */
     uint32_t        symbol_count;
     binding*        globals;        /* indexed by symbol id */
     const builtin** builtins;       /* indexed by symbol id; NULL where the name isn't a builtin */
@@ -142,7 +143,7 @@ struct interpreter{
 
 /* ---- errors (interpreter.c) ----------------------------------------------- */
 
-/* Prints "file:line:col: error: ..." and abandons the program. */
+/* Prints "file:line:col: error: ..." with the line quoted, and abandons the program. */
 _Noreturn void runtime_error(interpreter* interp, const ASTNode* at, const char* format, ...);
 
 /* ---- values (values.c) ---------------------------------------------------- */

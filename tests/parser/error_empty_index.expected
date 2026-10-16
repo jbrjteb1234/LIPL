@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_empty_index.lipl:1:7: error: expected an expression, found ']'
+    1 | x = a[];
+      |       ^
 --- exit: 1 ---

@@ -27,6 +27,7 @@
 
 #include "parser.h"
 #include "ast_utility/slist_functions.h"
+#include "../utility/diagnostics.h"
 
 /* Guards against blowing the C stack on input like ten thousand nested brackets */
 #define MAX_NESTING_DEPTH 256u
@@ -36,7 +37,7 @@ typedef struct{
     token*              previous;
     ast_root*           ast;
     const symbol_table* symbols;
-    const char*         source_name;
+    const source_file*  source;
     uint32_t            error_count;
     uint32_t            depth;
     uint32_t            loop_depth;     /* while/for bodies around us; 0 again inside a func body */
@@ -112,11 +113,9 @@ static void error_at(parser* p, const token* t, const char* format, ...){
     p->error_count++;
 
     va_list args;
-    fprintf(stderr, "%s:%u:%u: error: ", p->source_name, (unsigned)t->line, (unsigned)t->column);
     va_start(args, format);
-    vfprintf(stderr, format, args);
+    report_error(p->source, t->line, t->column, format, args);
     va_end(args);
-    fputc('\n', stderr);
 }
 
 /* "expected <what>, found <current token>" */
@@ -768,7 +767,7 @@ ast_root* parse(const token_stream* tokens, const symbol_table* symbols){
         .previous = NULL,
         .ast = create_ast_root(),
         .symbols = symbols,
-        .source_name = tokens->source_name,
+        .source = tokens->source,
         .error_count = 0,
         .depth = 0,
         .loop_depth = 0,

@@ -1,4 +1,6 @@
 
 --- stderr ---
 error_not_a_function.lipl:2:1: error: can't call 'x': it's an int, not a function
+    2 | x();
+      | ^
 --- exit: 1 ---

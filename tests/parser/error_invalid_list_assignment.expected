@@ -1,6 +1,12 @@
 
 --- stderr ---
 error_invalid_list_assignment.lipl:1:8: error: can only assign to a variable or a member (x = ..., a.b = ...)
+    1 | [a, b] = pair;
+      |        ^
 error_invalid_list_assignment.lipl:2:5: error: can only assign to a variable or a member (x = ..., a.b = ...)
+    2 | nil = 1;
+      |     ^
 error_invalid_list_assignment.lipl:3:10: error: can only assign to a variable or a member (x = ..., a.b = ...)
+    3 | a[0].f() = 2;
+      |          ^
 --- exit: 1 ---

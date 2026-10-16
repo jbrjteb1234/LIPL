@@ -1,5 +1,9 @@
 
 --- stderr ---
 error_invalid_assignment.lipl:1:7: error: can only assign to a variable or a member (x = ..., a.b = ...)
+    1 | 1 + 2 = 3;
+      |       ^
 error_invalid_assignment.lipl:2:5: error: can only assign to a variable or a member (x = ..., a.b = ...)
+    2 | f() = 4;
+      |     ^
 --- exit: 1 ---

@@ -1,6 +1,12 @@
 
 --- stderr ---
 error_unexpected_characters.lipl:1:7: error: unexpected character '@'
+    1 | x = 1 @ 2;
+      |       ^
 error_unexpected_characters.lipl:2:7: error: unexpected character '#'
+    2 | y = 3 # 4;
+      |       ^
 error_unexpected_characters.lipl:3:7: error: unexpected character '&'
+    3 | z = a & b;
+      |       ^
 --- exit: 1 ---
