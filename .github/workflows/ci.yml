@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build
+        run: make -C src
+      - name: Test
+        run: make -C src test
+
+  windows:
+    name: Windows (MSYS2 UCRT64)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: >-
+            make
+            mingw-w64-ucrt-x86_64-gcc
+      - name: Build
+        run: make -C src
+      - name: Test
+        run: make -C src test
+
+  sanitize:
+    name: Linux, AddressSanitizer + UBSan
+    runs-on: ubuntu-latest
+    env:
+      # make UBSan's reports fail the run instead of just printing
+      UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build
+        run: make -C src SANITIZE=1
+      - name: Test
+        # GCC's ASan randomly hangs printing "AddressSanitizer:DEADLYSIGNAL" on
+        # newer kernels with address randomisation on, so turn it off
+        run: setarch "$(uname -m)" -R make -C src SANITIZE=1 test
