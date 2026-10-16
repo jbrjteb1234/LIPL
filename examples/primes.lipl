@@ -1,0 +1,40 @@
+// The Sieve of Eratosthenes: find every prime below 100 by crossing out the
+// multiples of each prime in turn. Whatever is never crossed out is prime.
+
+const var limit = 100;
+
+// is_prime[n] says whether n is still in the running; 0 and 1 never are
+var is_prime = [];
+for var n = 0; n < limit; n = n + 1 {
+    is_prime.push(n >= 2);
+}
+
+// a number with a factor has one no bigger than its square root, so the
+// crossing out can stop once n * n passes the limit
+for var n = 2; n * n < limit; n = n + 1 {
+    if is_prime[n] {
+        // multiples below n * n were already crossed out by smaller primes
+        for var multiple = n * n; multiple < limit; multiple = multiple + n {
+            is_prime[multiple] = false;
+        }
+    }
+}
+
+// print them ten to a line, right-aligned in columns four wide
+var line = "";
+var count = 0;
+for var n = 0; n < limit; n = n + 1 {
+    if is_prime[n] {
+        var digits = str(n);
+        line = line + " " * (4 - len(digits)) + digits;
+        count = count + 1;
+        if count % 10 == 0 {
+            print(line);
+            line = "";
+        }
+    }
+}
+if line != "" {
+    print(line);
+}
+print(count, "primes below", limit);

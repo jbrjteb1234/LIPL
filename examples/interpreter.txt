@@ -1,0 +1,7 @@
+The lexer reads the text, and the parser reads the tokens.
+The parser builds a tree: a node for every part of the program,
+the numbers and the names, the calls and the loops.
+Then the interpreter walks the tree, one node at a time,
+and the program runs.
+If the program is wrong, the error points at the line,
+and the caret points at the very place it went wrong.

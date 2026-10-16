@@ -1,0 +1,16 @@
+// FizzBuzz: count from 1 to 20, but say "Fizz" for multiples of 3, "Buzz"
+// for multiples of 5, and "FizzBuzz" for multiples of both.
+
+for var i = 1; i <= 20; i = i + 1 {
+    // build the word up piece by piece, so 15 gets both halves for free
+    var word = "";
+    if i % 3 == 0 { word = word + "Fizz"; }
+    if i % 5 == 0 { word = word + "Buzz"; }
+
+    // only false and nil count as false, so an empty string has to be
+    // checked for by comparing with ""
+    if word == "" {
+        word = str(i);
+    }
+    print(word);
+}

@@ -128,6 +128,7 @@ Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `
 
 | Path | What's there |
 |---|---|
+| `examples/` | short programs showing the language off: FizzBuzz, a prime sieve, Towers of Hanoi, a word counter, a guessing game |
 | `src/grammar/grammar.h` | every fixed lexeme: operators, delimiters, keywords |
 | `src/lexer/` | tokenizer and the identifier symbol table |
 | `src/ast/parser.c` | recursive-descent parser, precedence climbing for expressions |
@@ -136,5 +137,6 @@ Literals: 64-bit integers, decimals (`3.14`), strings with `\n` `\t` `\r` `\"` `
 | `src/utility/` | error messages, source files, allocation helpers, stack, pooled allocator, platform details |
 | `tests/parser/` | programs and the syntax tree (or syntax error) each should produce |
 | `tests/interpreter/` | programs and the output (or runtime error) each should produce |
+| `tests/examples/` | the output each example should produce (and the guessing game's guesses) |
 
 `tests/run_tests.sh --update` regenerates the expected output; read the diff before keeping it.

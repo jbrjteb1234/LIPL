@@ -1,0 +1,9 @@
+Type any word to choose the secret: I'm thinking of a number from 1 to 100.
+Your guess: Too high.
+Your guess: Please type a whole number from 1 to 100.
+Your guess: Too low.
+Your guess: Too low.
+Your guess: Got it in 4 guesses!
+--- stderr ---
+
+--- exit: 0 ---

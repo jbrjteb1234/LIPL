@@ -1,0 +1,17 @@
+move disk 1 from A to C
+move disk 2 from A to B
+move disk 1 from C to B
+move disk 3 from A to C
+move disk 1 from B to A
+move disk 2 from B to C
+move disk 1 from A to C
+7 moves for 3 disks
+
+4 disks: 15 moves
+8 disks: 255 moves
+16 disks: 65535 moves
+32 disks: 4294967295 moves
+64 disks at one move a second: 584942417355 years
+--- stderr ---
+
+--- exit: 0 ---

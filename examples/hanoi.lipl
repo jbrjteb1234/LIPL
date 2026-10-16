@@ -1,0 +1,39 @@
+// Towers of Hanoi: move a stack of disks from peg A to peg C, one disk at a
+// time, never putting a bigger disk on top of a smaller one.
+//
+// The trick is recursion. To move n disks from A to C: move the top n - 1
+// out of the way onto B, move the biggest disk to C, then move the n - 1
+// from B back on top of it. Moving n - 1 disks is the same problem again,
+// just smaller, until there are no disks left to move.
+
+// prints every move and returns how many there were
+func hanoi(n, from, to, spare) {
+    if n == 0 {
+        return 0;
+    }
+    var before = hanoi(n - 1, from, spare, to);
+    print("move disk " + n + " from " + from + " to " + to);
+    var after = hanoi(n - 1, spare, to, from);
+    return before + 1 + after;
+}
+
+var moves = hanoi(3, "A", "C", "B");
+print(moves, "moves for 3 disks");
+print();
+
+// each extra disk doubles the work, plus one move: 2 ^ n - 1 in all
+func moves_needed(n) {
+    if n == 0 {
+        return 0;
+    }
+    return 2 * moves_needed(n - 1) + 1;
+}
+
+for var disks = 4; disks <= 32; disks = disks * 2 {
+    print(disks, "disks:", moves_needed(disks), "moves");
+}
+
+// the legend has 64 golden disks, too many moves for a 64-bit integer, so
+// this one uses a decimal (2.0) instead
+const var seconds_per_year = 60 * 60 * 24 * 365;
+print("64 disks at one move a second:", int((2.0 ^ 64 - 1) / seconds_per_year), "years");

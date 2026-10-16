@@ -1,0 +1,85 @@
+// Word frequency: read a text file, count how often each word appears, and
+// chart the most common ones.
+//
+// LIPL has no dictionary type, so the counts live in a list of [word, count]
+// pairs that's searched from the start each time. That's plenty fast for a
+// few hundred words.
+
+const var upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const var lower = "abcdefghijklmnopqrstuvwxyz";
+
+// where `c` first appears in `text`, or -1
+func find(text, c) {
+    for var i = 0; i < len(text); i = i + 1 {
+        if text[i] == c {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// lower-cases the letters and drops everything else, so "The" and "the,"
+// both count as "the"
+func normalise(word) {
+    var result = "";
+    for var i = 0; i < len(word); i = i + 1 {
+        var at = find(upper, word[i]);
+        if at >= 0 {
+            result = result + lower[at];
+        } elif find(lower, word[i]) >= 0 {
+            result = result + word[i];
+        }
+    }
+    return result;
+}
+
+func add_word(counts, word) {
+    for var i = 0; i < len(counts); i = i + 1 {
+        if counts[i][0] == word {
+            counts[i][1] = counts[i][1] + 1;
+            return;
+        }
+    }
+    counts.push([word, 1]);
+}
+
+var counts = [];
+var total = 0;
+var lines = read_lines("interpreter.txt");
+for var i = 0; i < len(lines); i = i + 1 {
+    var words = lines[i].split();
+    for var j = 0; j < len(words); j = j + 1 {
+        var word = normalise(words[j]);
+        if word != "" {
+            counts.add_word(word);      // a.f(x) is the same as f(a, x)
+            total = total + 1;
+        }
+    }
+}
+
+// most common first, and words that tie in alphabetical order
+func comes_before(a, b) {
+    if a[1] != b[1] {
+        return a[1] > b[1];
+    }
+    return a[0] < b[0];
+}
+
+// insertion sort: slide each pair left until the one before it should
+// stay in front
+for var i = 1; i < len(counts); i = i + 1 {
+    var pair = counts[i];
+    var j = i - 1;
+    while j >= 0 && comes_before(pair, counts[j]) {
+        counts[j + 1] = counts[j];
+        j = j - 1;
+    }
+    counts[j + 1] = pair;
+}
+
+print(total, "words,", len(counts), "different ones. The top 5:");
+for var i = 0; i < 5 && i < len(counts); i = i + 1 {
+    var word = counts[i][0];
+    var count = counts[i][1];
+    print("  " + word + " " * (12 - len(word)) + "#" * count + " " + count);
+}
