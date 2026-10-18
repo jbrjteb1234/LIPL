@@ -57,9 +57,15 @@ _Noreturn void runtime_error(interpreter* interp, const ASTNode* at, const char*
     longjmp(interp->error_jump, 1);
 }
 
+/* Where the C stack is now. This uses the frame address rather than the address
+   of a local variable, because AddressSanitizer's use-after-return checking (on
+   by default in newer compilers) moves locals onto a separate heap "fake stack". */
+static uintptr_t stack_position(void){
+    return (uintptr_t)__builtin_frame_address(0);
+}
+
 static void check_stack(interpreter* interp, const ASTNode* at){
-    char marker;
-    uintptr_t here = (uintptr_t)&marker;
+    uintptr_t here = stack_position();
     uintptr_t used = interp->stack_base > here ? interp->stack_base - here : here - interp->stack_base;
     if (used > interp->stack_limit){
         runtime_error(interp, at, "stack overflow: too much recursion");
@@ -772,8 +778,6 @@ static exec_status exec_block(interpreter* interp, const statement_list* block){
 /* ---- entry point ---------------------------------------------------------- */
 
 int interpret(const ast_root* ast, symbol_table* symbols, const source_file* source){
-    char stack_marker;
-
     /* on the heap: locals changed between setjmp and longjmp aren't reliable afterwards */
     interpreter* interp = (interpreter*)safe_malloc(sizeof(interpreter));
     interp->symbols = symbols;
@@ -806,7 +810,7 @@ int interpret(const ast_root* ast, symbol_table* symbols, const source_file* sou
     interp->argument_capacity = 0;
 
     size_t stack_size = thread_stack_size();
-    interp->stack_base = (uintptr_t)&stack_marker;
+    interp->stack_base = stack_position();
     interp->stack_limit = stack_size ? (uintptr_t)(stack_size / 100u * STACK_USE_PERCENT) : FALLBACK_STACK_LIMIT;
 
     int status = 0;
